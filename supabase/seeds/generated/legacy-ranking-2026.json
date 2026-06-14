@@ -1,0 +1,4777 @@
+{
+  "source_file": "C:\\Users\\wesle\\Downloads\\Ranking Tennis 2026.xlsx",
+  "players": [
+    {
+      "display_name": "Carlos Eduardo",
+      "full_name": "Carlos Eduardo",
+      "normalized_name": "CARLOS EDUARDO",
+      "status": "active"
+    },
+    {
+      "display_name": "Ailson",
+      "full_name": "Ailson",
+      "normalized_name": "AILSON",
+      "status": "active"
+    },
+    {
+      "display_name": "Hellinton",
+      "full_name": "Hellinton",
+      "normalized_name": "HELLINTON",
+      "status": "active"
+    },
+    {
+      "display_name": "Chicão",
+      "full_name": "Chicão",
+      "normalized_name": "CHICÃO",
+      "status": "active"
+    },
+    {
+      "display_name": "Giuliano",
+      "full_name": "Giuliano",
+      "normalized_name": "GIULIANO",
+      "status": "active"
+    },
+    {
+      "display_name": "Mario",
+      "full_name": "Mario",
+      "normalized_name": "MARIO",
+      "status": "active"
+    },
+    {
+      "display_name": "Daniel",
+      "full_name": "Daniel",
+      "normalized_name": "DANIEL",
+      "status": "active"
+    },
+    {
+      "display_name": "José",
+      "full_name": "José",
+      "normalized_name": "JOSÉ",
+      "status": "active"
+    },
+    {
+      "display_name": "João Paulo",
+      "full_name": "João Paulo",
+      "normalized_name": "JOÃO PAULO",
+      "status": "active"
+    },
+    {
+      "display_name": "Denny",
+      "full_name": "Denny",
+      "normalized_name": "DENNY",
+      "status": "active"
+    },
+    {
+      "display_name": "Rogério",
+      "full_name": "Rogério",
+      "normalized_name": "ROGÉRIO",
+      "status": "active"
+    },
+    {
+      "display_name": "Samuel",
+      "full_name": "Samuel",
+      "normalized_name": "SAMUEL",
+      "status": "active"
+    },
+    {
+      "display_name": "Marcos",
+      "full_name": "Marcos",
+      "normalized_name": "MARCOS",
+      "status": "active"
+    },
+    {
+      "display_name": "Milton",
+      "full_name": "Milton",
+      "normalized_name": "MILTON",
+      "status": "active"
+    },
+    {
+      "display_name": "Henrique",
+      "full_name": "Henrique",
+      "normalized_name": "HENRIQUE",
+      "status": "active"
+    },
+    {
+      "display_name": "Luis",
+      "full_name": "Luis",
+      "normalized_name": "LUIS",
+      "status": "active"
+    },
+    {
+      "display_name": "Patrício",
+      "full_name": "Patrício",
+      "normalized_name": "PATRÍCIO",
+      "status": "active"
+    },
+    {
+      "display_name": "Tico",
+      "full_name": "Tico",
+      "normalized_name": "TICO",
+      "status": "active"
+    },
+    {
+      "display_name": "Rafael",
+      "full_name": "Rafael",
+      "normalized_name": "RAFAEL",
+      "status": "active"
+    },
+    {
+      "display_name": "Beto",
+      "full_name": "Beto",
+      "normalized_name": "BETO",
+      "status": "active"
+    }
+  ],
+  "monthly_rankings": [
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 69.0,
+      "matches_played": 29.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "AILSON",
+      "ranking_position": 2,
+      "points": 35.0,
+      "matches_played": 21.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "HELLINTON",
+      "ranking_position": 3,
+      "points": 25.0,
+      "matches_played": 17.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "CHICÃO",
+      "ranking_position": 4,
+      "points": 18.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "GIULIANO",
+      "ranking_position": 5,
+      "points": 16.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "MARIO",
+      "ranking_position": 6,
+      "points": 10.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "DANIEL",
+      "ranking_position": 7,
+      "points": 9.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "JOSÉ",
+      "ranking_position": 8,
+      "points": 9.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "JOÃO PAULO",
+      "ranking_position": 9,
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "DENNY",
+      "ranking_position": 10,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "ROGÉRIO",
+      "ranking_position": 11,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "SAMUEL",
+      "ranking_position": 12,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "MARCOS",
+      "ranking_position": 13,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "MILTON",
+      "ranking_position": 14,
+      "points": 4.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "HENRIQUE",
+      "ranking_position": 15,
+      "points": 4.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "LUIS",
+      "ranking_position": 16,
+      "points": 3.0,
+      "matches_played": 1.0
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "month_label": "JANEIRO",
+      "player_name": "PATRÍCIO",
+      "ranking_position": 17,
+      "points": 1.0,
+      "matches_played": 1.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 53.0,
+      "matches_played": 23.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "HELLINTON",
+      "ranking_position": 2,
+      "points": 39.0,
+      "matches_played": 19.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "AILSON",
+      "ranking_position": 3,
+      "points": 33.0,
+      "matches_played": 17.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "CHICÃO",
+      "ranking_position": 4,
+      "points": 15.0,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "MARCOS",
+      "ranking_position": 5,
+      "points": 14.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "MARIO",
+      "ranking_position": 6,
+      "points": 7.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "GIULIANO",
+      "ranking_position": 7,
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "HENRIQUE",
+      "ranking_position": 8,
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "TICO",
+      "ranking_position": 9,
+      "points": 6.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "RAFAEL",
+      "ranking_position": 10,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "JOSÉ",
+      "ranking_position": 11,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "LUIS",
+      "ranking_position": 12,
+      "points": 4.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "FEVEREIRO",
+      "season_year": 2026,
+      "month_label": "FEVEREIRO",
+      "player_name": "DANIEL",
+      "ranking_position": 13,
+      "points": 2.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 44.0,
+      "matches_played": 20.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "AILSON",
+      "ranking_position": 2,
+      "points": 36.0,
+      "matches_played": 20.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "HELLINTON",
+      "ranking_position": 3,
+      "points": 22.0,
+      "matches_played": 12.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "MILTON",
+      "ranking_position": 4,
+      "points": 20.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "GIULIANO",
+      "ranking_position": 5,
+      "points": 18.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "MARIO",
+      "ranking_position": 6,
+      "points": 11.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "LUIS",
+      "ranking_position": 7,
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "MARCOS",
+      "ranking_position": 8,
+      "points": 7.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "CHICÃO",
+      "ranking_position": 9,
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "DANIEL",
+      "ranking_position": 10,
+      "points": 4.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "month_label": "MARÇO",
+      "player_name": "HENRIQUE",
+      "ranking_position": 11,
+      "points": 3.0,
+      "matches_played": 1.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "HELLINTON",
+      "ranking_position": 1,
+      "points": 51.0,
+      "matches_played": 19.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 2,
+      "points": 46.0,
+      "matches_played": 18.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "MILTON",
+      "ranking_position": 3,
+      "points": 25.0,
+      "matches_played": 15.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "AILSON",
+      "ranking_position": 4,
+      "points": 23.0,
+      "matches_played": 11.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "MARIO",
+      "ranking_position": 5,
+      "points": 11.0,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "MARCOS",
+      "ranking_position": 6,
+      "points": 7.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "HENRIQUE",
+      "ranking_position": 7,
+      "points": 6.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "GIULIANO",
+      "ranking_position": 8,
+      "points": 5.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "month_label": "ABRIL",
+      "player_name": "DANIEL",
+      "ranking_position": 9,
+      "points": 4.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 62.0,
+      "matches_played": 26.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "AILSON",
+      "ranking_position": 2,
+      "points": 46.0,
+      "matches_played": 28.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "HELLINTON",
+      "ranking_position": 3,
+      "points": 40.0,
+      "matches_played": 18.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "MARCOS",
+      "ranking_position": 4,
+      "points": 23.0,
+      "matches_played": 11.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "DANIEL",
+      "ranking_position": 5,
+      "points": 19.0,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "RAFAEL",
+      "ranking_position": 6,
+      "points": 15.0,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "HENRIQUE",
+      "ranking_position": 7,
+      "points": 15.0,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "MILTON",
+      "ranking_position": 8,
+      "points": 15.0,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "MARIO",
+      "ranking_position": 9,
+      "points": 14.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "DENNY",
+      "ranking_position": 10,
+      "points": 10.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "month_label": "MAIO",
+      "player_name": "GIULIANO",
+      "ranking_position": 11,
+      "points": 1.0,
+      "matches_played": 1.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 64.5,
+      "matches_played": 22.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "HENRIQUE",
+      "ranking_position": 2,
+      "points": 36.5,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "JOÃO PAULO",
+      "ranking_position": 3,
+      "points": 34.0,
+      "matches_played": 15.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "AILSON",
+      "ranking_position": 4,
+      "points": 30.5,
+      "matches_played": 14.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "HELLINTON",
+      "ranking_position": 5,
+      "points": 24.0,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "DENNY",
+      "ranking_position": 6,
+      "points": 22.5,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "MARCOS",
+      "ranking_position": 7,
+      "points": 19.5,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "MARIO",
+      "ranking_position": 8,
+      "points": 13.0,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "BETO",
+      "ranking_position": 9,
+      "points": 13.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "GIULIANO",
+      "ranking_position": 10,
+      "points": 12.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "RAFAEL",
+      "ranking_position": 11,
+      "points": 7.5,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "PATRÍCIO",
+      "ranking_position": 12,
+      "points": 7.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "JOSÉ",
+      "ranking_position": 13,
+      "points": 5.0,
+      "matches_played": 0.0
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "month_label": "JUL",
+      "player_name": "MILTON",
+      "ranking_position": 14,
+      "points": 3.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 55.0,
+      "matches_played": 21.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "AILSON",
+      "ranking_position": 2,
+      "points": 39.0,
+      "matches_played": 23.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "HENRIQUE",
+      "ranking_position": 3,
+      "points": 26.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "MILTON",
+      "ranking_position": 4,
+      "points": 18.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "MARIO",
+      "ranking_position": 5,
+      "points": 15.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "HELLINTON",
+      "ranking_position": 6,
+      "points": 13.0,
+      "matches_played": 11.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "MARCOS",
+      "ranking_position": 7,
+      "points": 11.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "DENNY",
+      "ranking_position": 8,
+      "points": 11.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "GIULIANO",
+      "ranking_position": 9,
+      "points": 9.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "JOÃO PAULO",
+      "ranking_position": 10,
+      "points": 3.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "month_label": "AGO",
+      "player_name": "PATRÍCIO",
+      "ranking_position": 11,
+      "points": 2.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "HENRIQUE",
+      "ranking_position": 1,
+      "points": 20.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "AILSON",
+      "ranking_position": 2,
+      "points": 19.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "MILTON",
+      "ranking_position": 3,
+      "points": 19.0,
+      "matches_played": 9.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "MARCOS",
+      "ranking_position": 4,
+      "points": 16.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "ROGÉRIO",
+      "ranking_position": 5,
+      "points": 9.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 6,
+      "points": 7.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "PATRÍCIO",
+      "ranking_position": 7,
+      "points": 7.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "GIULIANO",
+      "ranking_position": 8,
+      "points": 6.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "JOÃO PAULO",
+      "ranking_position": 9,
+      "points": 6.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "month_label": "SET",
+      "player_name": "HELLINTON",
+      "ranking_position": 10,
+      "points": 4.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "AILSON",
+      "ranking_position": 1,
+      "points": 25.0,
+      "matches_played": 15.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "DENNY",
+      "ranking_position": 2,
+      "points": 24.0,
+      "matches_played": 7.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "MARIO",
+      "ranking_position": 3,
+      "points": 23.5,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "MARCOS",
+      "ranking_position": 4,
+      "points": 21.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "MILTON",
+      "ranking_position": 5,
+      "points": 19.0,
+      "matches_played": 15.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "RAFAEL",
+      "ranking_position": 6,
+      "points": 16.5,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "JOSÉ",
+      "ranking_position": 7,
+      "points": 16.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "ROGÉRIO",
+      "ranking_position": 8,
+      "points": 12.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "GIULIANO",
+      "ranking_position": 9,
+      "points": 6.5,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "month_label": "OUT",
+      "player_name": "HELLINTON",
+      "ranking_position": 10,
+      "points": 6.5,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "AILSON",
+      "ranking_position": 1,
+      "points": 24.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "MILTON",
+      "ranking_position": 2,
+      "points": 18.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "HENRIQUE",
+      "ranking_position": 3,
+      "points": 12.0,
+      "matches_played": 6.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "HELLINTON",
+      "ranking_position": 4,
+      "points": 9.0,
+      "matches_played": 5.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "MARCOS",
+      "ranking_position": 5,
+      "points": 8.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "DENNY",
+      "ranking_position": 6,
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 7,
+      "points": 6.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "ROGÉRIO",
+      "ranking_position": 8,
+      "points": 2.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "month_label": "NOV",
+      "player_name": "LUIS",
+      "ranking_position": 9,
+      "points": 2.0,
+      "matches_played": 2.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "CARLOS EDUARDO",
+      "ranking_position": 1,
+      "points": 22.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "MARCOS",
+      "ranking_position": 2,
+      "points": 18.0,
+      "matches_played": 10.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "AILSON",
+      "ranking_position": 3,
+      "points": 16.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "DENNY",
+      "ranking_position": 4,
+      "points": 14.0,
+      "matches_played": 8.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "MILTON",
+      "ranking_position": 5,
+      "points": 10.0,
+      "matches_played": 4.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "MARIO",
+      "ranking_position": 6,
+      "points": 9.0,
+      "matches_played": 3.0
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "month_label": "DEZ",
+      "player_name": "HELLINTON",
+      "ranking_position": 7,
+      "points": 4.0,
+      "matches_played": 2.0
+    }
+  ],
+  "annual_rankings": [
+    {
+      "player_name": "CARLOS EDUARDO",
+      "points": 274.0,
+      "matches_played": 122.0
+    },
+    {
+      "player_name": "HELLINTON",
+      "points": 177.0,
+      "matches_played": 85.0
+    },
+    {
+      "player_name": "AILSON",
+      "points": 173.0,
+      "matches_played": 116.0
+    },
+    {
+      "player_name": "MILTON",
+      "points": 64.0,
+      "matches_played": 38.0
+    },
+    {
+      "player_name": "MARCOS",
+      "points": 56.0,
+      "matches_played": 30.0
+    },
+    {
+      "player_name": "MARIO",
+      "points": 53.0,
+      "matches_played": 29.0
+    },
+    {
+      "player_name": "GIULIANO",
+      "points": 47.0,
+      "matches_played": 21.0
+    },
+    {
+      "player_name": "CHICÃO",
+      "points": 38.0,
+      "matches_played": 20.0
+    },
+    {
+      "player_name": "DANIEL",
+      "points": 38.0,
+      "matches_played": 18.0
+    },
+    {
+      "player_name": "HENRIQUE",
+      "points": 35.0,
+      "matches_played": 19.0
+    },
+    {
+      "player_name": "RAFAEL",
+      "points": 20.0,
+      "matches_played": 10.0
+    },
+    {
+      "player_name": "DENNY",
+      "points": 15.0,
+      "matches_played": 9.0
+    },
+    {
+      "player_name": "JOSÉ",
+      "points": 14.0,
+      "matches_played": 6.0
+    },
+    {
+      "player_name": "LUIS",
+      "points": 14.0,
+      "matches_played": 6.0
+    },
+    {
+      "player_name": "JOÃO PAULO",
+      "points": 7.0,
+      "matches_played": 3.0
+    },
+    {
+      "player_name": "TICO",
+      "points": 6.0,
+      "matches_played": 2.0
+    },
+    {
+      "player_name": "ROGÉRIO",
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "player_name": "SAMUEL",
+      "points": 5.0,
+      "matches_played": 3.0
+    },
+    {
+      "player_name": "PATRÍCIO",
+      "points": 1.0,
+      "matches_played": 1.0
+    },
+    {
+      "player_name": "BETO",
+      "points": 0.0,
+      "matches_played": 0.0
+    }
+  ],
+  "legacy_matches": [
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-01",
+      "team_a_names": [
+        "Kadu",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6,
+        6,
+        7
+      ],
+      "team_b_scores": [
+        1,
+        4,
+        5
+      ],
+      "result_summary": "6-1 / 6-4 / 7-5",
+      "source_cells": [
+        "B30",
+        "C30"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-02",
+      "team_a_names": [
+        "Kadu",
+        "JP"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Denny"
+      ],
+      "team_a_scores": [
+        7,
+        6,
+        1
+      ],
+      "team_b_scores": [
+        5,
+        4,
+        6
+      ],
+      "result_summary": "7-5 / 6-4 / 1-6",
+      "source_cells": [
+        "E30",
+        "F30"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-03",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Roger"
+      ],
+      "team_a_scores": [
+        7,
+        6,
+        1
+      ],
+      "team_b_scores": [
+        5,
+        2,
+        6
+      ],
+      "result_summary": "7-5 / 6-2 / 1-6",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-04",
+      "team_a_names": [
+        "Ail",
+        "Samuel"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Frank"
+      ],
+      "team_a_scores": [
+        2,
+        6,
+        5
+      ],
+      "team_b_scores": [
+        6,
+        1,
+        7
+      ],
+      "result_summary": "2-6 / 6-1 / 5-7",
+      "source_cells": [
+        "K30",
+        "L30"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-10",
+      "team_a_names": [
+        "Hell",
+        "Chicão"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Zé"
+      ],
+      "team_a_scores": [
+        3,
+        4
+      ],
+      "team_b_scores": [
+        6,
+        6
+      ],
+      "result_summary": "3-6 / 4-6",
+      "source_cells": [
+        "B41",
+        "C41"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-10",
+      "team_a_names": [
+        "Ail",
+        "Zé"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "7-6",
+      "source_cells": [
+        "B42",
+        "C42"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-11",
+      "team_a_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Daniel"
+      ],
+      "team_a_scores": [
+        2,
+        4,
+        4
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        6
+      ],
+      "result_summary": "2-6 / 4-6 / 4-6",
+      "source_cells": [
+        "E41",
+        "F41"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-17",
+      "team_a_names": [
+        "Ail",
+        "Kadu"
+      ],
+      "team_b_names": [
+        "Chicão",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6,
+        3,
+        6
+      ],
+      "team_b_scores": [
+        3,
+        6,
+        1
+      ],
+      "result_summary": "6-3 / 3-6 / 6-1",
+      "source_cells": [
+        "H41",
+        "I41"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-18",
+      "team_a_names": [
+        "Ail",
+        "Kadu"
+      ],
+      "team_b_names": [
+        "Chicão",
+        "Hell"
+      ],
+      "team_a_scores": [
+        5,
+        2
+      ],
+      "team_b_scores": [
+        7,
+        6
+      ],
+      "result_summary": "5-7 / 2-6",
+      "source_cells": [
+        "K41",
+        "L41"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-24",
+      "team_a_names": [
+        "Hell",
+        "Mario"
+      ],
+      "team_b_names": [
+        "GBT",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "6-7",
+      "source_cells": [
+        "B53",
+        "C53"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-24",
+      "team_a_names": [
+        "Patricio",
+        "Henrique"
+      ],
+      "team_b_names": [
+        "GBT",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        2,
+        5
+      ],
+      "team_b_scores": [
+        6,
+        7
+      ],
+      "result_summary": "2-6 / 5-7",
+      "source_cells": [
+        "B54",
+        "C54"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-31",
+      "team_a_names": [
+        "Hell",
+        "Prof"
+      ],
+      "team_b_names": [
+        "GBT",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "E56",
+        "F56"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-31",
+      "team_a_names": [
+        "Henrique",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "GBT",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "E57",
+        "F57"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-31",
+      "team_a_names": [
+        "Prof",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "GBT",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "E58",
+        "F58"
+      ]
+    },
+    {
+      "sheet_name": "JANEIRO",
+      "season_year": 2026,
+      "match_date": "2026-01-31",
+      "team_a_names": [
+        "Prof",
+        "Luis"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Amigo"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "E59",
+        "F59"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2025,
+      "match_date": "2025-03-01",
+      "team_a_names": [
+        "Kadu",
+        "GBT"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        3,
+        4
+      ],
+      "result_summary": "6-3 / 6-4",
+      "source_cells": [
+        "B31",
+        "C31"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-08",
+      "team_a_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Prof"
+      ],
+      "team_a_scores": [
+        3,
+        6,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        2,
+        2
+      ],
+      "result_summary": "3-6 / 6-2 / 6-2",
+      "source_cells": [
+        "H31",
+        "I31"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-14",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        7,
+        7
+      ],
+      "result_summary": "6-7 / 6-7",
+      "source_cells": [
+        "K31",
+        "L31"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-14",
+      "team_a_names": [
+        "Ail",
+        "Daniel"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "6-7",
+      "source_cells": [
+        "K32",
+        "L32"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-15",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_a_scores": [
+        3,
+        4
+      ],
+      "team_b_scores": [
+        6,
+        6
+      ],
+      "result_summary": "3-6 / 4-6",
+      "source_cells": [
+        "N31",
+        "O31"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-15",
+      "team_a_names": [
+        "Ail",
+        "Luis"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "N32",
+        "O32"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-21",
+      "team_a_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "B42",
+        "C42"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-21",
+      "team_a_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Mario"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "B43",
+        "C43"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-21",
+      "team_a_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B44",
+        "C44"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-22",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        7,
+        7
+      ],
+      "team_b_scores": [
+        5,
+        6
+      ],
+      "result_summary": "7-5 / 7-6",
+      "source_cells": [
+        "E42",
+        "F42"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-28",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_a_scores": [
+        5,
+        6
+      ],
+      "team_b_scores": [
+        7,
+        3
+      ],
+      "result_summary": "5-7 / 6-3",
+      "source_cells": [
+        "H42",
+        "I42"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-29",
+      "team_a_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "K42",
+        "L42"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-29",
+      "team_a_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "K43",
+        "L43"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-29",
+      "team_a_names": [
+        "Daniel",
+        "Saed"
+      ],
+      "team_b_names": [
+        "Milton",
+        "Luis"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "K44",
+        "L44"
+      ]
+    },
+    {
+      "sheet_name": "MARÇO",
+      "season_year": 2026,
+      "match_date": "2026-03-27",
+      "team_a_names": [
+        "Henrique",
+        "GBT"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Nova Paixão"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "N42",
+        "O42"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-03",
+      "team_a_names": [
+        "Ail",
+        "GBT"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Miltão"
+      ],
+      "team_a_scores": [
+        4,
+        4,
+        3
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        6
+      ],
+      "result_summary": "4-6 / 4-6 / 3-6",
+      "source_cells": [
+        "B30",
+        "C30"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-04",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Miltão"
+      ],
+      "team_a_scores": [
+        6,
+        7,
+        5
+      ],
+      "team_b_scores": [
+        3,
+        5,
+        1
+      ],
+      "result_summary": "6-3 / 7-5 / 5-1",
+      "source_cells": [
+        "E30",
+        "F30"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-05",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "Miltão"
+      ],
+      "team_a_scores": [
+        7,
+        6
+      ],
+      "team_b_scores": [
+        5,
+        3
+      ],
+      "result_summary": "7-5 / 6-3",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-11",
+      "team_a_names": [
+        "Hell",
+        "Kadu"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "Milton"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        4,
+        4
+      ],
+      "result_summary": "6-4 / 6-4",
+      "source_cells": [
+        "K30",
+        "L30"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-12",
+      "team_a_names": [
+        "Milton",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_a_scores": [
+        4,
+        2,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        4
+      ],
+      "result_summary": "4-6 / 2-6 / 6-4",
+      "source_cells": [
+        "N30",
+        "O30"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-18",
+      "team_a_names": [
+        "Milton",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Daniel"
+      ],
+      "team_a_scores": [
+        6,
+        5
+      ],
+      "team_b_scores": [
+        3,
+        7
+      ],
+      "result_summary": "6-3 / 5-7",
+      "source_cells": [
+        "B41",
+        "C41"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-25",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H41",
+        "I41"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-25",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "H43",
+        "I43"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-25",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "H44",
+        "I44"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-26",
+      "team_a_names": [
+        "Kadu",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "K41",
+        "L41"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-26",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "K42",
+        "L42"
+      ]
+    },
+    {
+      "sheet_name": "ABRIL",
+      "season_year": 2026,
+      "match_date": "2026-04-26",
+      "team_a_names": [
+        "Kadu",
+        "Ail"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "K43",
+        "L43"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-01",
+      "team_a_names": [
+        "Ail",
+        "Daniel"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Denny"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B30",
+        "C30"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-01",
+      "team_a_names": [
+        "Ail",
+        "Denny"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Daniel"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B31",
+        "C31"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-01",
+      "team_a_names": [
+        "Ail",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "Daniel",
+        "Denny"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "B32",
+        "C32"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-02",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Daniel",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        1,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        7
+      ],
+      "result_summary": "1-6 / 6-7",
+      "source_cells": [
+        "E30",
+        "F30"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-03",
+      "team_a_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6,
+        4
+      ],
+      "team_b_scores": [
+        7,
+        6
+      ],
+      "result_summary": "6-7 / 4-6",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-09",
+      "team_a_names": [
+        "Ail",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "K30",
+        "L30"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-09",
+      "team_a_names": [
+        "Kadu",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Rafa"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "K31",
+        "L31"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-09",
+      "team_a_names": [
+        "Ail",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Mario"
+      ],
+      "team_a_scores": [
+        1,
+        4,
+        7
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        6
+      ],
+      "result_summary": "1-6 / 4-6 / 7-6",
+      "source_cells": [
+        "K32",
+        "L32"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-10",
+      "team_a_names": [
+        "Ail",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        6,
+        6,
+        3
+      ],
+      "team_b_scores": [
+        2,
+        3,
+        6
+      ],
+      "result_summary": "6-2 / 6-3 / 3-6",
+      "source_cells": [
+        "N30",
+        "O30"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-16",
+      "team_a_names": [
+        "Ail",
+        "Henrique"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        3,
+        3,
+        7
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        5
+      ],
+      "result_summary": "3-6 / 3-6 / 7-5",
+      "source_cells": [
+        "B41",
+        "C41"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Ail",
+        "Henr"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Daniel"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H41",
+        "I41"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Daniel",
+        "Henr"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H42",
+        "I42"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Mil",
+        "Henr"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Daniel"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H43",
+        "I43"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Henr",
+        "Ail"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "H44",
+        "I44"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Denny"
+      ],
+      "team_a_scores": [
+        7,
+        7
+      ],
+      "team_b_scores": [
+        6,
+        5
+      ],
+      "result_summary": "7-6 / 7-5",
+      "source_cells": [
+        "H45",
+        "I45"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-23",
+      "team_a_names": [
+        "Daniel",
+        "Denny"
+      ],
+      "team_b_names": [
+        "Milton",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "H46",
+        "I46"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-24",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_a_scores": [
+        2,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        4
+      ],
+      "result_summary": "2-6 / 6-4",
+      "source_cells": [
+        "K41",
+        "L41"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-24",
+      "team_a_names": [
+        "Ail",
+        "GBT"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Mil"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "K42",
+        "L42"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-30",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Milton"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "N41",
+        "O41"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-30",
+      "team_a_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Hell"
+      ],
+      "team_a_scores": [
+        4,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        7
+      ],
+      "result_summary": "4-6 / 6-7",
+      "source_cells": [
+        "N42",
+        "O42"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-31",
+      "team_a_names": [
+        "AIL",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Kadu",
+        "Frank"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B51",
+        "C51"
+      ]
+    },
+    {
+      "sheet_name": "MAIO",
+      "season_year": 2026,
+      "match_date": "2026-05-31",
+      "team_a_names": [
+        "Marcos",
+        "Milton"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Kadu"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "B52",
+        "C52"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "AILSON",
+        "MARCOS"
+      ],
+      "team_b_names": [
+        "HELL",
+        "CARLOS"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "E27",
+        "F27"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "AILSON",
+        "MARCOS"
+      ],
+      "team_b_names": [
+        "NILTON",
+        "DENNY"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "E28",
+        "F28"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "AILSON",
+        "MARCOS"
+      ],
+      "team_b_names": [
+        "NILTON",
+        "DENNY"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "E29",
+        "F29"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "HELL",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "MILTOPN",
+        "JP"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "E30",
+        "F30"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "HELL",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "MILTOPN",
+        "JP"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "E31",
+        "F31"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "HELL",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "MILTOPN",
+        "JP"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "E32",
+        "F32"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-06",
+      "team_a_names": [
+        "AILSON",
+        "JP"
+      ],
+      "team_b_names": [
+        "DENNY",
+        "MARCOS"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "E33",
+        "F33"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-09",
+      "team_a_names": [
+        "AILSON",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "PATRICIO",
+        "DANIEL"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        0
+      ],
+      "result_summary": "6-0",
+      "source_cells": [
+        "H27",
+        "I27"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-09",
+      "team_a_names": [
+        "AILSON",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "PATRICIO",
+        "DANIEL"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "H28",
+        "I28"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-12",
+      "team_a_names": [
+        "AILSON",
+        "HELL"
+      ],
+      "team_b_names": [
+        "CARLOS",
+        "GBT"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "K27",
+        "L27"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-12",
+      "team_a_names": [
+        "CARLOS",
+        "HENRIQ"
+      ],
+      "team_b_names": [
+        "AILSON",
+        "HELL"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "K28",
+        "L28"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-12",
+      "team_a_names": [
+        "GBT",
+        "AILSON"
+      ],
+      "team_b_names": [
+        "CARLOS",
+        "HENRIQUE"
+      ],
+      "team_a_scores": [
+        0
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "0-6",
+      "source_cells": [
+        "K29",
+        "L29"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-12",
+      "team_a_names": [
+        "GBT",
+        "AILSON"
+      ],
+      "team_b_names": [
+        "CARLOS",
+        "HENRIQUE"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "6-7",
+      "source_cells": [
+        "K30",
+        "L30"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-13",
+      "team_a_names": [
+        "AILSON",
+        "JP"
+      ],
+      "team_b_names": [
+        "CARLOS",
+        "PATRÍCIO"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "N27",
+        "O27"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-13",
+      "team_a_names": [
+        "AILSON",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "JP",
+        "PATRICIO"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "N28",
+        "O28"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-13",
+      "team_a_names": [
+        "AILSON",
+        "CARLOS"
+      ],
+      "team_b_names": [
+        "JP",
+        "PATRÍCIO"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "N29",
+        "O29"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-19",
+      "team_a_names": [
+        "Mario",
+        "JP"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        0
+      ],
+      "result_summary": "6-0",
+      "source_cells": [
+        "B38",
+        "C38"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-20",
+      "team_a_names": [
+        "GBT",
+        "Henrique"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Zé"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        0
+      ],
+      "result_summary": "6-0",
+      "source_cells": [
+        "E38",
+        "F38"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-24",
+      "team_a_names": [
+        "Carlos",
+        "Henrique"
+      ],
+      "team_b_names": [
+        "Denny",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        0
+      ],
+      "result_summary": "6-0",
+      "source_cells": [
+        "H38",
+        "I38"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-24",
+      "team_a_names": [
+        "Carlos",
+        "Henrique"
+      ],
+      "team_b_names": [
+        "Denny",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H39",
+        "I39"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "GBT",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "Carlos"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "K38",
+        "L38"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "Ail",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Crispim"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "K39",
+        "L39"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "marcos",
+        "denny"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Crispim"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        0
+      ],
+      "result_summary": "6-0",
+      "source_cells": [
+        "K40",
+        "L40"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "Ail",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Beto",
+        "JP"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "K41",
+        "L41"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "GBT",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Beto",
+        "JP"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "K42",
+        "L42"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "Ail",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "Carlos"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "K43",
+        "L43"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "JP",
+        "Beto"
+      ],
+      "team_b_names": [
+        "Denny",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "K44",
+        "L44"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "Ail",
+        "Carlos"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Crispim"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "K45",
+        "L45"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-26",
+      "team_a_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Denny",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "K46",
+        "L46"
+      ]
+    },
+    {
+      "sheet_name": "JUL",
+      "season_year": 2025,
+      "match_date": "2025-07-27",
+      "team_a_names": [
+        "Ail",
+        "Carlos"
+      ],
+      "team_b_names": [
+        "Marcod",
+        "Denny"
+      ],
+      "team_a_scores": [
+        1
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "1-6",
+      "source_cells": [
+        "N38",
+        "O38"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-09",
+      "team_a_names": [
+        "Ailson",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Giuliano"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "H27",
+        "I27"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-09",
+      "team_a_names": [
+        "Ailson",
+        "Marcos"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Giuliano"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "H28",
+        "I28"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-09",
+      "team_a_names": [
+        "Marcos",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Giuliano"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "H29",
+        "I29"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-09",
+      "team_a_names": [
+        "Ailson",
+        "Daniel"
+      ],
+      "team_b_names": [
+        "Milton",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-09",
+      "team_a_names": [
+        "Carlos",
+        "Daniel"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Ailson"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "H32",
+        "I32"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-10",
+      "team_a_names": [
+        "Ailson",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Carlos"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "K27",
+        "L27"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-16",
+      "team_a_names": [
+        "Ailson",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Henrique"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "N27",
+        "O27"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-17",
+      "team_a_names": [
+        "Ailson",
+        "Carlos"
+      ],
+      "team_b_names": [
+        "Denny",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "B38",
+        "C38"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-24",
+      "team_a_names": [
+        "Ailson",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Denny"
+      ],
+      "team_a_scores": [
+        1,
+        4,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        3
+      ],
+      "result_summary": "1-6 / 4-6 / 6-3",
+      "source_cells": [
+        "H38",
+        "I38"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-30",
+      "team_a_names": [
+        "Ailson",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Henrique",
+        "Milton"
+      ],
+      "team_a_scores": [
+        4
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "4-6",
+      "source_cells": [
+        "K38",
+        "L38"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-30",
+      "team_a_names": [
+        "Henrique",
+        "Milton"
+      ],
+      "team_b_names": [
+        "Daniel",
+        "Patrício"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "K39",
+        "L39"
+      ]
+    },
+    {
+      "sheet_name": "AGO",
+      "season_year": 2025,
+      "match_date": "2025-08-30",
+      "team_a_names": [
+        "Ailson",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Daniel",
+        "Patrício"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "K40",
+        "L40"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-06",
+      "team_a_names": [
+        "Henr",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Giu"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        2,
+        4
+      ],
+      "result_summary": "6-2 / 6-4",
+      "source_cells": [
+        "B28",
+        "C28"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-06",
+      "team_a_names": [
+        "Henr",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Giu",
+        "Mar"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "B29",
+        "C29"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-06",
+      "team_a_names": [
+        "Giu",
+        "Mar"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        5
+      ],
+      "result_summary": "7-5",
+      "source_cells": [
+        "B30",
+        "C30"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-13",
+      "team_a_names": [
+        "JP",
+        "Car"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        2,
+        4
+      ],
+      "result_summary": "6-2 / 6-4",
+      "source_cells": [
+        "H28",
+        "I28"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-20",
+      "team_a_names": [
+        "Ail",
+        "Hen"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Car"
+      ],
+      "team_a_scores": [
+        7
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "7-6",
+      "source_cells": [
+        "N28",
+        "O28"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-20",
+      "team_a_names": [
+        "Ail",
+        "Car"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Hen"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "N29",
+        "O29"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-20",
+      "team_a_names": [
+        "Ail",
+        "Mar"
+      ],
+      "team_b_names": [
+        "Henr",
+        "Mil"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "N30",
+        "O30"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-27",
+      "team_a_names": [
+        "Hen",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "E39",
+        "F39"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-27",
+      "team_a_names": [
+        "Henr",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Mar",
+        "Patricio"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "E40",
+        "F40"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-27",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Mar",
+        "Patricio"
+      ],
+      "team_a_scores": [
+        1
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "1-6",
+      "source_cells": [
+        "E41",
+        "F41"
+      ]
+    },
+    {
+      "sheet_name": "SET",
+      "season_year": 2025,
+      "match_date": "2025-09-28",
+      "team_a_names": [
+        "Ail",
+        "Patric"
+      ],
+      "team_b_names": [
+        "Marc",
+        "Roger"
+      ],
+      "team_a_scores": [
+        3,
+        6,
+        1
+      ],
+      "team_b_scores": [
+        6,
+        7,
+        6
+      ],
+      "result_summary": "3-6 / 6-7 / 1-6",
+      "source_cells": [
+        "H39",
+        "I39"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Mar",
+        "Den"
+      ],
+      "team_a_scores": [
+        1
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "1-6",
+      "source_cells": [
+        "B28",
+        "C28"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Mario",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Hell",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "B29",
+        "C29"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Hell",
+        "GBT"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B30",
+        "C30"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Mario",
+        "Rafa"
+      ],
+      "team_b_names": [
+        "Mar",
+        "Den"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        3
+      ],
+      "result_summary": "6-3",
+      "source_cells": [
+        "B31",
+        "C31"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Mar",
+        "Den"
+      ],
+      "team_b_names": [
+        "Hell",
+        "GBT"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "B32",
+        "C32"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-04",
+      "team_a_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Rafa"
+      ],
+      "team_a_scores": [
+        3
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "3-6",
+      "source_cells": [
+        "B33",
+        "C33"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-11",
+      "team_a_names": [
+        "AIL",
+        "MIL"
+      ],
+      "team_b_names": [
+        "Marcos",
+        "Zé"
+      ],
+      "team_a_scores": [
+        3,
+        6,
+        4
+      ],
+      "team_b_scores": [
+        6,
+        7,
+        6
+      ],
+      "result_summary": "3-6 / 6-7 / 4-6",
+      "source_cells": [
+        "E28",
+        "F28"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-12",
+      "team_a_names": [
+        "Ail",
+        "Zé"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Milton"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "H28",
+        "I28"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-12",
+      "team_a_names": [
+        "Ail",
+        "Mario"
+      ],
+      "team_b_names": [
+        "Zé",
+        "Milton"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        1
+      ],
+      "result_summary": "6-1",
+      "source_cells": [
+        "H29",
+        "I29"
+      ]
+    },
+    {
+      "sheet_name": "OUT",
+      "season_year": 2025,
+      "match_date": "2025-10-12",
+      "team_a_names": [
+        "Ailson",
+        "Milton"
+      ],
+      "team_b_names": [
+        "Zé",
+        "Mario"
+      ],
+      "team_a_scores": [
+        1
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "1-6",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "match_date": "2025-11-01",
+      "team_a_names": [
+        "Ail",
+        "Hen"
+      ],
+      "team_b_names": [
+        "Hell",
+        "Mil"
+      ],
+      "team_a_scores": [
+        4,
+        6,
+        7
+      ],
+      "team_b_scores": [
+        6,
+        4,
+        6
+      ],
+      "result_summary": "4-6 / 6-4 / 7-6",
+      "source_cells": [
+        "B29",
+        "C29"
+      ]
+    },
+    {
+      "sheet_name": "NOV",
+      "season_year": 2025,
+      "match_date": "2025-11-15",
+      "team_a_names": [
+        "Ail",
+        "Den"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Henrique"
+      ],
+      "team_a_scores": [
+        6,
+        6,
+        7
+      ],
+      "team_b_scores": [
+        7,
+        1,
+        6
+      ],
+      "result_summary": "6-7 / 6-1 / 7-6",
+      "source_cells": [
+        "E29",
+        "F29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-06",
+      "team_a_names": [
+        "Ail",
+        "Hell"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        4,
+        7
+      ],
+      "team_b_scores": [
+        6,
+        6
+      ],
+      "result_summary": "4-6 / 7-6",
+      "source_cells": [
+        "B29",
+        "C29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-13",
+      "team_a_names": [
+        "Ail",
+        "Denny"
+      ],
+      "team_b_names": [
+        "Carlos",
+        "Marcos"
+      ],
+      "team_a_scores": [
+        2,
+        2,
+        6
+      ],
+      "team_b_scores": [
+        6,
+        6,
+        3
+      ],
+      "result_summary": "2-6 / 2-6 / 6-3",
+      "source_cells": [
+        "E29",
+        "F29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-20",
+      "team_a_names": [
+        "Ail",
+        "Marc"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Car"
+      ],
+      "team_a_scores": [
+        0
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "0-6",
+      "source_cells": [
+        "H29",
+        "I29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-20",
+      "team_a_names": [
+        "Marc",
+        "Denny"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Car"
+      ],
+      "team_a_scores": [
+        2
+      ],
+      "team_b_scores": [
+        6
+      ],
+      "result_summary": "2-6",
+      "source_cells": [
+        "H30",
+        "I30"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-20",
+      "team_a_names": [
+        "Ail",
+        "Marc"
+      ],
+      "team_b_names": [
+        "Mil",
+        "Car"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        2
+      ],
+      "result_summary": "6-2",
+      "source_cells": [
+        "H31",
+        "I31"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2025,
+      "match_date": "2025-12-21",
+      "team_a_names": [
+        "Ail",
+        "Mil"
+      ],
+      "team_b_names": [
+        "Jul",
+        "Car"
+      ],
+      "team_a_scores": [
+        6
+      ],
+      "team_b_scores": [
+        4
+      ],
+      "result_summary": "6-4",
+      "source_cells": [
+        "K29",
+        "L29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2026,
+      "match_date": "2026-12-27",
+      "team_a_names": [
+        "JR",
+        "Kadu"
+      ],
+      "team_b_names": [
+        "Mario",
+        "Denny"
+      ],
+      "team_a_scores": [
+        5
+      ],
+      "team_b_scores": [
+        7
+      ],
+      "result_summary": "5-7",
+      "source_cells": [
+        "N29",
+        "O29"
+      ]
+    },
+    {
+      "sheet_name": "DEZ",
+      "season_year": 2026,
+      "match_date": "2026-12-27",
+      "team_a_names": [
+        "Mario",
+        "Kadu"
+      ],
+      "team_b_names": [
+        "Mar",
+        "Denny"
+      ],
+      "team_a_scores": [
+        6,
+        6
+      ],
+      "team_b_scores": [
+        2,
+        4
+      ],
+      "result_summary": "6-2 / 6-4",
+      "source_cells": [
+        "N30",
+        "O30"
+      ]
+    }
+  ],
+  "unresolved_aliases": [
+    "Kadu",
+    "Ail",
+    "Hell",
+    "JP",
+    "Roger",
+    "Frank",
+    "Zé",
+    "Mil",
+    "GBT",
+    "Patricio",
+    "Prof",
+    "Amigo",
+    "Saed",
+    "Nova Paixão",
+    "Miltão",
+    "Rafa",
+    "Henr",
+    "AIL",
+    "HELL",
+    "CARLOS",
+    "NILTON",
+    "MILTOPN",
+    "PATRICIO",
+    "HENRIQ",
+    "Carlos",
+    "Crispim",
+    "Marcod",
+    "Giu",
+    "Mar",
+    "Car",
+    "Hen",
+    "Patric",
+    "Marc",
+    "Den",
+    "MIL",
+    "Jul",
+    "JR"
+  ],
+  "notes": [
+    "A planilha mistura dados de 2026 e 2025 nas abas de junho a dezembro.",
+    "Os jogos historicos foram reconstruidos a partir do bloco RESULTADOS e exigem conciliacao manual para apelidos nao mapeados.",
+    "Estatisticas de sets e games completas so sao confiaveis para partidas com placar totalmente parseado."
+  ]
+}
