@@ -1,5 +1,5 @@
 import { Grid, Stack } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MatchForm } from "@/components/admin/MatchForm";
 import { AdminLoginCard } from "@/components/admin/AdminLoginCard";
 import { PlayerForm } from "@/components/admin/PlayerForm";
@@ -17,10 +17,34 @@ export function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
+  const playerFormRef = useRef<HTMLDivElement | null>(null);
+  const matchFormRef = useRef<HTMLDivElement | null>(null);
   const { data: players, isLoading: playersLoading } = usePlayers();
   const { data: dashboard, isLoading: dashboardLoading } = useDashboardData();
   const { data: recentMatches, isLoading: recentMatchesLoading } = useRecentMatches();
   const { data: seasons, isLoading: seasonsLoading } = useAdminSeasons();
+
+  useEffect(() => {
+    if (!editingPlayer) {
+      return;
+    }
+
+    playerFormRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, [editingPlayer]);
+
+  useEffect(() => {
+    if (!editingMatch) {
+      return;
+    }
+
+    matchFormRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, [editingMatch]);
 
   if (!authenticated) {
     return <AdminLoginCard onAuthenticated={() => setAuthenticated(true)} />;
@@ -38,20 +62,24 @@ export function AdminPage() {
       />
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, lg: 4 }}>
-          <PlayerForm
-            editingPlayer={editingPlayer}
-            onSaved={() => setEditingPlayer(null)}
-            onCancelEdit={() => setEditingPlayer(null)}
-          />
+          <div ref={playerFormRef}>
+            <PlayerForm
+              editingPlayer={editingPlayer}
+              onSaved={() => setEditingPlayer(null)}
+              onCancelEdit={() => setEditingPlayer(null)}
+            />
+          </div>
         </Grid>
         <Grid size={{ xs: 12, lg: 8 }}>
-          <MatchForm
-            players={players}
-            seasons={seasons}
-            editingMatch={editingMatch}
-            onSaved={() => setEditingMatch(null)}
-            onCancelEdit={() => setEditingMatch(null)}
-          />
+          <div ref={matchFormRef}>
+            <MatchForm
+              players={players}
+              seasons={seasons}
+              editingMatch={editingMatch}
+              onSaved={() => setEditingMatch(null)}
+              onCancelEdit={() => setEditingMatch(null)}
+            />
+          </div>
         </Grid>
         <Grid size={{ xs: 12 }}>
           <PlayersAdminTable players={players} onEditPlayer={(player) => setEditingPlayer(player)} />
