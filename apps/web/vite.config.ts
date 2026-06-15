@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["tennis-ball.svg"],
+      includeAssets: ["app-icon-180.png", "app-icon-192.png", "app-icon-512.png"],
       workbox: {
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024
       },
@@ -26,16 +26,22 @@ export default defineConfig({
         lang: "pt-BR",
         icons: [
           {
-            src: "/tennis-ball.svg",
+            src: "/app-icon-192.png",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/png",
             purpose: "any"
           },
           {
-            src: "/tennis-ball.svg",
+            src: "/app-icon-512.png",
             sizes: "512x512",
-            type: "image/svg+xml",
+            type: "image/png",
             purpose: "any"
+          },
+          {
+            src: "/app-icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       }
