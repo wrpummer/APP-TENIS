@@ -42,18 +42,29 @@ export function AppShell() {
         <Toolbar sx={{ minHeight: { xs: 76, md: 82 }, py: { xs: 1, md: 0 } }}>
           <Container maxWidth="xl" sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center", justifyContent: "space-between" }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                sx={{
-                  display: "grid",
-                  placeItems: "center",
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  bgcolor: "secondary.main",
-                  boxShadow: "0 12px 32px rgba(10, 77, 60, 0.12)"
-                }}
-              >
-                <SportsTennisRoundedIcon />
+                <Box
+                  sx={{
+                    display: "grid",
+                    placeItems: "center",
+                    width: 52,
+                    height: 52,
+                    borderRadius: "50%",
+                    bgcolor: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 12px 32px rgba(10, 77, 60, 0.12)",
+                    overflow: "hidden",
+                    border: "1px solid rgba(10, 77, 60, 0.1)"
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src="/app-icon-192.png"
+                    alt="Ranking Tennis"
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover"
+                    }}
+                  />
               </Box>
               <div>
                 <Typography variant="h5" sx={{ fontSize: { xs: "1.15rem", md: "1.5rem" } }}>Ranking Tennis</Typography>
