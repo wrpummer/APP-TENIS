@@ -90,7 +90,7 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.monthlyChampions}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
+                <XAxis dataKey="label" />
                 <YAxis />
                 <Tooltip formatter={(value, _, item) => [`${value} pontos`, item.payload.playerName]} />
                 <Bar dataKey="points" radius={[8, 8, 0, 0]}>
@@ -109,7 +109,7 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.monthlyMostActive}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
+                <XAxis dataKey="label" />
                 <YAxis allowDecimals={false} />
                 <Tooltip formatter={(value, _, item) => [`${value} jogos`, item.payload.playerName]} />
                 <Line type="monotone" dataKey="matches" stroke="#0a4d3c" strokeWidth={3} dot={{ r: 5 }} />
@@ -123,12 +123,12 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.matchesPerMonth}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
+                <XAxis dataKey="label" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="matches" name="Partidas" fill="#0a4d3c" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="sets" name="Sets" fill="#c2ff3d" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="sets" name="Sets" fill="#7cb518" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartPanel>
@@ -139,7 +139,7 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.monthlyBestGamesBalance}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
+                <XAxis dataKey="label" />
                 <YAxis />
                 <Tooltip formatter={(value, _, item) => [`${value} de saldo`, item.payload.playerName]} />
                 <Bar dataKey="balance" fill="#118ab2" radius={[8, 8, 0, 0]}>

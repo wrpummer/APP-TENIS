@@ -172,10 +172,10 @@ export const mockDashboard: DashboardData = {
     { month: "Mai", playerName: "Ailson", matches: 11 }
   ],
   monthlyBestGamesBalance: [
-    { month: "Jan", playerName: "Carlos Eduardo", balance: 18 },
-    { month: "Fev", playerName: "Hellinton", balance: 14 },
-    { month: "Mar", playerName: "Carlos Eduardo", balance: 12 },
-    { month: "Abr", playerName: "Hellinton", balance: 17 },
-    { month: "Mai", playerName: "Carlos Eduardo", balance: 21 }
+    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", balance: 18 },
+    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Hellinton", balance: 14 },
+    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Carlos Eduardo", balance: 12 },
+    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Hellinton", balance: 17 },
+    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Carlos Eduardo", balance: 21 }
   ]
 };

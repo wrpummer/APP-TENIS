@@ -90,6 +90,34 @@ function normalizeNextMatchValue(value: unknown, seasonId: string): NextMatchInf
   };
 }
 
+function formatMonthKey(year: number, monthIndex: number) {
+  return `${year}-${String(monthIndex + 1).padStart(2, "0")}`;
+}
+
+function buildLastTwelveMonthsWindow() {
+  const now = new Date();
+  const months: Array<{ key: string; label: string; month: string; year: number; monthIndex: number }> = [];
+
+  for (let offset = 11; offset >= 0; offset -= 1) {
+    const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+    const year = date.getFullYear();
+    const monthIndex = date.getMonth();
+    const month = monthLabels[monthIndex]?.slice(0, 3) ?? `M${monthIndex + 1}`;
+    months.push({
+      key: formatMonthKey(year, monthIndex),
+      label: `${month}/${year}`,
+      month,
+      year,
+      monthIndex
+    });
+  }
+
+  return {
+    months,
+    startDate: `${months[0].year}-${String(months[0].monthIndex + 1).padStart(2, "0")}-01`
+  };
+}
+
 export async function getSeasons(): Promise<Season[]> {
   if (!hasSupabaseEnv) {
     return [mockSeason];
@@ -155,8 +183,9 @@ export async function getDashboard(): Promise<DashboardData> {
 
   const seasons = await getSeasons();
   const activeSeason = getDashboardSeason(seasons);
+  const lastTwelveMonths = buildLastTwelveMonthsWindow();
   const client = requireSupabase();
-  const [players, ranking, hallOfFame, allSeasonMatches, monthlyRankingRows, nextMatchRow] = await Promise.all([
+  const [players, ranking, hallOfFame, allSeasonMatches, chartMatchesResponse, nextMatchRow] = await Promise.all([
     getPlayers(),
     getRanking(activeSeason.id),
     getHallOfFame(activeSeason.id),
@@ -166,12 +195,10 @@ export async function getDashboard(): Promise<DashboardData> {
       .eq("season_id", activeSeason.id)
       .order("match_date", { ascending: false }),
     client
-      .from("season_rankings")
-      .select("scope_month, ranking_position, points, player_id, wins, players!inner(display_name)")
-      .eq("season_id", activeSeason.id)
-      .eq("scope", "monthly")
-      .order("scope_month", { ascending: true })
-      .order("ranking_position", { ascending: true }),
+      .from("matches")
+      .select("*, match_sets(*)")
+      .gte("match_date", lastTwelveMonths.startDate)
+      .order("match_date", { ascending: false }),
     client
       .from("system_settings")
       .select("value")
@@ -183,8 +210,8 @@ export async function getDashboard(): Promise<DashboardData> {
     throw allSeasonMatches.error;
   }
 
-  if (monthlyRankingRows.error) {
-    throw monthlyRankingRows.error;
+  if (chartMatchesResponse.error) {
+    throw chartMatchesResponse.error;
   }
 
   if (nextMatchRow.error) {
@@ -192,6 +219,33 @@ export async function getDashboard(): Promise<DashboardData> {
   }
 
   const matches: Match[] = (allSeasonMatches.data ?? []).map((row) => ({
+    id: row.id,
+    seasonId: row.season_id,
+    matchDate: row.match_date,
+    courtName: row.court_name,
+    teamAPlayer1Id: row.team_a_player_1_id,
+    teamAPlayer2Id: row.team_a_player_2_id,
+    teamBPlayer1Id: row.team_b_player_1_id,
+    teamBPlayer2Id: row.team_b_player_2_id,
+    winnerTeam: row.winner_team,
+    resultSummary: row.result_summary,
+    source: row.source,
+    notes: row.notes,
+    sets: (row.match_sets ?? []).map((setRow: Record<string, unknown>) => ({
+      id: String(setRow.id),
+      setOrder: Number(setRow.set_order),
+      teamAGames: Number(setRow.team_a_games),
+      teamBGames: Number(setRow.team_b_games),
+      isTiebreak: Boolean(setRow.is_tiebreak),
+      isSuperTiebreak: Boolean(setRow.is_super_tiebreak),
+      tiebreakPointsA: setRow.tiebreak_points_a == null ? null : Number(setRow.tiebreak_points_a),
+      tiebreakPointsB: setRow.tiebreak_points_b == null ? null : Number(setRow.tiebreak_points_b),
+      deucesCount: setRow.deuces_count == null ? null : Number(setRow.deuces_count),
+      notes: setRow.set_notes == null ? null : String(setRow.set_notes)
+    }))
+  }));
+
+  const chartMatches: Match[] = (chartMatchesResponse.data ?? []).map((row) => ({
     id: row.id,
     seasonId: row.season_id,
     matchDate: row.match_date,
@@ -233,9 +287,10 @@ export async function getDashboard(): Promise<DashboardData> {
   const matchesPerMonthMap = new Map<string, { month: string; matches: number; sets: number }>();
   const monthlyPlayerAppearances = new Map<string, Map<string, number>>();
   const monthlyGamesBalance = new Map<string, Map<string, number>>();
-  for (const match of matches) {
+  const monthlyPlayerPoints = new Map<string, Map<string, number>>();
+  for (const match of chartMatches) {
     const date = new Date(`${match.matchDate}T00:00:00`);
-    const key = `${date.getFullYear()}-${date.getMonth()}`;
+    const key = formatMonthKey(date.getFullYear(), date.getMonth());
     const label = monthLabels[date.getMonth()]?.slice(0, 3) ?? `M${date.getMonth() + 1}`;
     const current = matchesPerMonthMap.get(key) ?? { month: label, matches: 0, sets: 0 };
     current.matches += 1;
@@ -261,49 +316,61 @@ export async function getDashboard(): Promise<DashboardData> {
       balanceRow.set(playerId, (balanceRow.get(playerId) ?? 0) + teamBBalance);
     }
     monthlyGamesBalance.set(key, balanceRow);
+
+    const pointsRow = monthlyPlayerPoints.get(key) ?? new Map<string, number>();
+    const teamAPlayers = [match.teamAPlayer1Id, match.teamAPlayer2Id];
+    const teamBPlayers = [match.teamBPlayer1Id, match.teamBPlayer2Id];
+    const winners = match.winnerTeam === "A" ? teamAPlayers : teamBPlayers;
+    const losers = match.winnerTeam === "A" ? teamBPlayers : teamAPlayers;
+
+    for (const playerId of winners) {
+      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + 3);
+    }
+
+    for (const playerId of losers) {
+      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + 1);
+    }
+
+    monthlyPlayerPoints.set(key, pointsRow);
   }
 
-  const monthKeys = Array.from(matchesPerMonthMap.keys()).sort();
-  const matchesPerMonth = monthKeys.map((key) => matchesPerMonthMap.get(key)!).reverse();
+  const monthKeys = lastTwelveMonths.months.map((item) => item.key);
+  const matchesPerMonth = lastTwelveMonths.months.map((item) => {
+    const row = matchesPerMonthMap.get(item.key);
+    return {
+      month: item.month,
+      matches: row?.matches ?? 0,
+      sets: row?.sets ?? 0
+    };
+  });
   const playersById = new Map(players.map((player) => [player.id, player]));
-  const monthlyRows = (monthlyRankingRows.data ?? []).map((row) => {
-    const player = Array.isArray(row.players) ? row.players[0] : row.players;
+  const monthlyChampions = lastTwelveMonths.months.map((item) => {
+    const points = monthlyPlayerPoints.get(item.key) ?? new Map<string, number>();
+    const winnerEntry = Array.from(points.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
     return {
-      scopeMonth: Number(row.scope_month),
-      rankingPosition: Number(row.ranking_position),
-      points: Number(row.points),
-      wins: Number(row.wins),
-      playerId: String(row.player_id),
-      playerName: player?.display_name ?? ""
+      month: item.month,
+      playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
+      points: winnerEntry?.[1] ?? 0
     };
   });
 
-  const monthlyChampions = Array.from(new Set(monthlyRows.map((row) => row.scopeMonth))).sort((a, b) => a - b).map((month) => {
-    const row = monthlyRows.find((entry) => entry.scopeMonth === month && entry.rankingPosition === 1);
-    return {
-      month: monthLabels[month - 1]?.slice(0, 3) ?? `M${month}`,
-      playerName: row?.playerName ?? "Sem dados",
-      points: row?.points ?? 0
-    };
-  });
-
-  const monthlyMostActive = monthKeys.map((key) => {
-    const counts = monthlyPlayerAppearances.get(key) ?? new Map<string, number>();
+  const monthlyMostActive = lastTwelveMonths.months.map((item) => {
+    const counts = monthlyPlayerAppearances.get(item.key) ?? new Map<string, number>();
     const winnerEntry = Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
-    const monthIndex = Number(key.split("-")[1]);
     return {
-      month: monthLabels[monthIndex]?.slice(0, 3) ?? `M${monthIndex + 1}`,
+      month: item.month,
       playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
       matches: winnerEntry?.[1] ?? 0
     };
   });
 
-  const monthlyBestGamesBalance = monthKeys.map((key) => {
-    const balances = monthlyGamesBalance.get(key) ?? new Map<string, number>();
+  const monthlyBestGamesBalance = lastTwelveMonths.months.map((item) => {
+    const balances = monthlyGamesBalance.get(item.key) ?? new Map<string, number>();
     const winnerEntry = Array.from(balances.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
-    const monthIndex = Number(key.split("-")[1]);
     return {
-      month: monthLabels[monthIndex]?.slice(0, 3) ?? `M${monthIndex + 1}`,
+      month: item.month,
+      year: item.year,
+      label: item.label,
       playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
       balance: winnerEntry?.[1] ?? 0
     };
