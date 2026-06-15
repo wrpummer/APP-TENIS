@@ -10,6 +10,9 @@ export default defineConfig({
         VitePWA({
             registerType: "autoUpdate",
             includeAssets: ["tennis-ball.svg"],
+            workbox: {
+                maximumFileSizeToCacheInBytes: 3 * 1024 * 1024
+            },
             manifest: {
                 name: "Ranking Tennis",
                 short_name: "Ranking Tennis",
