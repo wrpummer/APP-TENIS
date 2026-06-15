@@ -24,15 +24,38 @@ export function AdminPage() {
   const { data: recentMatches, isLoading: recentMatchesLoading } = useRecentMatches();
   const { data: seasons, isLoading: seasonsLoading } = useAdminSeasons();
 
+  function scrollToEditor(target: HTMLDivElement | null) {
+    if (!target) {
+      return;
+    }
+
+    const top = target.getBoundingClientRect().top + window.scrollY - 88;
+    window.scrollTo({
+      top: Math.max(top, 0),
+      behavior: "smooth"
+    });
+  }
+
+  function handleEditPlayer(player: Player) {
+    setEditingPlayer(player);
+    requestAnimationFrame(() => {
+      scrollToEditor(playerFormRef.current);
+    });
+  }
+
+  function handleEditMatch(match: Match) {
+    setEditingMatch(match);
+    requestAnimationFrame(() => {
+      scrollToEditor(matchFormRef.current);
+    });
+  }
+
   useEffect(() => {
     if (!editingPlayer) {
       return;
     }
 
-    playerFormRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    scrollToEditor(playerFormRef.current);
   }, [editingPlayer]);
 
   useEffect(() => {
@@ -40,10 +63,7 @@ export function AdminPage() {
       return;
     }
 
-    matchFormRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    scrollToEditor(matchFormRef.current);
   }, [editingMatch]);
 
   if (!authenticated) {
@@ -82,10 +102,10 @@ export function AdminPage() {
           </div>
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <PlayersAdminTable players={players} onEditPlayer={(player) => setEditingPlayer(player)} />
+          <PlayersAdminTable players={players} onEditPlayer={handleEditPlayer} />
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <RecentMatchesAdminTable matches={recentMatches} players={players} onEditMatch={(match) => setEditingMatch(match)} />
+          <RecentMatchesAdminTable matches={recentMatches} players={players} onEditMatch={handleEditMatch} />
         </Grid>
       </Grid>
     </Stack>
