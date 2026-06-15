@@ -1,10 +1,10 @@
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import PhotoCameraRoundedIcon from "@mui/icons-material/PhotoCameraRounded";
-import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { Alert, Avatar, Box, Button, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { Avatar, Box, Button, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
 import { savePlayer, uploadPlayerPhoto } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
@@ -20,6 +20,51 @@ function toDateInput(value?: string | null) {
   return value ? value.slice(0, 10) : "";
 }
 
+async function compressImageFile(file: File, maxBytes: number) {
+  if (file.size <= maxBytes) {
+    return file;
+  }
+
+  const imageUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Não foi possível carregar a foto selecionada."));
+      img.src = imageUrl;
+    });
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("Não foi possível preparar a foto para envio.");
+    }
+
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+    canvas.width = Math.max(1, Math.round(image.width * scale));
+    canvas.height = Math.max(1, Math.round(image.height * scale));
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    for (const quality of [0.82, 0.72, 0.62, 0.5, 0.4]) {
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, "image/jpeg", quality);
+      });
+
+      if (blob && blob.size <= maxBytes) {
+        return new File([blob], `${file.name.replace(/\.[^.]+$/, "") || "foto-jogador"}.jpg`, {
+          type: "image/jpeg"
+        });
+      }
+    }
+
+    throw new Error("A foto ficou grande demais mesmo após redução. Tente uma imagem mais leve.");
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
 export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormProps) {
   const queryClient = useQueryClient();
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
@@ -32,6 +77,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (!editingPlayer) {
@@ -56,12 +102,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
     }
 
     if (!file.type.startsWith("image/")) {
-      setError("Selecione uma imagem valida.");
-      return;
-    }
-
-    if (file.size > 1024 * 1024) {
-      setError("A foto deve ter no maximo 1 MB para caber no plano gratuito.");
+      setError("Selecione uma imagem válida.");
       return;
     }
 
@@ -71,12 +112,18 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
     }
 
     try {
-      const publicUrl = await uploadPlayerPhoto(file, fullName.trim());
-      setPhotoUrl(publicUrl);
+      setIsUploadingPhoto(true);
       setError(null);
+      setMessage(file.size > 1024 * 1024 ? "Reduzindo a foto para caber no limite gratuito..." : "Enviando foto...");
+      const processedFile = await compressImageFile(file, 1024 * 1024);
+      const publicUrl = await uploadPlayerPhoto(processedFile, fullName.trim());
+      setPhotoUrl(publicUrl);
       setMessage("Foto carregada com sucesso.");
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : "Nao foi possivel enviar a foto.");
+      setError(caughtError instanceof Error ? caughtError.message : "Não foi possível enviar a foto.");
+      setMessage(null);
+    } finally {
+      setIsUploadingPhoto(false);
     }
   }
 
@@ -108,7 +155,14 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
         status: status as "active" | "inactive"
       });
 
-      await queryClient.invalidateQueries({ queryKey: queryKeys.players });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.players }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
+        queryClient.invalidateQueries({ queryKey: ["player-statistics"] }),
+        queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "ranking" }),
+        queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "hall-of-fame" })
+      ]);
+
       setError(null);
       setMessage(editingPlayer ? "Jogador atualizado com sucesso." : "Jogador salvo com sucesso.");
       setFullName("");
@@ -124,7 +178,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
       }
       onSaved?.();
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : "Nao foi possivel salvar o jogador.");
+      setError(caughtError instanceof Error ? caughtError.message : "Não foi possível salvar o jogador.");
     } finally {
       setIsSaving(false);
     }
@@ -134,11 +188,8 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
     <Paper sx={{ p: 3, border: "1px solid rgba(10,77,60,0.08)" }}>
       <Stack spacing={2}>
         <Typography variant="h6">{editingPlayer ? "Editar jogador" : "Cadastrar jogador"}</Typography>
-        <AlertSlot
-          severity={error ? "error" : "success"}
-          message={error ?? message}
-          minHeight={88}
-        />
+        <AlertSlot severity={error ? "error" : "success"} message={error ?? message} minHeight={88} />
+
         <TextField label="Nome completo" value={fullName} onChange={(event) => setFullName(event.target.value)} />
         <TextField label="Telefone" value={phone} onChange={(event) => setPhone(event.target.value)} />
         <TextField
@@ -148,6 +199,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
           onChange={(event) => setRegisteredAt(event.target.value)}
           InputLabelProps={{ shrink: true }}
         />
+
         <TextField select label="Status" value={status} onChange={(event) => setStatus(event.target.value)}>
           <MenuItem value="">Selecione</MenuItem>
           <MenuItem value="active">Ativo</MenuItem>
@@ -160,12 +212,14 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
             <Avatar src={photoUrl ?? undefined} sx={{ width: 72, height: 72 }}>
               {fullName.trim().slice(0, 1).toUpperCase() || "?"}
             </Avatar>
+
             <Box>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1} flexWrap="wrap">
                 <Button
                   variant="outlined"
                   startIcon={<PhotoCameraRoundedIcon />}
                   onClick={() => cameraInputRef.current?.click()}
+                  disabled={isUploadingPhoto || isSaving}
                 >
                   Tirar foto
                 </Button>
@@ -173,15 +227,17 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
                   variant="outlined"
                   startIcon={<CloudUploadRoundedIcon />}
                   onClick={() => uploadInputRef.current?.click()}
+                  disabled={isUploadingPhoto || isSaving}
                 >
                   Enviar foto
                 </Button>
               </Stack>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                No celular, `Tirar foto` abre a camera. Limite: 1 MB.
+                No celular, `Tirar foto` abre a câmera. Se a imagem vier grande, o sistema reduz antes do envio.
               </Typography>
             </Box>
           </Stack>
+
           <input
             ref={cameraInputRef}
             hidden
@@ -204,14 +260,15 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
             variant="contained"
             startIcon={editingPlayer ? <EditRoundedIcon /> : <PersonAddAltRoundedIcon />}
             onClick={handleSubmit}
-            disabled={isSaving}
+            disabled={isSaving || isUploadingPhoto}
             fullWidth
           >
-            {editingPlayer ? "Salvar alteracoes" : "Salvar jogador"}
+            {editingPlayer ? "Salvar alterações" : "Salvar jogador"}
           </Button>
+
           {editingPlayer && (
-            <Button variant="outlined" color="inherit" onClick={onCancelEdit} fullWidth>
-              Cancelar edicao
+            <Button variant="outlined" color="inherit" onClick={onCancelEdit} disabled={isSaving || isUploadingPhoto} fullWidth>
+              Cancelar edição
             </Button>
           )}
         </Stack>

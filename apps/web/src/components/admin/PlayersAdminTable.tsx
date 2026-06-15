@@ -44,7 +44,7 @@ function formatDate(value?: string | null) {
 export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTableProps) {
   const queryClient = useQueryClient();
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   async function refreshPlayers() {
     await queryClient.invalidateQueries({ queryKey: queryKeys.players });

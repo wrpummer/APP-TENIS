@@ -45,7 +45,7 @@ function formatDate(value: string) {
 export function RecentMatchesAdminTable({ matches, players, onEditMatch }: RecentMatchesAdminTableProps) {
   const queryClient = useQueryClient();
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   async function refreshMatches() {
     await Promise.all([
