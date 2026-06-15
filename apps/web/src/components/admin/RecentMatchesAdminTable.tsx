@@ -1,6 +1,22 @@
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { Box, Button, Chip, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Chip,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
@@ -29,6 +45,7 @@ function formatDate(value: string) {
 export function RecentMatchesAdminTable({ matches, players, onEditMatch }: RecentMatchesAdminTableProps) {
   const queryClient = useQueryClient();
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [expanded, setExpanded] = useState(true);
 
   async function refreshMatches() {
     await Promise.all([
@@ -58,58 +75,39 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
 
   return (
     <Paper sx={{ overflow: "hidden", border: "1px solid rgba(10,77,60,0.08)" }}>
-      <Stack spacing={1} sx={{ px: 3, pt: 3, pb: 1 }}>
-        <Typography variant="h6">Últimos 10 lançamentos</Typography>
-        <AlertSlot severity={feedback?.type ?? "info"} message={feedback?.message ?? null} />
-      </Stack>
-
-      <Stack spacing={1.5} sx={{ display: { xs: "flex", md: "none" }, px: 2, pb: 2 }}>
-        {matches.slice(0, 10).map((match) => (
-          <Paper key={match.id} variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
-            <Stack spacing={1.5}>
-              <Stack direction="row" justifyContent="space-between" gap={1}>
-                <Typography fontWeight={700}>{formatDate(match.matchDate)}</Typography>
-                <Chip size="small" label={match.resultSummary} color="secondary" />
-              </Stack>
-              <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
-                <strong>Dupla A:</strong> {resolveTeam(match, players, "A")}
-              </Typography>
-              <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
-                <strong>Dupla B:</strong> {resolveTeam(match, players, "B")}
-              </Typography>
-              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                <Button size="small" variant="outlined" startIcon={<EditRoundedIcon />} onClick={() => onEditMatch(match)}>
-                  Editar
-                </Button>
-                <Button size="small" variant="outlined" color="error" startIcon={<DeleteOutlineRoundedIcon />} onClick={() => void handleDelete(match)}>
-                  Excluir
-                </Button>
-              </Stack>
+      <Accordion
+        expanded={expanded}
+        onChange={(_, isExpanded) => setExpanded(isExpanded)}
+        disableGutters
+        elevation={0}
+        sx={{ "&:before": { display: "none" } }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+          <Stack spacing={0.5} sx={{ width: "100%" }}>
+            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ pr: 1 }}>
+              <Typography variant="h6">Últimos 10 lançamentos</Typography>
+              <Chip size="small" label={`${Math.min(matches.length, 10)} partida${Math.min(matches.length, 10) === 1 ? "" : "s"}`} color="primary" variant="outlined" />
             </Stack>
-          </Paper>
-        ))}
-      </Stack>
+            <AlertSlot severity={feedback?.type ?? "info"} message={feedback?.message ?? null} />
+          </Stack>
+        </AccordionSummary>
 
-      <Box sx={{ display: { xs: "none", md: "block" }, overflowX: "auto" }}>
-        <Table sx={{ minWidth: 860 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Data</TableCell>
-              <TableCell>Dupla A</TableCell>
-              <TableCell>Dupla B</TableCell>
-              <TableCell>Placar</TableCell>
-              <TableCell align="right">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+        <AccordionDetails sx={{ px: 0, pt: 0, pb: 0 }}>
+          <Stack spacing={1.5} sx={{ display: { xs: "flex", md: "none" }, px: 2, pb: 2 }}>
             {matches.slice(0, 10).map((match) => (
-              <TableRow key={match.id} hover>
-                <TableCell>{formatDate(match.matchDate)}</TableCell>
-                <TableCell>{resolveTeam(match, players, "A")}</TableCell>
-                <TableCell>{resolveTeam(match, players, "B")}</TableCell>
-                <TableCell>{match.resultSummary}</TableCell>
-                <TableCell align="right">
-                  <Stack direction={{ xs: "column", lg: "row" }} spacing={1} justifyContent="flex-end">
+              <Paper key={match.id} variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
+                <Stack spacing={1.5}>
+                  <Stack direction="row" justifyContent="space-between" gap={1}>
+                    <Typography fontWeight={700}>{formatDate(match.matchDate)}</Typography>
+                    <Chip size="small" label={match.resultSummary} color="secondary" />
+                  </Stack>
+                  <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
+                    <strong>Dupla A:</strong> {resolveTeam(match, players, "A")}
+                  </Typography>
+                  <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
+                    <strong>Dupla B:</strong> {resolveTeam(match, players, "B")}
+                  </Typography>
+                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                     <Button size="small" variant="outlined" startIcon={<EditRoundedIcon />} onClick={() => onEditMatch(match)}>
                       Editar
                     </Button>
@@ -117,12 +115,46 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
                       Excluir
                     </Button>
                   </Stack>
-                </TableCell>
-              </TableRow>
+                </Stack>
+              </Paper>
             ))}
-          </TableBody>
-        </Table>
-      </Box>
+          </Stack>
+
+          <Box sx={{ display: { xs: "none", md: "block" }, overflowX: "auto" }}>
+            <Table sx={{ minWidth: 860 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Data</TableCell>
+                  <TableCell>Dupla A</TableCell>
+                  <TableCell>Dupla B</TableCell>
+                  <TableCell>Placar</TableCell>
+                  <TableCell align="right">Ações</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {matches.slice(0, 10).map((match) => (
+                  <TableRow key={match.id} hover>
+                    <TableCell>{formatDate(match.matchDate)}</TableCell>
+                    <TableCell>{resolveTeam(match, players, "A")}</TableCell>
+                    <TableCell>{resolveTeam(match, players, "B")}</TableCell>
+                    <TableCell>{match.resultSummary}</TableCell>
+                    <TableCell align="right">
+                      <Stack direction={{ xs: "column", lg: "row" }} spacing={1} justifyContent="flex-end">
+                        <Button size="small" variant="outlined" startIcon={<EditRoundedIcon />} onClick={() => onEditMatch(match)}>
+                          Editar
+                        </Button>
+                        <Button size="small" variant="outlined" color="error" startIcon={<DeleteOutlineRoundedIcon />} onClick={() => void handleDelete(match)}>
+                          Excluir
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
     </Paper>
   );
 }
