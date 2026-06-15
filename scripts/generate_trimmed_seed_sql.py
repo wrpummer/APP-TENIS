@@ -307,14 +307,14 @@ insert into public.match_sets (
 )
 select
   inserted_matches.id,
-  seed_sets.set_order,
-  seed_sets.team_a_games,
-  seed_sets.team_b_games,
+  seed_sets.set_order::smallint,
+  seed_sets.team_a_games::smallint,
+  seed_sets.team_b_games::smallint,
   seed_sets.is_tiebreak,
   seed_sets.is_super_tiebreak,
-  seed_sets.tiebreak_points_a,
-  seed_sets.tiebreak_points_b,
-  seed_sets.deuces_count,
+  seed_sets.tiebreak_points_a::smallint,
+  seed_sets.tiebreak_points_b::smallint,
+  seed_sets.deuces_count::smallint,
   seed_sets.set_notes
 from inserted_matches
 join seed_sets
