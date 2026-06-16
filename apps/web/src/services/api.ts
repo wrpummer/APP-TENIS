@@ -73,6 +73,24 @@ function buildNextMatchKey(seasonId: string) {
   return `next-match:${seasonId}`;
 }
 
+async function seasonHasMatches(seasonId: string) {
+  if (!hasSupabaseEnv) {
+    return mockMatches.length > 0;
+  }
+
+  const client = requireSupabase();
+  const { count, error } = await client
+    .from("matches")
+    .select("id", { count: "exact", head: true })
+    .eq("season_id", seasonId);
+
+  if (error) {
+    throw error;
+  }
+
+  return (count ?? 0) > 0;
+}
+
 async function refreshSeasonDerivedData(seasonId: string) {
   if (!hasSupabaseEnv) {
     return;
@@ -292,6 +310,8 @@ export async function getDashboard(): Promise<DashboardData> {
   const playersWithMatchesCount = ranking.filter((row) => row.matchesPlayed > 0).length;
   const averagePerMonth = matches.length > 0 ? matches.length / new Set(matches.map((match) => match.matchDate.slice(0, 7))).size : 0;
   const nextMatch = normalizeNextMatchValue(nextMatchRow.data?.value, activeSeason.id);
+  const safeRanking = matches.length === 0 ? [] : ranking;
+  const safeHallOfFame = matches.length === 0 ? [] : hallOfFame;
 
   const quickStats = [
     { label: "Partidas registradas", value: String(matches.length), detail: "temporada atual" },
@@ -393,9 +413,9 @@ export async function getDashboard(): Promise<DashboardData> {
 
   return {
     activeSeason,
-    ranking,
+    ranking: safeRanking,
     recentMatches,
-    hallOfFame,
+    hallOfFame: safeHallOfFame,
     nextMatch,
     quickStats,
     matchesPerMonth,
@@ -410,6 +430,11 @@ export async function getRanking(seasonId?: string): Promise<RankingRow[]> {
     return mockRanking;
   }
 
+  const resolvedSeasonId = seasonId ?? getDashboardSeason(await getSeasons()).id;
+  if (!(await seasonHasMatches(resolvedSeasonId))) {
+    return [];
+  }
+
   const client = requireSupabase();
   let query = client
     .from("season_rankings")
@@ -417,9 +442,7 @@ export async function getRanking(seasonId?: string): Promise<RankingRow[]> {
     .eq("scope", "season")
     .order("ranking_position", { ascending: true });
 
-  if (seasonId) {
-    query = query.eq("season_id", seasonId);
-  }
+  query = query.eq("season_id", resolvedSeasonId);
 
   const { data, error } = await query;
   if (error) throw error;
@@ -475,6 +498,11 @@ export async function getPlayerStatistics(): Promise<PlayerStatistics[]> {
     return mockPlayerStatistics;
   }
 
+  const activeSeason = getDashboardSeason(await getSeasons());
+  if (!(await seasonHasMatches(activeSeason.id))) {
+    return [];
+  }
+
   const client = requireSupabase();
   const { data, error } = await client
     .from("player_statistics")
@@ -498,6 +526,7 @@ export async function getPlayerStatistics(): Promise<PlayerStatistics[]> {
       most_faced_rival:players!player_statistics_most_faced_rival_id_fkey(display_name),
       hardest_rival:players!player_statistics_hardest_rival_id_fkey(display_name)
     `)
+    .eq("season_id", activeSeason.id)
     .order("points", { ascending: false });
   if (error) throw error;
 
@@ -599,14 +628,17 @@ export async function getHallOfFame(seasonId?: string): Promise<HallOfFameEntry[
     return mockHallOfFame;
   }
 
+  const resolvedSeasonId = seasonId ?? getDashboardSeason(await getSeasons()).id;
+  if (!(await seasonHasMatches(resolvedSeasonId))) {
+    return [];
+  }
+
   const client = requireSupabase();
   let query = client
     .from("hall_of_fame")
     .select("category, value_text, value_number, player_id, players!inner(display_name, photo_url)");
 
-  if (seasonId) {
-    query = query.eq("season_id", seasonId);
-  }
+  query = query.eq("season_id", resolvedSeasonId);
 
   const { data, error } = await query;
   if (error) throw error;
