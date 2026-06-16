@@ -16,6 +16,8 @@ interface PlayerFormProps {
   onCancelEdit?: () => void;
 }
 
+const PHOTO_TARGET_BYTES = 850 * 1024;
+
 function toDateInput(value?: string | null) {
   return value ? value.slice(0, 10) : "";
 }
@@ -47,7 +49,7 @@ async function compressImageFile(file: File, maxBytes: number) {
     canvas.height = Math.max(1, Math.round(image.height * scale));
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    for (const quality of [0.82, 0.72, 0.62, 0.5, 0.4]) {
+    for (const quality of [0.82, 0.72, 0.62, 0.5, 0.4, 0.32, 0.24]) {
       const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob(resolve, "image/jpeg", quality);
       });
@@ -114,8 +116,8 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
     try {
       setIsUploadingPhoto(true);
       setError(null);
-      setMessage(file.size > 1024 * 1024 ? "Reduzindo a foto para caber no limite gratuito..." : "Enviando foto...");
-      const processedFile = await compressImageFile(file, 1024 * 1024);
+      setMessage(file.size > PHOTO_TARGET_BYTES ? "Reduzindo a foto para caber no limite gratuito..." : "Enviando foto...");
+      const processedFile = await compressImageFile(file, PHOTO_TARGET_BYTES);
       const publicUrl = await uploadPlayerPhoto(processedFile, fullName.trim());
       setPhotoUrl(publicUrl);
       setMessage("Foto carregada com sucesso.");

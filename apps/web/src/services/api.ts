@@ -703,6 +703,10 @@ export async function uploadPlayerPhoto(file: File, playerName: string) {
   });
 
   if (error) {
+    const message = getErrorMessage(error, "Não foi possível enviar a foto.");
+    if (/1\s*mb|too large|file size|exceeded/i.test(message)) {
+      throw new Error("A foto ainda ficou acima do limite do Supabase. Tente tirar uma foto mais leve ou com menos resolução.");
+    }
     throw error;
   }
 
