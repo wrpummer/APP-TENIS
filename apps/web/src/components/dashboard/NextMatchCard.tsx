@@ -39,6 +39,7 @@ export function NextMatchCard({ nextMatch, season }: NextMatchCardProps) {
   const [location, setLocation] = useState(nextMatch?.location ?? "");
   const [status, setStatus] = useState<NextMatchStatus>(nextMatch?.status ?? "pending");
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setDate(nextMatch?.date ?? "");
@@ -46,6 +47,7 @@ export function NextMatchCard({ nextMatch, season }: NextMatchCardProps) {
     setLocation(nextMatch?.location ?? "");
     setStatus(nextMatch?.status ?? "pending");
     setFeedback(null);
+    setIsEditing(false);
   }, [nextMatch]);
 
   const { data: canEdit } = useQuery({
@@ -57,12 +59,31 @@ export function NextMatchCard({ nextMatch, season }: NextMatchCardProps) {
     mutationFn: saveNextMatch,
     onSuccess: () => {
       setFeedback("Próximo jogo salvo com sucesso.");
+      setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
     },
     onError: (error) => {
       setFeedback(error instanceof Error ? error.message : "Não foi possível salvar o próximo jogo.");
     }
   });
+
+  function resetForm() {
+    setDate(nextMatch?.date ?? "");
+    setTime(nextMatch?.time ?? "");
+    setLocation(nextMatch?.location ?? "");
+    setStatus(nextMatch?.status ?? "pending");
+    setFeedback(null);
+  }
+
+  function handleStartEditing() {
+    resetForm();
+    setIsEditing(true);
+  }
+
+  function handleCancelEditing() {
+    resetForm();
+    setIsEditing(false);
+  }
 
   const activeStatus = statusOptions.find((option) => option.value === status) ?? statusOptions[1];
 
@@ -108,73 +129,90 @@ export function NextMatchCard({ nextMatch, season }: NextMatchCardProps) {
         </Grid>
 
         {canEdit ? (
-          <Stack spacing={2}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  label="Data"
-                  type="date"
-                  value={date}
-                  onChange={(event) => setDate(event.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
+          isEditing ? (
+            <Stack spacing={2}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    label="Data"
+                    type="date"
+                    value={date}
+                    onChange={(event) => setDate(event.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    label="Horário"
+                    type="time"
+                    value={time}
+                    onChange={(event) => setTime(event.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    label="Local"
+                    value={location}
+                    onChange={(event) => setLocation(event.target.value)}
+                    placeholder="Ex.: Trianon Coberta"
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  label="Horário"
-                  type="time"
-                  value={time}
-                  onChange={(event) => setTime(event.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  label="Local"
-                  value={location}
-                  onChange={(event) => setLocation(event.target.value)}
-                  placeholder="Ex.: Trianon Coberta"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
 
-            <Stack direction={{ xs: "column", md: "row" }} spacing={1} alignItems={{ xs: "stretch", md: "center" }}>
-              {statusOptions.map((option) => (
-                <Chip
-                  key={option.value}
-                  label={option.label}
-                  color={status === option.value ? option.color : "default"}
-                  variant={status === option.value ? "filled" : "outlined"}
-                  onClick={() => setStatus(option.value)}
-                  sx={{ fontWeight: 700 }}
-                />
-              ))}
+              <Stack direction={{ xs: "column", md: "row" }} spacing={1} alignItems={{ xs: "stretch", md: "center" }}>
+                {statusOptions.map((option) => (
+                  <Chip
+                    key={option.value}
+                    label={option.label}
+                    color={status === option.value ? option.color : "default"}
+                    variant={status === option.value ? "filled" : "outlined"}
+                    onClick={() => setStatus(option.value)}
+                    sx={{ fontWeight: 700 }}
+                  />
+                ))}
+              </Stack>
+
+              {feedback && (
+                <Alert severity={mutation.isError ? "error" : "success"}>
+                  {feedback}
+                </Alert>
+              )}
+
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ alignSelf: "flex-start" }}>
+                <Button
+                  variant="contained"
+                  onClick={() => mutation.mutate({
+                    seasonId: season.id,
+                    date,
+                    time,
+                    location,
+                    status
+                  })}
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Salvando..." : "Salvar próximo jogo"}
+                </Button>
+                <Button variant="outlined" color="inherit" onClick={handleCancelEditing} disabled={mutation.isPending}>
+                  Cancelar
+                </Button>
+              </Stack>
             </Stack>
-
-            {feedback && (
-              <Alert severity={mutation.isError ? "error" : "success"}>
-                {feedback}
-              </Alert>
-            )}
-
-            <Button
-              variant="contained"
-              onClick={() => mutation.mutate({
-                seasonId: season.id,
-                date,
-                time,
-                location,
-                status
-              })}
-              disabled={mutation.isPending}
-              sx={{ alignSelf: "flex-start" }}
-            >
-              {mutation.isPending ? "Salvando..." : "Salvar próximo jogo"}
-            </Button>
-          </Stack>
+          ) : (
+            <Stack spacing={2} alignItems="flex-start">
+              {feedback && (
+                <Alert severity="success" sx={{ width: "100%" }}>
+                  {feedback}
+                </Alert>
+              )}
+              <Button variant="outlined" onClick={handleStartEditing}>
+                Editar próximo jogo
+              </Button>
+            </Stack>
+          )
         ) : (
           <Alert severity="info">
             Entre na área administrativa para inserir ou editar os dados do próximo jogo diretamente neste card.
