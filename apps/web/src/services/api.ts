@@ -73,6 +73,21 @@ function buildNextMatchKey(seasonId: string) {
   return `next-match:${seasonId}`;
 }
 
+async function refreshSeasonDerivedData(seasonId: string) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client.rpc("refresh_season_derived_data", {
+    target_season_id: seasonId
+  });
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível recalcular ranking e estatísticas da temporada."));
+  }
+}
+
 function normalizeNextMatchValue(value: unknown, seasonId: string): NextMatchInfo | null {
   if (!value || typeof value !== "object") {
     return null;
@@ -835,6 +850,8 @@ export async function saveMatch(values: MatchFormValues) {
     );
   }
 
+  await refreshSeasonDerivedData(values.seasonId);
+
   return data;
 }
 
@@ -844,8 +861,20 @@ export async function deleteMatch(matchId: string) {
   }
 
   const client = requireSupabase();
+  const { data: matchRow, error: fetchError } = await client
+    .from("matches")
+    .select("season_id")
+    .eq("id", matchId)
+    .single();
+
+  if (fetchError) {
+    throw fetchError;
+  }
+
   const { error } = await client.from("matches").delete().eq("id", matchId);
   if (error) throw error;
+
+  await refreshSeasonDerivedData(String(matchRow.season_id));
 }
 
 export async function loginAdmin(credentials: AdminCredentials): Promise<AdminLoginResult> {

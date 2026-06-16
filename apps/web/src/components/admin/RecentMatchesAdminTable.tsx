@@ -50,8 +50,11 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
   async function refreshMatches() {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: queryKeys.recentMatches }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.history("active") }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard })
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
+      queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "history" }),
+      queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "ranking" }),
+      queryClient.invalidateQueries({ predicate: (query) => Array.isArray(query.queryKey) && query.queryKey[0] === "hall-of-fame" }),
+      queryClient.invalidateQueries({ queryKey: ["player-statistics"] })
     ]);
   }
 
