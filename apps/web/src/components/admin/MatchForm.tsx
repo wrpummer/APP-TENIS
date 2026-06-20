@@ -1,4 +1,4 @@
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+﻿import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
@@ -54,7 +54,7 @@ interface MatchFormState {
 
 const createInitialSets = (): MatchFormSetState[] => [
   { setOrder: 1, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: true },
-  { setOrder: 2, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: true },
+  { setOrder: 2, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: false },
   { setOrder: 3, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: false }
 ];
 
@@ -162,6 +162,34 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
           ? { ...currentSet, ...patch, notes: patch.notes ?? currentSet.notes }
           : currentSet
       )
+    }));
+  }
+
+  function clearSet(setOrder: number, currentSet: MatchFormSetState): MatchFormSetState {
+    return {
+      ...currentSet,
+      isEnabled: false,
+      teamAGames: null,
+      teamBGames: null,
+      isTiebreak: false,
+      isSuperTiebreak: false,
+      tiebreakPointsA: null,
+      tiebreakPointsB: null,
+      deucesCount: null,
+      notes: ""
+    };
+  }
+
+  function removeSet(setOrder: number) {
+    setForm((current) => ({
+      ...current,
+      sets: current.sets.map((currentSet) => {
+        if (currentSet.setOrder === setOrder || (setOrder === 2 && currentSet.setOrder === 3)) {
+          return clearSet(currentSet.setOrder, currentSet);
+        }
+
+        return currentSet;
+      })
     }));
   }
 
@@ -278,26 +306,14 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                     <Typography variant="subtitle1" fontWeight={700}>
                       Set {set.setOrder}
                     </Typography>
-                    {set.setOrder === 3 && (
+                    {set.setOrder > 1 && (
                       <Button
                         size="small"
                         color="inherit"
                         startIcon={<RemoveCircleOutlineRoundedIcon />}
-                        onClick={() =>
-                          updateSet(3, {
-                            isEnabled: false,
-                            teamAGames: null,
-                            teamBGames: null,
-                            isTiebreak: false,
-                            isSuperTiebreak: false,
-                            tiebreakPointsA: null,
-                            tiebreakPointsB: null,
-                            deucesCount: null,
-                            notes: ""
-                          })
-                        }
+                        onClick={() => removeSet(set.setOrder)}
                       >
-                        Remover 3º set
+                        Remover set
                       </Button>
                     )}
                   </Stack>
@@ -310,7 +326,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         type="number"
                         value={set.teamAGames ?? ""}
                         inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
+                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3Âº set." : "Set normal: 0 a 7."}
                         onChange={(event) => updateSet(set.setOrder, { teamAGames: event.target.value === "" ? null : Number(event.target.value) })}
                       />
                     </Grid>
@@ -321,7 +337,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         type="number"
                         value={set.teamBGames ?? ""}
                         inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
+                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3Âº set." : "Set normal: 0 a 7."}
                         onChange={(event) => updateSet(set.setOrder, { teamBGames: event.target.value === "" ? null : Number(event.target.value) })}
                       />
                     </Grid>
@@ -379,7 +395,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                                 }
                               />
                             }
-                            label="3º set foi super tiebreak"
+                            label="3Âº set foi super tiebreak"
                           />
                         )}
                         {set.isSuperTiebreak && (
@@ -389,7 +405,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         )}
                         {set.setOrder < 3 && set.isSuperTiebreak && (
                           <Alert severity="warning">
-                            Super tiebreak deve ser usado somente no 3º set.
+                            Super tiebreak deve ser usado somente no 3Âº set.
                           </Alert>
                         )}
                         {showAdvanced && set.setOrder === 3 && !set.isTiebreak && (
@@ -407,7 +423,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                                 }
                               />
                             }
-                            label="Usar super tiebreak no 3º set"
+                            label="Usar super tiebreak no 3Âº set"
                           />
                         )}
                       </Stack>
@@ -444,15 +460,26 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
               </Paper>
             </Grid>
           ))}
+          {!form.sets[1].isEnabled && (
+            <Grid size={{ xs: 12 }}>
+              <Button
+                variant="outlined"
+                startIcon={<AddRoundedIcon />}
+                onClick={() => updateSet(2, { isEnabled: true })}
+              >
+                Adicionar 2Âº set
+              </Button>
+            </Grid>
+          )}
 
-          {!form.sets[2].isEnabled && (
+          {form.sets[1].isEnabled && !form.sets[2].isEnabled && (
             <Grid size={{ xs: 12 }}>
               <Button
                 variant="outlined"
                 startIcon={<AddRoundedIcon />}
                 onClick={() => updateSet(3, { isEnabled: true })}
               >
-                Adicionar 3º set
+                Adicionar 3Âº set
               </Button>
             </Grid>
           )}
@@ -535,3 +562,6 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
     </Paper>
   );
 }
+
+
+

@@ -1,4 +1,4 @@
-import type { MatchFormValues, MatchSet, TeamSide } from "@/types/domain";
+﻿import type { MatchFormValues, MatchSet, TeamSide } from "@/types/domain";
 
 export const monthLabels = [
   "Janeiro",
@@ -93,8 +93,8 @@ export function validateMatch(values: MatchFormValues): string[] {
   const activeSets = values.sets.filter((set) => set.isEnabled !== false);
   const completedSets = activeSets.filter((set) => Number.isFinite(set.teamAGames) && Number.isFinite(set.teamBGames) && !(set.teamAGames === 0 && set.teamBGames === 0));
 
-  if (completedSets.length < 2) {
-    issues.push("Informe pelo menos dois sets validos.");
+  if (completedSets.length < 1) {
+    issues.push("Informe pelo menos um set valido.");
   }
 
   for (const set of completedSets) {
@@ -104,7 +104,7 @@ export function validateMatch(values: MatchFormValues): string[] {
 
     if (set.isSuperTiebreak) {
       if (set.setOrder !== 3) {
-        issues.push("Super tiebreak so deve ser usado no 3º set.");
+        issues.push("Super tiebreak so deve ser usado no 3Âº set.");
       }
 
       if (!isSuperTiebreakSetScoreValid(set)) {
@@ -138,3 +138,5 @@ export function slugifyName(input: string): string {
     .replace(/^-+|-+$/g, "")
     .toLowerCase();
 }
+
+
