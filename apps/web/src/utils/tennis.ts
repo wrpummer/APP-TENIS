@@ -94,7 +94,7 @@ export function validateMatch(values: MatchFormValues): string[] {
   const completedSets = activeSets.filter((set) => Number.isFinite(set.teamAGames) && Number.isFinite(set.teamBGames) && !(set.teamAGames === 0 && set.teamBGames === 0));
 
   if (completedSets.length < 1) {
-    issues.push("Informe pelo menos um set valido.");
+    issues.push("Informe pelo menos um set válido.");
   }
 
   for (const set of completedSets) {
@@ -104,18 +104,18 @@ export function validateMatch(values: MatchFormValues): string[] {
 
     if (set.isSuperTiebreak) {
       if (set.setOrder !== 3) {
-        issues.push("Super tiebreak so deve ser usado no 3Âº set.");
+        issues.push("Super tiebreak só deve ser usado no 3º set.");
       }
 
       if (!isSuperTiebreakSetScoreValid(set)) {
         issues.push("No super tiebreak, o placar do set deve ser 1-0 ou 0-1.");
       }
     } else if (!isRegularSetScoreValid(set)) {
-      issues.push(`O placar do set ${set.setOrder} nao segue uma combinacao valida de tenis.`);
+      issues.push(`O placar do set ${set.setOrder} não segue uma combinação válida de tênis.`);
     }
 
     if (set.isTiebreak && !isTiebreakPointsValid(set.tiebreakPointsA, set.tiebreakPointsB, Boolean(set.isSuperTiebreak))) {
-      issues.push(`O placar do tiebreak no set ${set.setOrder} esta invalido.`);
+      issues.push(`O placar do tiebreak no set ${set.setOrder} está inválido.`);
     }
 
     if (!set.isTiebreak && (set.tiebreakPointsA != null || set.tiebreakPointsB != null)) {
@@ -138,5 +138,6 @@ export function slugifyName(input: string): string {
     .replace(/^-+|-+$/g, "")
     .toLowerCase();
 }
+
 
 

@@ -236,7 +236,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       <Stack spacing={2}>
         <Typography variant="h6">{form.id ? "Editar partida" : "Registrar partida"}</Typography>
         <Typography color="text.secondary">
-          Lance rapidamente os sets e, se quiser, abra os detalhes avancados para tiebreak, super tiebreak e deuces.
+          Lance rapidamente os sets e, se quiser, abra os detalhes avançados para tiebreak, super tiebreak e deuces.
         </Typography>
         <AlertSlot
           severity={validationIssues.length > 0 ? "warning" : error ? "error" : "success"}
@@ -326,7 +326,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         type="number"
                         value={set.teamAGames ?? ""}
                         inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3Âº set." : "Set normal: 0 a 7."}
+                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
                         onChange={(event) => updateSet(set.setOrder, { teamAGames: event.target.value === "" ? null : Number(event.target.value) })}
                       />
                     </Grid>
@@ -337,7 +337,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         type="number"
                         value={set.teamBGames ?? ""}
                         inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3Âº set." : "Set normal: 0 a 7."}
+                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
                         onChange={(event) => updateSet(set.setOrder, { teamBGames: event.target.value === "" ? null : Number(event.target.value) })}
                       />
                     </Grid>
@@ -355,7 +355,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         <Grid size={{ xs: 12, md: 3 }}>
                           <TextField
                             fullWidth
-                            label="Observacao do set"
+                            label="Observação do set"
                             value={set.notes ?? ""}
                             onChange={(event) => updateSet(set.setOrder, { notes: event.target.value })}
                           />
@@ -395,7 +395,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                                 }
                               />
                             }
-                            label="3Âº set foi super tiebreak"
+                            label="3º set foi super tiebreak"
                           />
                         )}
                         {set.isSuperTiebreak && (
@@ -405,7 +405,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         )}
                         {set.setOrder < 3 && set.isSuperTiebreak && (
                           <Alert severity="warning">
-                            Super tiebreak deve ser usado somente no 3Âº set.
+                            Super tiebreak deve ser usado somente no 3º set.
                           </Alert>
                         )}
                         {showAdvanced && set.setOrder === 3 && !set.isTiebreak && (
@@ -423,7 +423,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                                 }
                               />
                             }
-                            label="Usar super tiebreak no 3Âº set"
+                            label="Usar super tiebreak no 3º set"
                           />
                         )}
                       </Stack>
@@ -467,7 +467,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                 startIcon={<AddRoundedIcon />}
                 onClick={() => updateSet(2, { isEnabled: true })}
               >
-                Adicionar 2Âº set
+                Adicionar 2º set
               </Button>
             </Grid>
           )}
@@ -479,7 +479,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                 startIcon={<AddRoundedIcon />}
                 onClick={() => updateSet(3, { isEnabled: true })}
               >
-                Adicionar 3Âº set
+                Adicionar 3º set
               </Button>
             </Grid>
           )}
@@ -491,14 +491,14 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
               startIcon={<ExpandMoreRoundedIcon />}
               onClick={() => setShowAdvanced((current) => !current)}
             >
-              {showAdvanced ? "Ocultar detalhes avancados" : "Mostrar detalhes avancados"}
+              {showAdvanced ? "Ocultar detalhes avançados" : "Mostrar detalhes avançados"}
             </Button>
           </Grid>
 
           <Grid size={{ xs: 12 }}>
             <Collapse in={showAdvanced}>
               <Alert severity="info">
-                Use os detalhes avancados apenas quando quiser enriquecer a estatistica. O cadastro rapido continua funcionando so com os sets.
+                Use os detalhes avançados apenas quando quiser enriquecer a estatística. O cadastro rápido continua funcionando só com os sets.
               </Alert>
             </Collapse>
           </Grid>
@@ -519,7 +519,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
         </Alert>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleSave} fullWidth disabled={isSaving}>
-            {form.id ? "Salvar alteracoes" : "Salvar partida"}
+            {form.id ? "Salvar alterações" : "Salvar partida"}
           </Button>
           {form.id && (
             <Button
@@ -533,7 +533,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
               }}
               fullWidth
             >
-              Cancelar edicao
+              Cancelar edição
             </Button>
           )}
         </Stack>
@@ -562,6 +562,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
     </Paper>
   );
 }
+
 
 
 
