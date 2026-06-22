@@ -1,15 +1,11 @@
-import { Chip, Grid, Paper, Stack, Typography } from "@mui/material";
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Box, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
 import { NextMatchCard } from "@/components/dashboard/NextMatchCard";
-import { ChartPanel } from "@/components/charts/ChartPanel";
 import { LoadingState } from "@/components/common/LoadingState";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { StatCard } from "@/components/common/StatCard";
 import { usePlayers } from "@/hooks/usePlayers";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import type { Match, Player } from "@/types/domain";
-
-const chartPalette = ["#0a4d3c", "#7cb518", "#f59f00", "#118ab2", "#ef476f", "#f25c54"];
 
 function getTeamLabel(match: Match, players: Player[], team: "A" | "B") {
   const ids = team === "A"
@@ -26,6 +22,74 @@ function formatShortDate(value: string) {
   return `${day}/${month}/${year}`;
 }
 
+function getLastThreeItems<T>(items: T[]) {
+  return items.slice(-3);
+}
+
+interface MonthlyHighlightPanelProps {
+  title: string;
+  subtitle: string;
+  rows: Array<{
+    label: string;
+    playerName?: string;
+    mainValue: string;
+    detail?: string;
+  }>;
+  accent: string;
+}
+
+function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlightPanelProps) {
+  const current = rows.at(-1);
+  const previousRows = rows.slice(0, -1);
+
+  return (
+    <Paper sx={{ p: 3, height: "100%", border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
+      <Stack spacing={2.5}>
+        <Box>
+          <Typography variant="h6">{title}</Typography>
+          <Typography variant="body2" color="text.secondary">{subtitle}</Typography>
+        </Box>
+
+        {current && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2.5,
+              borderRadius: 4,
+              color: "#fff",
+              background: `linear-gradient(135deg, ${accent}, #062e25)`
+            }}
+          >
+            <Typography variant="caption" sx={{ opacity: 0.85 }}>Mês atual - {current.label}</Typography>
+            {current.playerName && <Typography variant="h5" fontWeight={900}>{current.playerName}</Typography>}
+            <Typography variant={current.playerName ? "h4" : "h5"} fontWeight={900}>{current.mainValue}</Typography>
+            {current.detail && <Typography variant="body2" sx={{ opacity: 0.9 }}>{current.detail}</Typography>}
+          </Paper>
+        )}
+
+        <Stack spacing={1}>
+          {previousRows.map((row) => (
+            <Paper
+              key={`${title}-${row.label}`}
+              variant="outlined"
+              sx={{ p: 1.5, borderRadius: 3, bgcolor: "rgba(10,77,60,0.03)" }}
+            >
+              <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
+                <Box minWidth={0}>
+                  <Typography variant="caption" color="text.secondary">{row.label}</Typography>
+                  {row.playerName && <Typography fontWeight={800} noWrap>{row.playerName}</Typography>}
+                  {row.detail && <Typography variant="body2" color="text.secondary">{row.detail}</Typography>}
+                </Box>
+                <Typography fontWeight={900} color={accent} textAlign="right">{row.mainValue}</Typography>
+              </Stack>
+            </Paper>
+          ))}
+        </Stack>
+      </Stack>
+    </Paper>
+  );
+}
+
 export function DashboardPage() {
   const { data, isLoading } = useDashboardData();
   const { data: players, isLoading: playersLoading } = usePlayers();
@@ -33,6 +97,11 @@ export function DashboardPage() {
   if (isLoading || playersLoading || !data || !players) {
     return <LoadingState />;
   }
+
+  const monthlyChampions = getLastThreeItems(data.monthlyChampions);
+  const monthlyMostActive = getLastThreeItems(data.monthlyMostActive);
+  const monthlyBestGamesBalance = getLastThreeItems(data.monthlyBestGamesBalance);
+  const matchesPerMonth = getLastThreeItems(data.matchesPerMonth);
 
   return (
     <Stack spacing={4}>
@@ -53,7 +122,7 @@ export function DashboardPage() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, xl: 6 }}>
-          <Paper sx={{ p: 3, height: "100%", border: "1px solid rgba(10,77,60,0.08)" }}>
+          <Paper sx={{ p: 3, height: "100%", border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
             <Typography variant="h6" mb={2}>Partidas recentes</Typography>
             <Stack spacing={2}>
               {data.recentMatches.map((match) => (
@@ -86,68 +155,58 @@ export function DashboardPage() {
         </Grid>
 
         <Grid size={{ xs: 12, xl: 6 }}>
-          <ChartPanel title="Pontos do campeão de cada mês">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.monthlyChampions}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
-                <Tooltip formatter={(value, _, item) => [`${value} pontos`, item.payload.playerName]} />
-                <Bar dataKey="points" radius={[8, 8, 0, 0]}>
-                  {data.monthlyChampions.map((entry, index) => (
-                    <Cell key={`${entry.month}-${entry.playerName}`} fill={chartPalette[index % chartPalette.length]} />
-                  ))}
-                  <LabelList dataKey="playerName" position="top" fontSize={11} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartPanel>
+          <MonthlyHighlightPanel
+            title="Campeões por pontos"
+            subtitle="Vencedores dos últimos 3 meses. O mês atual aparece em destaque."
+            accent="#0a4d3c"
+            rows={monthlyChampions.map((row) => ({
+              label: row.label,
+              playerName: row.playerName,
+              mainValue: `${row.points} pts`,
+              detail: row.points > 0 ? "Maior pontuação do mês" : "Sem partidas no mês"
+            }))}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <ChartPanel title="Jogador frequente do mês">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data.monthlyMostActive}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis allowDecimals={false} />
-                <Tooltip formatter={(value, _, item) => [`${value} jogos`, item.payload.playerName]} />
-                <Line type="monotone" dataKey="matches" stroke="#0a4d3c" strokeWidth={3} dot={{ r: 5 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartPanel>
+          <MonthlyHighlightPanel
+            title="Jogador mais frequente"
+            subtitle="Mais partidas no mês. Em caso de empate, vence quem tiver mais pontos."
+            accent="#118ab2"
+            rows={monthlyMostActive.map((row) => ({
+              label: row.label,
+              playerName: row.playerName,
+              mainValue: `${row.matches} jogos`,
+              detail: row.matches > 0 ? `${row.points} pontos no mês` : "Sem partidas no mês"
+            }))}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <ChartPanel title="Partidas e sets por mês">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.matchesPerMonth}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="matches" name="Partidas" fill="#0a4d3c" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="sets" name="Sets" fill="#7cb518" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartPanel>
+          <MonthlyHighlightPanel
+            title="Partidas e sets no mês"
+            subtitle="Volume de jogos registrados nos últimos 3 meses."
+            accent="#7a5c00"
+            rows={matchesPerMonth.map((row) => ({
+              label: row.label,
+              mainValue: `${row.matches} partidas`,
+              detail: `${row.sets} sets registrados`
+            }))}
+          />
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <ChartPanel title="Maior saldo de games por mês">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.monthlyBestGamesBalance}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
-                <Tooltip formatter={(value, _, item) => [`${value} de saldo`, item.payload.playerName]} />
-                <Bar dataKey="balance" fill="#118ab2" radius={[8, 8, 0, 0]}>
-                  <LabelList dataKey="playerName" position="top" fontSize={11} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartPanel>
+          <MonthlyHighlightPanel
+            title="Maior saldo de games"
+            subtitle="Quem terminou cada mês com melhor diferença entre games ganhos e perdidos."
+            accent="#9a3412"
+            rows={monthlyBestGamesBalance.map((row) => ({
+              label: row.label,
+              playerName: row.playerName,
+              mainValue: `${row.balance > 0 ? "+" : ""}${row.balance}`,
+              detail: row.balance !== 0 ? "Saldo de games no mês" : "Sem saldo no mês"
+            }))}
+          />
         </Grid>
       </Grid>
     </Stack>

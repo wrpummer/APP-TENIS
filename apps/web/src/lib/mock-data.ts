@@ -151,25 +151,25 @@ export const mockDashboard: DashboardData = {
     { label: "Média mensal", value: "19,6", detail: "partidas por mês com jogos" }
   ],
   matchesPerMonth: [
-    { month: "Jan", matches: 29, sets: 64 },
-    { month: "Fev", matches: 23, sets: 51 },
-    { month: "Mar", matches: 20, sets: 44 },
-    { month: "Abr", matches: 19, sets: 43 },
-    { month: "Mai", matches: 26, sets: 59 }
+    { month: "Jan", year: 2026, label: "Jan/2026", matches: 29, sets: 64 },
+    { month: "Fev", year: 2026, label: "Fev/2026", matches: 23, sets: 51 },
+    { month: "Mar", year: 2026, label: "Mar/2026", matches: 20, sets: 44 },
+    { month: "Abr", year: 2026, label: "Abr/2026", matches: 19, sets: 43 },
+    { month: "Mai", year: 2026, label: "Mai/2026", matches: 26, sets: 59 }
   ],
   monthlyChampions: [
-    { month: "Jan", playerName: "Carlos Eduardo", points: 69 },
-    { month: "Fev", playerName: "Carlos Eduardo", points: 122 },
-    { month: "Mar", playerName: "Carlos Eduardo", points: 166 },
-    { month: "Abr", playerName: "Hellinton", points: 137 },
-    { month: "Mai", playerName: "Carlos Eduardo", points: 274 }
+    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", points: 69 },
+    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Carlos Eduardo", points: 122 },
+    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Carlos Eduardo", points: 166 },
+    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Hellinton", points: 137 },
+    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Carlos Eduardo", points: 274 }
   ],
   monthlyMostActive: [
-    { month: "Jan", playerName: "Carlos Eduardo", matches: 12 },
-    { month: "Fev", playerName: "Ailson", matches: 10 },
-    { month: "Mar", playerName: "Hellinton", matches: 9 },
-    { month: "Abr", playerName: "Carlos Eduardo", matches: 8 },
-    { month: "Mai", playerName: "Ailson", matches: 11 }
+    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", matches: 12, points: 69 },
+    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Ailson", matches: 10, points: 42 },
+    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Hellinton", matches: 9, points: 38 },
+    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Carlos Eduardo", matches: 8, points: 35 },
+    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Ailson", matches: 11, points: 47 }
   ],
   monthlyBestGamesBalance: [
     { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", balance: 18 },

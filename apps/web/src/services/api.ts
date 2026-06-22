@@ -667,6 +667,8 @@ export async function getDashboard(): Promise<DashboardData> {
     const row = matchesPerMonthMap.get(item.key);
     return {
       month: item.month,
+      year: item.year,
+      label: item.label,
       matches: row?.matches ?? 0,
       sets: row?.sets ?? 0
     };
@@ -677,6 +679,8 @@ export async function getDashboard(): Promise<DashboardData> {
     const winnerEntry = Array.from(points.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
     return {
       month: item.month,
+      year: item.year,
+      label: item.label,
       playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
       points: winnerEntry?.[1] ?? 0
     };
@@ -684,11 +688,19 @@ export async function getDashboard(): Promise<DashboardData> {
 
   const monthlyMostActive = lastTwelveMonths.months.map((item) => {
     const counts = monthlyPlayerAppearances.get(item.key) ?? new Map<string, number>();
-    const winnerEntry = Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+    const points = monthlyPlayerPoints.get(item.key) ?? new Map<string, number>();
+    const winnerEntry = Array.from(counts.entries()).sort((a, b) =>
+      b[1] - a[1]
+      || (points.get(b[0]) ?? 0) - (points.get(a[0]) ?? 0)
+      || a[0].localeCompare(b[0])
+    )[0];
     return {
       month: item.month,
+      year: item.year,
+      label: item.label,
       playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
-      matches: winnerEntry?.[1] ?? 0
+      matches: winnerEntry?.[1] ?? 0,
+      points: winnerEntry ? points.get(winnerEntry[0]) ?? 0 : 0
     };
   });
 

@@ -119,9 +119,9 @@ export interface DashboardData {
   hallOfFame: HallOfFameEntry[];
   nextMatch: NextMatchInfo | null;
   quickStats: Array<{ label: string; value: string; detail: string }>;
-  matchesPerMonth: Array<{ month: string; matches: number; sets: number }>;
-  monthlyChampions: Array<{ month: string; playerName: string; points: number }>;
-  monthlyMostActive: Array<{ month: string; playerName: string; matches: number }>;
+  matchesPerMonth: Array<{ month: string; year: number; label: string; matches: number; sets: number }>;
+  monthlyChampions: Array<{ month: string; year: number; label: string; playerName: string; points: number }>;
+  monthlyMostActive: Array<{ month: string; year: number; label: string; playerName: string; matches: number; points: number }>;
   monthlyBestGamesBalance: Array<{ month: string; year: number; label: string; playerName: string; balance: number }>;
 }
 
