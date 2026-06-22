@@ -54,16 +54,18 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
           <Paper
             elevation={0}
             sx={{
-              p: 2.5,
+              p: 2,
               borderRadius: 4,
-              color: "#fff",
-              background: `linear-gradient(135deg, ${accent}, #062e25)`
+              color: "text.primary",
+              bgcolor: "rgba(255,255,255,0.72)",
+              border: `1px solid ${accent}33`,
+              boxShadow: `inset 4px 0 0 ${accent}`
             }}
           >
-            <Typography variant="caption" sx={{ opacity: 0.85 }}>Mês atual - {current.label}</Typography>
-            {current.playerName && <Typography variant="h5" fontWeight={900}>{current.playerName}</Typography>}
-            <Typography variant={current.playerName ? "h4" : "h5"} fontWeight={900}>{current.mainValue}</Typography>
-            {current.detail && <Typography variant="body2" sx={{ opacity: 0.9 }}>{current.detail}</Typography>}
+            <Typography variant="caption" color="text.secondary">Mês atual - {current.label}</Typography>
+            {current.playerName && <Typography variant="h6" fontWeight={850}>{current.playerName}</Typography>}
+            <Typography variant="h5" fontWeight={850} color={accent}>{current.mainValue}</Typography>
+            {current.detail && <Typography variant="body2" color="text.secondary">{current.detail}</Typography>}
           </Paper>
         )}
 
