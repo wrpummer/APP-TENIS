@@ -151,6 +151,299 @@ function buildLastTwelveMonthsWindow() {
   };
 }
 
+type PlayerAggregate = {
+  seasonId: string;
+  playerId: string;
+  playerName: string;
+  photoUrl?: string | null;
+  points: number;
+  matchesPlayed: number;
+  wins: number;
+  losses: number;
+  setsWon: number;
+  setsLost: number;
+  gamesWon: number;
+  gamesLost: number;
+};
+
+function createPlayerAggregate(player: Player, seasonId: string): PlayerAggregate {
+  return {
+    seasonId,
+    playerId: player.id,
+    playerName: player.displayName,
+    photoUrl: player.photoUrl,
+    points: 0,
+    matchesPlayed: 0,
+    wins: 0,
+    losses: 0,
+    setsWon: 0,
+    setsLost: 0,
+    gamesWon: 0,
+    gamesLost: 0
+  };
+}
+
+function getTeamPlayers(match: Match, team: "A" | "B") {
+  return team === "A"
+    ? [match.teamAPlayer1Id, match.teamAPlayer2Id]
+    : [match.teamBPlayer1Id, match.teamBPlayer2Id];
+}
+
+function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: string): RankingRow[] {
+  if (matches.length === 0) {
+    return [];
+  }
+
+  const playersById = new Map(players.map((player) => [player.id, player]));
+  const aggregates = new Map<string, PlayerAggregate>();
+
+  const ensureAggregate = (playerId: string) => {
+    const player = playersById.get(playerId);
+    if (!player) {
+      return null;
+    }
+
+    const existing = aggregates.get(playerId);
+    if (existing) {
+      return existing;
+    }
+
+    const created = createPlayerAggregate(player, seasonId);
+    aggregates.set(playerId, created);
+    return created;
+  };
+
+  for (const match of matches) {
+    const teamAPlayers = getTeamPlayers(match, "A");
+    const teamBPlayers = getTeamPlayers(match, "B");
+    const allSlots: Array<{ playerId: string; team: "A" | "B" }> = [
+      ...teamAPlayers.map((playerId) => ({ playerId, team: "A" as const })),
+      ...teamBPlayers.map((playerId) => ({ playerId, team: "B" as const }))
+    ];
+
+    for (const slot of allSlots) {
+      const aggregate = ensureAggregate(slot.playerId);
+      if (!aggregate) {
+        continue;
+      }
+
+      const isWinner = slot.team === match.winnerTeam;
+      aggregate.matchesPlayed += 1;
+      aggregate.wins += isWinner ? 1 : 0;
+      aggregate.losses += isWinner ? 0 : 1;
+      aggregate.points += isWinner ? 3 : 1;
+
+      for (const set of match.sets) {
+        const ownGames = slot.team === "A" ? set.teamAGames : set.teamBGames;
+        const opponentGames = slot.team === "A" ? set.teamBGames : set.teamAGames;
+        aggregate.gamesWon += ownGames;
+        aggregate.gamesLost += opponentGames;
+
+        if (ownGames > opponentGames) {
+          aggregate.setsWon += 1;
+        } else if (ownGames < opponentGames) {
+          aggregate.setsLost += 1;
+        }
+      }
+    }
+  }
+
+  return Array.from(aggregates.values())
+    .map((aggregate) => ({
+      ...aggregate,
+      rankingPosition: 0,
+      winRate: aggregate.matchesPlayed > 0
+        ? Number(((aggregate.wins / aggregate.matchesPlayed) * 100).toFixed(2))
+        : 0,
+      importedFromLegacy: false
+    }))
+    .sort((a, b) =>
+      b.points - a.points
+      || b.wins - a.wins
+      || b.winRate - a.winRate
+      || (b.setsWon - b.setsLost) - (a.setsWon - a.setsLost)
+      || (b.gamesWon - b.gamesLost) - (a.gamesWon - a.gamesLost)
+      || a.playerName.localeCompare(b.playerName)
+    )
+    .map((row, index) => ({ ...row, rankingPosition: index + 1 }));
+}
+
+function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], seasonId: string): PlayerStatistics[] {
+  const ranking = buildRankingFromMatches(matches, players, seasonId);
+  if (ranking.length === 0) {
+    return [];
+  }
+
+  const playersById = new Map(players.map((player) => [player.id, player]));
+  const partnerRows = new Map<string, Map<string, { matches: number; wins: number }>>();
+  const rivalRows = new Map<string, Map<string, { matches: number; wins: number; losses: number }>>();
+  const monthlyRows = new Map<string, Map<number, { points: number; wins: number }>>();
+  const streakRows = new Map<string, Array<{ date: string; matchId: string; isWin: boolean }>>();
+
+  const addPartner = (playerId: string, partnerId: string, isWin: boolean) => {
+    const playerMap = partnerRows.get(playerId) ?? new Map<string, { matches: number; wins: number }>();
+    const row = playerMap.get(partnerId) ?? { matches: 0, wins: 0 };
+    row.matches += 1;
+    row.wins += isWin ? 1 : 0;
+    playerMap.set(partnerId, row);
+    partnerRows.set(playerId, playerMap);
+  };
+
+  const addRival = (playerId: string, rivalId: string, isWin: boolean) => {
+    const playerMap = rivalRows.get(playerId) ?? new Map<string, { matches: number; wins: number; losses: number }>();
+    const row = playerMap.get(rivalId) ?? { matches: 0, wins: 0, losses: 0 };
+    row.matches += 1;
+    row.wins += isWin ? 1 : 0;
+    row.losses += isWin ? 0 : 1;
+    playerMap.set(rivalId, row);
+    rivalRows.set(playerId, playerMap);
+  };
+
+  for (const match of matches) {
+    const month = Number(match.matchDate.slice(5, 7));
+    const teamAPlayers = getTeamPlayers(match, "A");
+    const teamBPlayers = getTeamPlayers(match, "B");
+    const teams = [
+      { side: "A" as const, players: teamAPlayers, rivals: teamBPlayers },
+      { side: "B" as const, players: teamBPlayers, rivals: teamAPlayers }
+    ];
+
+    for (const team of teams) {
+      const isWin = team.side === match.winnerTeam;
+      for (const playerId of team.players) {
+        const monthMap = monthlyRows.get(playerId) ?? new Map<number, { points: number; wins: number }>();
+        const monthRow = monthMap.get(month) ?? { points: 0, wins: 0 };
+        monthRow.points += isWin ? 3 : 1;
+        monthRow.wins += isWin ? 1 : 0;
+        monthMap.set(month, monthRow);
+        monthlyRows.set(playerId, monthMap);
+
+        const playerStreaks = streakRows.get(playerId) ?? [];
+        playerStreaks.push({ date: match.matchDate, matchId: match.id, isWin });
+        streakRows.set(playerId, playerStreaks);
+
+        for (const partnerId of team.players.filter((candidate) => candidate !== playerId)) {
+          addPartner(playerId, partnerId, isWin);
+        }
+
+        for (const rivalId of team.rivals) {
+          addRival(playerId, rivalId, isWin);
+        }
+      }
+    }
+  }
+
+  const getBestStreaks = (playerId: string) => {
+    const rows = (streakRows.get(playerId) ?? []).sort((a, b) => a.date.localeCompare(b.date) || a.matchId.localeCompare(b.matchId));
+    let currentWin = 0;
+    let currentLoss = 0;
+    let bestWin = 0;
+    let worstLoss = 0;
+
+    for (const row of rows) {
+      if (row.isWin) {
+        currentWin += 1;
+        currentLoss = 0;
+      } else {
+        currentLoss += 1;
+        currentWin = 0;
+      }
+
+      bestWin = Math.max(bestWin, currentWin);
+      worstLoss = Math.max(worstLoss, currentLoss);
+    }
+
+    return { bestWin, worstLoss };
+  };
+
+  const getFavoritePartner = (playerId: string) => {
+    const rows = Array.from(partnerRows.get(playerId)?.entries() ?? []);
+    const best = rows.sort((a, b) =>
+      b[1].matches - a[1].matches
+      || b[1].wins - a[1].wins
+      || a[0].localeCompare(b[0])
+    )[0];
+    return best ? playersById.get(best[0])?.displayName ?? null : null;
+  };
+
+  const getBestPartner = (playerId: string) => {
+    const rows = Array.from(partnerRows.get(playerId)?.entries() ?? []);
+    const best = rows.sort((a, b) => {
+      const rateA = a[1].matches > 0 ? a[1].wins / a[1].matches : 0;
+      const rateB = b[1].matches > 0 ? b[1].wins / b[1].matches : 0;
+      return rateB - rateA || b[1].wins - a[1].wins || b[1].matches - a[1].matches || a[0].localeCompare(b[0]);
+    })[0];
+    return best ? playersById.get(best[0])?.displayName ?? null : null;
+  };
+
+  const getMostFacedRival = (playerId: string) => {
+    const rows = Array.from(rivalRows.get(playerId)?.entries() ?? []);
+    const best = rows.sort((a, b) =>
+      b[1].matches - a[1].matches
+      || b[1].losses - a[1].losses
+      || a[0].localeCompare(b[0])
+    )[0];
+    return best ? playersById.get(best[0])?.displayName ?? null : null;
+  };
+
+  const getHardestRival = (playerId: string) => {
+    const rows = Array.from(rivalRows.get(playerId)?.entries() ?? []);
+    const best = rows.sort((a, b) => {
+      const rateA = a[1].matches > 0 ? a[1].wins / a[1].matches : 0;
+      const rateB = b[1].matches > 0 ? b[1].wins / b[1].matches : 0;
+      return rateA - rateB || b[1].losses - a[1].losses || b[1].matches - a[1].matches || a[0].localeCompare(b[0]);
+    })[0];
+    return best ? playersById.get(best[0])?.displayName ?? null : null;
+  };
+
+  const getBestMonth = (playerId: string) => {
+    const rows = Array.from(monthlyRows.get(playerId)?.entries() ?? []);
+    const best = rows.sort((a, b) => b[1].points - a[1].points || b[1].wins - a[1].wins || b[0] - a[0])[0];
+    return best ? monthLabels[best[0] - 1] ?? null : null;
+  };
+
+  return ranking.map((row) => {
+    const streaks = getBestStreaks(row.playerId);
+    return {
+      ...row,
+      favoritePartner: getFavoritePartner(row.playerId),
+      bestPartner: getBestPartner(row.playerId),
+      mostFacedRival: getMostFacedRival(row.playerId),
+      hardestRival: getHardestRival(row.playerId),
+      bestWinStreak: streaks.bestWin,
+      worstLossStreak: streaks.worstLoss,
+      bestMonth: getBestMonth(row.playerId)
+    };
+  });
+}
+
+function buildHallOfFameFromRanking(ranking: RankingRow[]): HallOfFameEntry[] {
+  if (ranking.length === 0) {
+    return [];
+  }
+
+  const champion = ranking[0];
+  const mostWins = [...ranking].sort((a, b) => b.wins - a.wins || b.points - a.points || a.playerName.localeCompare(b.playerName))[0];
+  const bestWinRate = [...ranking].sort((a, b) =>
+    b.winRate - a.winRate
+    || b.wins - a.wins
+    || b.points - a.points
+    || a.playerName.localeCompare(b.playerName)
+  )[0];
+  const mostActive = [...ranking].sort((a, b) =>
+    b.matchesPlayed - a.matchesPlayed
+    || b.points - a.points
+    || a.playerName.localeCompare(b.playerName)
+  )[0];
+
+  return [
+    { category: "Campeão da temporada", playerId: champion.playerId, playerName: champion.playerName, photoUrl: champion.photoUrl, valueNumber: champion.points },
+    { category: "Mais vitórias", playerId: mostWins.playerId, playerName: mostWins.playerName, photoUrl: mostWins.photoUrl, valueNumber: mostWins.wins },
+    { category: "Melhor aproveitamento", playerId: bestWinRate.playerId, playerName: bestWinRate.playerName, photoUrl: bestWinRate.photoUrl, valueNumber: bestWinRate.winRate },
+    { category: "Jogador mais ativo", playerId: mostActive.playerId, playerName: mostActive.playerName, photoUrl: mostActive.photoUrl, valueNumber: mostActive.matchesPlayed }
+  ];
+}
+
 export async function getSeasons(): Promise<Season[]> {
   if (!hasSupabaseEnv) {
     return [mockSeason];
@@ -431,43 +724,8 @@ export async function getRanking(seasonId?: string): Promise<RankingRow[]> {
   }
 
   const resolvedSeasonId = seasonId ?? getDashboardSeason(await getSeasons()).id;
-  if (!(await seasonHasMatches(resolvedSeasonId))) {
-    return [];
-  }
-
-  const client = requireSupabase();
-  let query = client
-    .from("season_rankings")
-    .select("season_id, player_id, ranking_position, points, matches_played, wins, losses, win_rate, sets_won, sets_lost, games_won, games_lost, imported_from_legacy, players!inner(display_name, photo_url)")
-    .eq("scope", "season")
-    .order("ranking_position", { ascending: true });
-
-  query = query.eq("season_id", resolvedSeasonId);
-
-  const { data, error } = await query;
-  if (error) throw error;
-
-  return (data ?? []).map((row) => {
-    const player = Array.isArray(row.players) ? row.players[0] : row.players;
-
-    return ({
-    seasonId: row.season_id,
-    playerId: row.player_id,
-    rankingPosition: row.ranking_position,
-    playerName: player?.display_name ?? "",
-    photoUrl: player?.photo_url ?? null,
-    points: row.points,
-    matchesPlayed: row.matches_played,
-    wins: row.wins,
-    losses: row.losses,
-    winRate: row.win_rate,
-    setsWon: row.sets_won,
-    setsLost: row.sets_lost,
-    gamesWon: row.games_won,
-    gamesLost: row.games_lost,
-    importedFromLegacy: row.imported_from_legacy
-    });
-  });
+  const [players, matches] = await Promise.all([getPlayers(), getMatchesBySeason(resolvedSeasonId)]);
+  return buildRankingFromMatches(matches, players, resolvedSeasonId);
 }
 
 export async function getPlayers(): Promise<Player[]> {
@@ -499,68 +757,8 @@ export async function getPlayerStatistics(): Promise<PlayerStatistics[]> {
   }
 
   const activeSeason = getDashboardSeason(await getSeasons());
-  if (!(await seasonHasMatches(activeSeason.id))) {
-    return [];
-  }
-
-  const client = requireSupabase();
-  const { data, error } = await client
-    .from("player_statistics")
-    .select(`
-      player_id,
-      season_id,
-      matches_played,
-      wins,
-      losses,
-      points,
-      sets_won,
-      sets_lost,
-      games_won,
-      games_lost,
-      best_win_streak,
-      worst_loss_streak,
-      best_month,
-      players!player_statistics_player_id_fkey(display_name, photo_url),
-      favorite_partner:players!player_statistics_favorite_partner_id_fkey(display_name),
-      best_partner:players!player_statistics_best_partner_id_fkey(display_name),
-      most_faced_rival:players!player_statistics_most_faced_rival_id_fkey(display_name),
-      hardest_rival:players!player_statistics_hardest_rival_id_fkey(display_name)
-    `)
-    .eq("season_id", activeSeason.id)
-    .order("points", { ascending: false });
-  if (error) throw error;
-
-  return (data ?? []).map((row) => {
-    const player = Array.isArray(row.players) ? row.players[0] : row.players;
-    const favoritePartner = Array.isArray(row.favorite_partner) ? row.favorite_partner[0] : row.favorite_partner;
-    const bestPartner = Array.isArray(row.best_partner) ? row.best_partner[0] : row.best_partner;
-    const mostFacedRival = Array.isArray(row.most_faced_rival) ? row.most_faced_rival[0] : row.most_faced_rival;
-    const hardestRival = Array.isArray(row.hardest_rival) ? row.hardest_rival[0] : row.hardest_rival;
-
-    return {
-      playerId: row.player_id,
-      seasonId: row.season_id,
-      rankingPosition: 0,
-      playerName: player?.display_name ?? "",
-      photoUrl: player?.photo_url ?? null,
-      points: row.points,
-      matchesPlayed: row.matches_played,
-      wins: row.wins,
-      losses: row.losses,
-      winRate: row.matches_played > 0 ? Number(((row.wins / row.matches_played) * 100).toFixed(2)) : 0,
-      setsWon: row.sets_won,
-      setsLost: row.sets_lost,
-      gamesWon: row.games_won,
-      gamesLost: row.games_lost,
-      favoritePartner: favoritePartner?.display_name ?? null,
-      bestPartner: bestPartner?.display_name ?? null,
-      mostFacedRival: mostFacedRival?.display_name ?? null,
-      hardestRival: hardestRival?.display_name ?? null,
-      bestWinStreak: row.best_win_streak,
-      worstLossStreak: row.worst_loss_streak,
-      bestMonth: row.best_month == null ? null : monthLabels[Number(row.best_month) - 1] ?? null
-    };
-  });
+  const [players, matches] = await Promise.all([getPlayers(), getMatchesBySeason(activeSeason.id)]);
+  return buildPlayerStatisticsFromMatches(matches, players, activeSeason.id);
 }
 
 function mapMatchRows(rows: Record<string, unknown>[]): Match[] {
@@ -607,6 +805,25 @@ export async function getMatches(): Promise<Match[]> {
   return mapMatchRows((data ?? []) as Record<string, unknown>[]);
 }
 
+async function getMatchesBySeason(seasonId: string): Promise<Match[]> {
+  if (!hasSupabaseEnv) {
+    return mockMatches.filter((match) => match.seasonId === seasonId);
+  }
+
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("matches")
+    .select("*, match_sets(*)")
+    .eq("season_id", seasonId)
+    .order("match_date", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return mapMatchRows((data ?? []) as Record<string, unknown>[]);
+}
+
 export async function getRecentMatches(): Promise<Match[]> {
   if (!hasSupabaseEnv) {
     return mockMatches;
@@ -629,32 +846,8 @@ export async function getHallOfFame(seasonId?: string): Promise<HallOfFameEntry[
   }
 
   const resolvedSeasonId = seasonId ?? getDashboardSeason(await getSeasons()).id;
-  if (!(await seasonHasMatches(resolvedSeasonId))) {
-    return [];
-  }
-
-  const client = requireSupabase();
-  let query = client
-    .from("hall_of_fame")
-    .select("category, value_text, value_number, player_id, players!inner(display_name, photo_url)");
-
-  query = query.eq("season_id", resolvedSeasonId);
-
-  const { data, error } = await query;
-  if (error) throw error;
-
-  return (data ?? []).map((row) => {
-    const player = Array.isArray(row.players) ? row.players[0] : row.players;
-
-    return ({
-      category: translateHallOfFameCategory(row.category),
-      playerId: row.player_id,
-      playerName: player?.display_name ?? "",
-      photoUrl: player?.photo_url ?? null,
-      valueText: row.value_text,
-      valueNumber: row.value_number
-    });
-  });
+  const ranking = await getRanking(resolvedSeasonId);
+  return buildHallOfFameFromRanking(ranking);
 }
 
 export async function getAdminSessionStatus() {
