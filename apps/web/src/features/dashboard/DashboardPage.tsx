@@ -55,6 +55,7 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
             elevation={0}
             sx={{
               p: 2,
+              pl: { xs: 3.5, sm: 4 },
               borderRadius: 4,
               color: "text.primary",
               bgcolor: "rgba(255,255,255,0.72)",
