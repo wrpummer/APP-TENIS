@@ -20,6 +20,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
+import { ColoredScore } from "@/components/matches/ColoredScore";
 import { deleteMatch } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
 import type { Match, Player } from "@/types/domain";
@@ -102,7 +103,7 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
                 <Stack spacing={1.5}>
                   <Stack direction="row" justifyContent="space-between" gap={1}>
                     <Typography fontWeight={700}>{formatDate(match.matchDate)}</Typography>
-                    <Chip size="small" label={match.resultSummary} color="secondary" />
+                    <ColoredScore match={match} size="small" />
                   </Stack>
                   <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
                     <strong>Dupla A:</strong> {resolveTeam(match, players, "A")}
@@ -140,7 +141,9 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
                     <TableCell>{formatDate(match.matchDate)}</TableCell>
                     <TableCell>{resolveTeam(match, players, "A")}</TableCell>
                     <TableCell>{resolveTeam(match, players, "B")}</TableCell>
-                    <TableCell>{match.resultSummary}</TableCell>
+                    <TableCell>
+                      <ColoredScore match={match} size="small" />
+                    </TableCell>
                     <TableCell align="right">
                       <Stack direction={{ xs: "column", lg: "row" }} spacing={1} justifyContent="flex-end">
                         <Button size="small" variant="outlined" startIcon={<EditRoundedIcon />} onClick={() => onEditMatch(match)}>

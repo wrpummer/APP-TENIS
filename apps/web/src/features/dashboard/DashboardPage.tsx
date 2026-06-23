@@ -3,6 +3,7 @@ import { NextMatchCard } from "@/components/dashboard/NextMatchCard";
 import { LoadingState } from "@/components/common/LoadingState";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { StatCard } from "@/components/common/StatCard";
+import { ColoredScore } from "@/components/matches/ColoredScore";
 import { usePlayers } from "@/hooks/usePlayers";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import type { Match, Player } from "@/types/domain";
@@ -149,7 +150,9 @@ export function DashboardPage() {
                       }}
                     />
                   </Stack>
-                  <Typography fontWeight={700} sx={{ mt: 1 }}>{match.resultSummary}</Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <ColoredScore match={match} />
+                  </Box>
                   <Typography color="text.secondary">{formatShortDate(match.matchDate)}</Typography>
                 </Paper>
               ))}

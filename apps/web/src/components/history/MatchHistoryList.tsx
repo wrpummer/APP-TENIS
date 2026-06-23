@@ -1,6 +1,7 @@
 import { Chip, Paper, Stack, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { ColoredScore } from "@/components/matches/ColoredScore";
 import type { Match, Player } from "@/types/domain";
 
 function resolveTeam(match: Match, players: Player[], side: "A" | "B") {
@@ -65,7 +66,7 @@ export function MatchHistoryList({ matches, players }: MatchHistoryListProps) {
               </Typography>
             </div>
             <div>
-              <Typography fontWeight={700}>{match.resultSummary}</Typography>
+              <ColoredScore match={match} />
               <Typography color="text.secondary">
                 Vencedor: Dupla {match.winnerTeam}
               </Typography>
