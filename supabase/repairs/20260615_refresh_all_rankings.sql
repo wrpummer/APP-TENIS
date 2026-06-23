@@ -23,7 +23,7 @@ begin
     slot.player_id,
     slot.team,
     case when slot.team = m.winner_team then 1 else 0 end as is_win,
-    case when slot.team = m.winner_team then 3 else 1 end as points
+    coalesce(set_points.points, 0)::integer as points
   from public.matches m
   join lateral (
     values
@@ -32,6 +32,19 @@ begin
       (m.team_b_player_1_id, 'B'),
       (m.team_b_player_2_id, 'B')
   ) as slot(player_id, team) on true
+  left join lateral (
+    select
+      sum(
+        case
+          when (slot.team = 'A' and ms.team_a_games > ms.team_b_games)
+            or (slot.team = 'B' and ms.team_b_games > ms.team_a_games) then 3
+          else 1
+        end
+      )::integer as points
+    from public.match_sets ms
+    where ms.match_id = m.id
+      and ms.team_a_games <> ms.team_b_games
+  ) as set_points on true
   where m.season_id = target_season_id;
 
   create temporary table tmp_match_set_rows on commit drop as

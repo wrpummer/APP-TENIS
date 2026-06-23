@@ -189,6 +189,29 @@ function getTeamPlayers(match: Match, team: "A" | "B") {
     : [match.teamBPlayer1Id, match.teamBPlayer2Id];
 }
 
+function getSetWinnerTeam(set: Match["sets"][number]): "A" | "B" | null {
+  if (set.teamAGames > set.teamBGames) {
+    return "A";
+  }
+
+  if (set.teamBGames > set.teamAGames) {
+    return "B";
+  }
+
+  return null;
+}
+
+function getSetBasedPointsForTeam(match: Match, team: "A" | "B") {
+  return match.sets.reduce((total, set) => {
+    const setWinner = getSetWinnerTeam(set);
+    if (!setWinner) {
+      return total;
+    }
+
+    return total + (setWinner === team ? 3 : 1);
+  }, 0);
+}
+
 function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: string): RankingRow[] {
   if (matches.length === 0) {
     return [];
@@ -231,7 +254,7 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       aggregate.matchesPlayed += 1;
       aggregate.wins += isWinner ? 1 : 0;
       aggregate.losses += isWinner ? 0 : 1;
-      aggregate.points += isWinner ? 3 : 1;
+      aggregate.points += getSetBasedPointsForTeam(match, slot.team);
 
       for (const set of match.sets) {
         const ownGames = slot.team === "A" ? set.teamAGames : set.teamBGames;
@@ -310,10 +333,11 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
 
     for (const team of teams) {
       const isWin = team.side === match.winnerTeam;
+      const teamPoints = getSetBasedPointsForTeam(match, team.side);
       for (const playerId of team.players) {
         const monthMap = monthlyRows.get(playerId) ?? new Map<number, { points: number; wins: number }>();
         const monthRow = monthMap.get(month) ?? { points: 0, wins: 0 };
-        monthRow.points += isWin ? 3 : 1;
+        monthRow.points += teamPoints;
         monthRow.wins += isWin ? 1 : 0;
         monthMap.set(month, monthRow);
         monthlyRows.set(playerId, monthMap);
@@ -648,15 +672,15 @@ export async function getDashboard(): Promise<DashboardData> {
     const pointsRow = monthlyPlayerPoints.get(key) ?? new Map<string, number>();
     const teamAPlayers = [match.teamAPlayer1Id, match.teamAPlayer2Id];
     const teamBPlayers = [match.teamBPlayer1Id, match.teamBPlayer2Id];
-    const winners = match.winnerTeam === "A" ? teamAPlayers : teamBPlayers;
-    const losers = match.winnerTeam === "A" ? teamBPlayers : teamAPlayers;
+    const teamAPoints = getSetBasedPointsForTeam(match, "A");
+    const teamBPoints = getSetBasedPointsForTeam(match, "B");
 
-    for (const playerId of winners) {
-      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + 3);
+    for (const playerId of teamAPlayers) {
+      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + teamAPoints);
     }
 
-    for (const playerId of losers) {
-      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + 1);
+    for (const playerId of teamBPlayers) {
+      pointsRow.set(playerId, (pointsRow.get(playerId) ?? 0) + teamBPoints);
     }
 
     monthlyPlayerPoints.set(key, pointsRow);
