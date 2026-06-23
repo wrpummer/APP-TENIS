@@ -39,6 +39,11 @@ function StatPill({ label, value }: { label: string; value: string | number }) {
 }
 
 export function RankingTable({ rows }: RankingTableProps) {
+  const pointCounts = new Map<number, number>();
+  for (const row of rows) {
+    pointCounts.set(row.points, (pointCounts.get(row.points) ?? 0) + 1);
+  }
+
   return (
     <>
       <Stack spacing={2} sx={{ display: { xs: "flex", md: "none" } }}>
@@ -60,6 +65,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                   <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                     {row.rankingPosition <= 3 && <MilitaryTechRoundedIcon color="secondary" fontSize="small" />}
                     <Typography fontWeight={800}>#{row.rankingPosition}</Typography>
+                    {(pointCounts.get(row.points) ?? 0) > 1 && <Chip size="small" label="Empate" color="primary" variant="outlined" />}
                     {row.importedFromLegacy && <Chip size="small" label="Legado" color="secondary" />}
                   </Stack>
                   <Typography fontWeight={700} sx={{ mt: 0.5, wordBreak: "break-word" }}>
@@ -104,6 +110,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                   <Stack direction="row" spacing={1} alignItems="center">
                     {row.rankingPosition <= 3 && <MilitaryTechRoundedIcon color="secondary" fontSize="small" />}
                     <Typography fontWeight={700}>{row.rankingPosition}</Typography>
+                    {(pointCounts.get(row.points) ?? 0) > 1 && <Chip size="small" label="Empate" color="primary" variant="outlined" />}
                   </Stack>
                 </TableCell>
                 <TableCell>

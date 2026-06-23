@@ -67,15 +67,20 @@ export function HallOfFamePage() {
                           {formatHallValue(entry.category, entry.valueNumber, entry.valueText)} {getValueLabel(entry.category)}
                         </Typography>
                       </Box>
-                      <EmojiEventsRoundedIcon color="secondary" sx={{ fontSize: 32 }} />
+                      <EmojiEventsRoundedIcon sx={{ fontSize: 34, color: "#9a6700" }} />
                     </Stack>
 
                     {winners.length > 1 && (
                       <Chip
                         label={`${winners.length} jogadores empatados`}
-                        color="secondary"
                         variant="outlined"
-                        sx={{ alignSelf: "flex-start", fontWeight: 700 }}
+                        sx={{
+                          alignSelf: "flex-start",
+                          borderColor: "#0a4d3c",
+                          bgcolor: "rgba(10,77,60,0.08)",
+                          color: "#0a4d3c",
+                          fontWeight: 850
+                        }}
                       />
                     )}
 

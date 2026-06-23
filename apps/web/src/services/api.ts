@@ -271,7 +271,7 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
     }
   }
 
-  return Array.from(aggregates.values())
+  const sortedRows = Array.from(aggregates.values())
     .map((aggregate) => ({
       ...aggregate,
       rankingPosition: 0,
@@ -287,8 +287,20 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       || (b.setsWon - b.setsLost) - (a.setsWon - a.setsLost)
       || (b.gamesWon - b.gamesLost) - (a.gamesWon - a.gamesLost)
       || a.playerName.localeCompare(b.playerName)
-    )
-    .map((row, index) => ({ ...row, rankingPosition: index + 1 }));
+    );
+
+  const rankedRows: RankingRow[] = [];
+  for (const [index, row] of sortedRows.entries()) {
+    const previous = rankedRows[index - 1];
+    rankedRows.push({
+      ...row,
+      rankingPosition: previous && previous.points === row.points
+        ? previous.rankingPosition
+        : index + 1
+    });
+  }
+
+  return rankedRows;
 }
 
 function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], seasonId: string): PlayerStatistics[] {
