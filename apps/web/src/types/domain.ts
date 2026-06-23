@@ -86,6 +86,11 @@ export interface HallOfFameEntry {
   playerId: string;
   playerName: string;
   photoUrl?: string | null;
+  players?: Array<{
+    playerId: string;
+    playerName: string;
+    photoUrl?: string | null;
+  }>;
   valueText?: string | null;
   valueNumber?: number | null;
 }

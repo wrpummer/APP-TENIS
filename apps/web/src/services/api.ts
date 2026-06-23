@@ -446,25 +446,34 @@ function buildHallOfFameFromRanking(ranking: RankingRow[]): HallOfFameEntry[] {
     return [];
   }
 
-  const champion = ranking[0];
-  const mostWins = [...ranking].sort((a, b) => b.wins - a.wins || b.points - a.points || a.playerName.localeCompare(b.playerName))[0];
-  const bestWinRate = [...ranking].sort((a, b) =>
-    b.winRate - a.winRate
-    || b.wins - a.wins
-    || b.points - a.points
-    || a.playerName.localeCompare(b.playerName)
-  )[0];
-  const mostActive = [...ranking].sort((a, b) =>
-    b.matchesPlayed - a.matchesPlayed
-    || b.points - a.points
-    || a.playerName.localeCompare(b.playerName)
-  )[0];
+  const createEntry = (category: string, valueNumber: number, rows: RankingRow[]): HallOfFameEntry => {
+    const sortedRows = [...rows].sort((a, b) => a.playerName.localeCompare(b.playerName));
+    const first = sortedRows[0];
+
+    return {
+      category,
+      playerId: first.playerId,
+      playerName: first.playerName,
+      photoUrl: first.photoUrl,
+      players: sortedRows.map((row) => ({
+        playerId: row.playerId,
+        playerName: row.playerName,
+        photoUrl: row.photoUrl
+      })),
+      valueNumber
+    };
+  };
+
+  const maxPoints = Math.max(...ranking.map((row) => row.points));
+  const maxWins = Math.max(...ranking.map((row) => row.wins));
+  const maxWinRate = Math.max(...ranking.map((row) => row.winRate));
+  const maxMatches = Math.max(...ranking.map((row) => row.matchesPlayed));
 
   return [
-    { category: "Campeão da temporada", playerId: champion.playerId, playerName: champion.playerName, photoUrl: champion.photoUrl, valueNumber: champion.points },
-    { category: "Mais vitórias", playerId: mostWins.playerId, playerName: mostWins.playerName, photoUrl: mostWins.photoUrl, valueNumber: mostWins.wins },
-    { category: "Melhor aproveitamento", playerId: bestWinRate.playerId, playerName: bestWinRate.playerName, photoUrl: bestWinRate.photoUrl, valueNumber: bestWinRate.winRate },
-    { category: "Jogador mais ativo", playerId: mostActive.playerId, playerName: mostActive.playerName, photoUrl: mostActive.photoUrl, valueNumber: mostActive.matchesPlayed }
+    createEntry("Campeão da temporada", maxPoints, ranking.filter((row) => row.points === maxPoints)),
+    createEntry("Mais vitórias", maxWins, ranking.filter((row) => row.wins === maxWins)),
+    createEntry("Melhor aproveitamento", maxWinRate, ranking.filter((row) => row.winRate === maxWinRate)),
+    createEntry("Jogador mais ativo", maxMatches, ranking.filter((row) => row.matchesPlayed === maxMatches))
   ];
 }
 
