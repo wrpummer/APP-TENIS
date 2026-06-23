@@ -296,7 +296,7 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       ...row,
       rankingPosition: previous && previous.points === row.points
         ? previous.rankingPosition
-        : index + 1
+        : (previous?.rankingPosition ?? 0) + 1
     });
   }
 
