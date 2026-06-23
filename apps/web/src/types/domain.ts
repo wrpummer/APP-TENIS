@@ -68,6 +68,12 @@ export interface RankingRow {
   setsLost: number;
   gamesWon: number;
   gamesLost: number;
+  matchNotes?: Array<{
+    matchId: string;
+    matchDate: string;
+    resultSummary: string;
+    note: string;
+  }>;
   importedFromLegacy?: boolean;
 }
 

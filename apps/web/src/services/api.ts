@@ -156,6 +156,12 @@ type PlayerAggregate = {
   playerId: string;
   playerName: string;
   photoUrl?: string | null;
+  matchNotes: Array<{
+    matchId: string;
+    matchDate: string;
+    resultSummary: string;
+    note: string;
+  }>;
   points: number;
   matchesPlayed: number;
   wins: number;
@@ -172,6 +178,7 @@ function createPlayerAggregate(player: Player, seasonId: string): PlayerAggregat
     playerId: player.id,
     playerName: player.displayName,
     photoUrl: player.photoUrl,
+    matchNotes: [],
     points: 0,
     matchesPlayed: 0,
     wins: 0,
@@ -255,6 +262,14 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       aggregate.wins += isWinner ? 1 : 0;
       aggregate.losses += isWinner ? 0 : 1;
       aggregate.points += getSetBasedPointsForTeam(match, slot.team);
+      if (match.notes?.trim()) {
+        aggregate.matchNotes.push({
+          matchId: match.id,
+          matchDate: match.matchDate,
+          resultSummary: match.resultSummary,
+          note: match.notes.trim()
+        });
+      }
 
       for (const set of match.sets) {
         const ownGames = slot.team === "A" ? set.teamAGames : set.teamBGames;
@@ -278,6 +293,7 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       winRate: aggregate.matchesPlayed > 0
         ? Number(((aggregate.wins / aggregate.matchesPlayed) * 100).toFixed(2))
         : 0,
+      matchNotes: aggregate.matchNotes,
       importedFromLegacy: false
     }))
     .sort((a, b) =>
