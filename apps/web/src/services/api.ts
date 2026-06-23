@@ -285,7 +285,6 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
       || b.wins - a.wins
       || b.winRate - a.winRate
       || (b.setsWon - b.setsLost) - (a.setsWon - a.setsLost)
-      || (b.gamesWon - b.gamesLost) - (a.gamesWon - a.gamesLost)
       || a.playerName.localeCompare(b.playerName)
     );
 
@@ -659,7 +658,6 @@ export async function getDashboard(): Promise<DashboardData> {
 
   const matchesPerMonthMap = new Map<string, { month: string; matches: number; sets: number }>();
   const monthlyPlayerAppearances = new Map<string, Map<string, number>>();
-  const monthlyGamesBalance = new Map<string, Map<string, number>>();
   const monthlyPlayerPoints = new Map<string, Map<string, number>>();
   for (const match of chartMatches) {
     const date = new Date(`${match.matchDate}T00:00:00`);
@@ -675,20 +673,6 @@ export async function getDashboard(): Promise<DashboardData> {
       appearanceRow.set(playerId, (appearanceRow.get(playerId) ?? 0) + 1);
     }
     monthlyPlayerAppearances.set(key, appearanceRow);
-
-    const balanceRow = monthlyGamesBalance.get(key) ?? new Map<string, number>();
-    const teamAGames = match.sets.reduce((sum, set) => sum + set.teamAGames, 0);
-    const teamBGames = match.sets.reduce((sum, set) => sum + set.teamBGames, 0);
-    const teamABalance = teamAGames - teamBGames;
-    const teamBBalance = teamBGames - teamAGames;
-
-    for (const playerId of [match.teamAPlayer1Id, match.teamAPlayer2Id]) {
-      balanceRow.set(playerId, (balanceRow.get(playerId) ?? 0) + teamABalance);
-    }
-    for (const playerId of [match.teamBPlayer1Id, match.teamBPlayer2Id]) {
-      balanceRow.set(playerId, (balanceRow.get(playerId) ?? 0) + teamBBalance);
-    }
-    monthlyGamesBalance.set(key, balanceRow);
 
     const pointsRow = monthlyPlayerPoints.get(key) ?? new Map<string, number>();
     const teamAPlayers = [match.teamAPlayer1Id, match.teamAPlayer2Id];
@@ -749,18 +733,6 @@ export async function getDashboard(): Promise<DashboardData> {
     };
   });
 
-  const monthlyBestGamesBalance = lastTwelveMonths.months.map((item) => {
-    const balances = monthlyGamesBalance.get(item.key) ?? new Map<string, number>();
-    const winnerEntry = Array.from(balances.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
-    return {
-      month: item.month,
-      year: item.year,
-      label: item.label,
-      playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
-      balance: winnerEntry?.[1] ?? 0
-    };
-  });
-
   return {
     activeSeason,
     ranking: safeRanking,
@@ -770,8 +742,7 @@ export async function getDashboard(): Promise<DashboardData> {
     quickStats,
     matchesPerMonth,
     monthlyChampions,
-    monthlyMostActive,
-    monthlyBestGamesBalance
+    monthlyMostActive
   };
 }
 

@@ -81,7 +81,6 @@ export function RankingTable({ rows }: RankingTableProps) {
                 <StatPill label="Derrotas" value={row.losses} />
                 <StatPill label="Aproveitamento" value={formatPercentage(row.winRate)} />
                 <StatPill label="Saldo sets" value={row.setsWon - row.setsLost} />
-                <StatPill label="Saldo games" value={row.gamesWon - row.gamesLost} />
               </Stack>
             </Stack>
           </Paper>
@@ -100,7 +99,6 @@ export function RankingTable({ rows }: RankingTableProps) {
               <TableCell align="right">Derrotas</TableCell>
               <TableCell align="right">Aproveitamento</TableCell>
               <TableCell align="right">Saldo sets</TableCell>
-              <TableCell align="right">Saldo games</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -128,7 +126,6 @@ export function RankingTable({ rows }: RankingTableProps) {
                 <TableCell align="right">{row.losses}</TableCell>
                 <TableCell align="right">{formatPercentage(row.winRate)}</TableCell>
                 <TableCell align="right">{row.setsWon - row.setsLost}</TableCell>
-                <TableCell align="right">{row.gamesWon - row.gamesLost}</TableCell>
               </TableRow>
             ))}
           </TableBody>

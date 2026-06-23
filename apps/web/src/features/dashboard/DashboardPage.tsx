@@ -104,7 +104,6 @@ export function DashboardPage() {
 
   const monthlyChampions = getLastThreeItems(data.monthlyChampions);
   const monthlyMostActive = getLastThreeItems(data.monthlyMostActive);
-  const monthlyBestGamesBalance = getLastThreeItems(data.monthlyBestGamesBalance);
   const matchesPerMonth = getLastThreeItems(data.matchesPerMonth);
 
   return (
@@ -201,19 +200,6 @@ export function DashboardPage() {
           />
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
-          <MonthlyHighlightPanel
-            title="Maior saldo de games"
-            subtitle="Quem terminou cada mês com melhor diferença entre games ganhos e perdidos."
-            accent="#9a3412"
-            rows={monthlyBestGamesBalance.map((row) => ({
-              label: row.label,
-              playerName: row.playerName,
-              mainValue: `${row.balance > 0 ? "+" : ""}${row.balance}`,
-              detail: row.balance !== 0 ? "Saldo de games no mês" : "Sem saldo no mês"
-            }))}
-          />
-        </Grid>
       </Grid>
     </Stack>
   );
