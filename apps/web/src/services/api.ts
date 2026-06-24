@@ -102,7 +102,9 @@ async function refreshSeasonDerivedData(seasonId: string) {
   });
 
   if (error) {
-    throw new Error(getErrorMessage(error, "Não foi possível recalcular ranking e estatísticas da temporada."));
+    console.warn(
+      getErrorMessage(error, "Não foi possível recalcular as tabelas derivadas da temporada.")
+    );
   }
 }
 

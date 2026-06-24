@@ -1,6 +1,8 @@
 create or replace function public.refresh_season_derived_data(target_season_id uuid)
 returns void
 language plpgsql
+security definer
+set search_path = public
 as $$
 begin
   delete from public.season_rankings where season_id = target_season_id;
