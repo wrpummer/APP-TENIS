@@ -168,6 +168,21 @@ export function DashboardPage() {
                   <Box sx={{ mt: 1 }}>
                     <ColoredScore match={match} />
                   </Box>
+                  {match.notes?.trim() && (
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        mt: 1.25,
+                        p: 1.25,
+                        borderRadius: 2.5,
+                        bgcolor: "rgba(10,77,60,0.035)",
+                        borderColor: "rgba(10,77,60,0.12)"
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">Observação</Typography>
+                      <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>{match.notes}</Typography>
+                    </Paper>
+                  )}
                   <Typography color="text.secondary">{formatShortDate(match.matchDate)}</Typography>
                 </Paper>
               ))}
