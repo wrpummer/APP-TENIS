@@ -158,17 +158,17 @@ export const mockDashboard: DashboardData = {
     { month: "Mai", year: 2026, label: "Mai/2026", matches: 26, sets: 59 }
   ],
   monthlyChampions: [
-    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", points: 69 },
-    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Carlos Eduardo", points: 122 },
-    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Carlos Eduardo", points: 166 },
-    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Hellinton", points: 137 },
-    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Carlos Eduardo", points: 274 }
+    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], points: 69 },
+    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], points: 122 },
+    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], points: 166 },
+    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Hellinton", leaders: ["Hellinton"], points: 137 },
+    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], points: 274 }
   ],
   monthlyMostActive: [
-    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", matches: 12, points: 69 },
-    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Ailson", matches: 10, points: 42 },
-    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Hellinton", matches: 9, points: 38 },
-    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Carlos Eduardo", matches: 8, points: 35 },
-    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Ailson", matches: 11, points: 47 }
+    { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], matches: 12, points: 69 },
+    { month: "Fev", year: 2026, label: "Fev/2026", playerName: "Ailson", leaders: ["Ailson"], matches: 10, points: 42 },
+    { month: "Mar", year: 2026, label: "Mar/2026", playerName: "Hellinton", leaders: ["Hellinton"], matches: 9, points: 38 },
+    { month: "Abr", year: 2026, label: "Abr/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], matches: 8, points: 35 },
+    { month: "Mai", year: 2026, label: "Mai/2026", playerName: "Ailson", leaders: ["Ailson"], matches: 11, points: 47 }
   ]
 };

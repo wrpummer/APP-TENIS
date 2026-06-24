@@ -723,31 +723,47 @@ export async function getDashboard(): Promise<DashboardData> {
   const playersById = new Map(players.map((player) => [player.id, player]));
   const monthlyChampions = lastTwelveMonths.months.map((item) => {
     const points = monthlyPlayerPoints.get(item.key) ?? new Map<string, number>();
-    const winnerEntry = Array.from(points.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+    const maxPoints = Math.max(0, ...points.values());
+    const leaders = Array.from(points.entries())
+      .filter((entry) => entry[1] === maxPoints && maxPoints > 0)
+      .sort((a, b) => {
+        const nameA = playersById.get(a[0])?.displayName ?? "";
+        const nameB = playersById.get(b[0])?.displayName ?? "";
+        return nameA.localeCompare(nameB);
+      })
+      .map((entry) => playersById.get(entry[0])?.displayName ?? "Jogador");
     return {
       month: item.month,
       year: item.year,
       label: item.label,
-      playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
-      points: winnerEntry?.[1] ?? 0
+      playerName: leaders[0] ?? "Sem dados",
+      leaders,
+      points: maxPoints
     };
   });
 
   const monthlyMostActive = lastTwelveMonths.months.map((item) => {
     const counts = monthlyPlayerAppearances.get(item.key) ?? new Map<string, number>();
     const points = monthlyPlayerPoints.get(item.key) ?? new Map<string, number>();
-    const winnerEntry = Array.from(counts.entries()).sort((a, b) =>
-      b[1] - a[1]
-      || (points.get(b[0]) ?? 0) - (points.get(a[0]) ?? 0)
-      || a[0].localeCompare(b[0])
-    )[0];
+    const maxMatches = Math.max(0, ...counts.values());
+    const tiedByMatches = Array.from(counts.entries()).filter((entry) => entry[1] === maxMatches && maxMatches > 0);
+    const maxPointsAmongMostActive = Math.max(0, ...tiedByMatches.map((entry) => points.get(entry[0]) ?? 0));
+    const leaders = tiedByMatches
+      .filter((entry) => (points.get(entry[0]) ?? 0) === maxPointsAmongMostActive)
+      .sort((a, b) => {
+        const nameA = playersById.get(a[0])?.displayName ?? "";
+        const nameB = playersById.get(b[0])?.displayName ?? "";
+        return nameA.localeCompare(nameB);
+      })
+      .map((entry) => playersById.get(entry[0])?.displayName ?? "Jogador");
     return {
       month: item.month,
       year: item.year,
       label: item.label,
-      playerName: winnerEntry ? (playersById.get(winnerEntry[0])?.displayName ?? "Jogador") : "Sem dados",
-      matches: winnerEntry?.[1] ?? 0,
-      points: winnerEntry ? points.get(winnerEntry[0]) ?? 0 : 0
+      playerName: leaders[0] ?? "Sem dados",
+      leaders,
+      matches: maxMatches,
+      points: maxPointsAmongMostActive
     };
   });
 

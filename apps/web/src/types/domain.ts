@@ -131,8 +131,8 @@ export interface DashboardData {
   nextMatch: NextMatchInfo | null;
   quickStats: Array<{ label: string; value: string; detail: string }>;
   matchesPerMonth: Array<{ month: string; year: number; label: string; matches: number; sets: number }>;
-  monthlyChampions: Array<{ month: string; year: number; label: string; playerName: string; points: number }>;
-  monthlyMostActive: Array<{ month: string; year: number; label: string; playerName: string; matches: number; points: number }>;
+  monthlyChampions: Array<{ month: string; year: number; label: string; playerName: string; points: number; leaders: string[] }>;
+  monthlyMostActive: Array<{ month: string; year: number; label: string; playerName: string; matches: number; points: number; leaders: string[] }>;
 }
 
 export interface AdminCredentials {

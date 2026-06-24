@@ -32,11 +32,27 @@ interface MonthlyHighlightPanelProps {
   subtitle: string;
   rows: Array<{
     label: string;
-    playerName?: string;
+    playerNames?: string[];
     mainValue: string;
     detail?: string;
   }>;
   accent: string;
+}
+
+function LeaderNames({ names }: { names?: string[] }) {
+  if (!names?.length) {
+    return <Typography fontWeight={800}>Sem dados</Typography>;
+  }
+
+  return (
+    <Stack spacing={0.25}>
+      {names.map((name) => (
+        <Typography key={name} fontWeight={850} noWrap>
+          {name}
+        </Typography>
+      ))}
+    </Stack>
+  );
 }
 
 function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlightPanelProps) {
@@ -65,7 +81,7 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
             }}
           >
             <Typography variant="caption" color="text.secondary">Mês atual - {current.label}</Typography>
-            {current.playerName && <Typography variant="h6" fontWeight={850}>{current.playerName}</Typography>}
+            <LeaderNames names={current.playerNames} />
             <Typography variant="h5" fontWeight={850} color={accent}>{current.mainValue}</Typography>
             {current.detail && <Typography variant="body2" color="text.secondary">{current.detail}</Typography>}
           </Paper>
@@ -81,7 +97,7 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
               <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
                 <Box minWidth={0}>
                   <Typography variant="caption" color="text.secondary">{row.label}</Typography>
-                  {row.playerName && <Typography fontWeight={800} noWrap>{row.playerName}</Typography>}
+                  <LeaderNames names={row.playerNames} />
                   {row.detail && <Typography variant="body2" color="text.secondary">{row.detail}</Typography>}
                 </Box>
                 <Typography fontWeight={900} color={accent} textAlign="right">{row.mainValue}</Typography>
@@ -161,14 +177,14 @@ export function DashboardPage() {
 
         <Grid size={{ xs: 12, xl: 6 }}>
           <MonthlyHighlightPanel
-            title="Campeões por pontos"
-            subtitle="Vencedores dos últimos 3 meses. O mês atual aparece em destaque."
+            title="Maior Pontuação"
+            subtitle="Líderes por pontos dos últimos 3 meses. O mês atual aparece em destaque."
             accent="#0a4d3c"
             rows={monthlyChampions.map((row) => ({
               label: row.label,
-              playerName: row.playerName,
+              playerNames: row.leaders,
               mainValue: `${row.points} pts`,
-              detail: row.points > 0 ? "Maior pontuação do mês" : "Sem partidas no mês"
+              detail: row.points > 0 ? "Maior pontuação do mês" : "Sem dados no mês"
             }))}
           />
         </Grid>
@@ -176,30 +192,29 @@ export function DashboardPage() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <MonthlyHighlightPanel
             title="Jogador mais frequente"
-            subtitle="Mais partidas no mês. Em caso de empate, vence quem tiver mais pontos."
+            subtitle="Mais jogos no mês. Em caso de empate, vence quem tiver mais pontos."
             accent="#118ab2"
             rows={monthlyMostActive.map((row) => ({
               label: row.label,
-              playerName: row.playerName,
+              playerNames: row.leaders,
               mainValue: `${row.matches} jogos`,
-              detail: row.matches > 0 ? `${row.points} pontos no mês` : "Sem partidas no mês"
+              detail: row.matches > 0 ? `${row.points} pontos no mês` : "Sem dados no mês"
             }))}
           />
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
           <MonthlyHighlightPanel
-            title="Partidas e sets no mês"
-            subtitle="Volume de jogos registrados nos últimos 3 meses."
+            title="Qtde SETS do mês"
+            subtitle="Quantidade de sets registrados nos últimos 3 meses."
             accent="#7a5c00"
             rows={matchesPerMonth.map((row) => ({
               label: row.label,
-              mainValue: `${row.matches} partidas`,
-              detail: `${row.sets} sets registrados`
+              mainValue: `${row.sets} sets`,
+              detail: row.sets > 0 ? "Sets registrados no mês" : "Sem sets no mês"
             }))}
           />
         </Grid>
-
       </Grid>
     </Stack>
   );
