@@ -70,6 +70,12 @@ export function MatchHistoryList({ matches, players }: MatchHistoryListProps) {
               <Typography color="text.secondary">
                 Vencedor: Dupla {match.winnerTeam}
               </Typography>
+              {match.notes?.trim() && (
+                <Paper variant="outlined" sx={{ mt: 1, p: 1.5, borderRadius: 3, bgcolor: "rgba(10,77,60,0.03)" }}>
+                  <Typography variant="caption" color="text.secondary">Observação</Typography>
+                  <Typography sx={{ whiteSpace: "pre-line" }}>{match.notes}</Typography>
+                </Paper>
+              )}
             </div>
           </Stack>
         </Paper>
