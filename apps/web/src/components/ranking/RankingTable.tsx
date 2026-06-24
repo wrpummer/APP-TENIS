@@ -2,12 +2,7 @@ import MilitaryTechRoundedIcon from "@mui/icons-material/MilitaryTechRounded";
 import {
   Avatar,
   Box,
-  Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Paper,
   Stack,
   Table,
@@ -17,7 +12,6 @@ import {
   TableRow,
   Typography
 } from "@mui/material";
-import { useState } from "react";
 import type { RankingRow } from "@/types/domain";
 import { formatPercentage } from "@/utils/tennis";
 
@@ -44,13 +38,7 @@ function StatPill({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-function formatShortDate(value: string) {
-  const [year, month, day] = value.slice(0, 10).split("-");
-  return `${day}/${month}/${year}`;
-}
-
 export function RankingTable({ rows }: RankingTableProps) {
-  const [selectedObservation, setSelectedObservation] = useState<RankingRow | null>(null);
   const pointCounts = new Map<number, number>();
   for (const row of rows) {
     pointCounts.set(row.points, (pointCounts.get(row.points) ?? 0) + 1);
@@ -83,11 +71,6 @@ export function RankingTable({ rows }: RankingTableProps) {
                   <Typography fontWeight={700} sx={{ mt: 0.5, wordBreak: "break-word" }}>
                     {row.playerName}
                   </Typography>
-                  {(row.matchNotes?.length ?? 0) > 0 && (
-                    <Button size="small" variant="outlined" sx={{ mt: 1 }} onClick={() => setSelectedObservation(row)}>
-                      Observações
-                    </Button>
-                  )}
                 </Box>
               </Stack>
 
@@ -134,11 +117,6 @@ export function RankingTable({ rows }: RankingTableProps) {
                     <div>
                       <Typography fontWeight={700}>{row.playerName}</Typography>
                       {row.importedFromLegacy && <Chip size="small" label="Legado" color="secondary" />}
-                      {(row.matchNotes?.length ?? 0) > 0 && (
-                        <Button size="small" variant="outlined" sx={{ mt: 0.75 }} onClick={() => setSelectedObservation(row)}>
-                          Observações
-                        </Button>
-                      )}
                     </div>
                   </Stack>
                 </TableCell>
@@ -153,23 +131,6 @@ export function RankingTable({ rows }: RankingTableProps) {
           </TableBody>
         </Table>
       </Paper>
-
-      <Dialog open={Boolean(selectedObservation)} onClose={() => setSelectedObservation(null)} fullWidth maxWidth="sm">
-        <DialogTitle>Observações das partidas de {selectedObservation?.playerName}</DialogTitle>
-        <DialogContent>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
-            {(selectedObservation?.matchNotes ?? []).map((item) => (
-              <Paper key={`${item.matchId}-${item.note}`} variant="outlined" sx={{ p: 1.5, borderRadius: 3 }}>
-                <Typography fontWeight={800}>{formatShortDate(item.matchDate)} - {item.resultSummary}</Typography>
-                <Typography sx={{ whiteSpace: "pre-line" }}>{item.note}</Typography>
-              </Paper>
-            ))}
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSelectedObservation(null)}>Fechar</Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }
