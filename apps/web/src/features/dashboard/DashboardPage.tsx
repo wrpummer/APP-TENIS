@@ -81,7 +81,7 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
             }}
           >
             <Typography variant="caption" color="text.secondary">Mês atual - {current.label}</Typography>
-            <LeaderNames names={current.playerNames} />
+            {current.playerNames !== undefined && <LeaderNames names={current.playerNames} />}
             <Typography variant="h5" fontWeight={850} color={accent}>{current.mainValue}</Typography>
             {current.detail && <Typography variant="body2" color="text.secondary">{current.detail}</Typography>}
           </Paper>
@@ -97,7 +97,7 @@ function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlig
               <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
                 <Box minWidth={0}>
                   <Typography variant="caption" color="text.secondary">{row.label}</Typography>
-                  <LeaderNames names={row.playerNames} />
+                  {row.playerNames !== undefined && <LeaderNames names={row.playerNames} />}
                   {row.detail && <Typography variant="body2" color="text.secondary">{row.detail}</Typography>}
                 </Box>
                 <Typography fontWeight={900} color={accent} textAlign="right">{row.mainValue}</Typography>
