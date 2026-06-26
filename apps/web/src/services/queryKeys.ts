@@ -1,5 +1,7 @@
 export const queryKeys = {
   dashboard: ["dashboard"] as const,
+  nextMatchConfirmations: (seasonId: string, matchDate: string) =>
+    ["next-match-confirmations", seasonId, matchDate] as const,
   adminSession: ["admin-session"] as const,
   seasons: ["seasons"] as const,
   ranking: (seasonId: string) => ["ranking", seasonId] as const,

@@ -123,6 +123,16 @@ export interface NextMatchInfo {
   status: NextMatchStatus;
 }
 
+export interface NextMatchConfirmation {
+  id: string;
+  seasonId: string;
+  matchDate: string;
+  playerId: string;
+  playerName: string;
+  photoUrl?: string | null;
+  confirmedAt: string;
+}
+
 export interface DashboardData {
   activeSeason: Season;
   ranking: RankingRow[];

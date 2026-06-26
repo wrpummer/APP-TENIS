@@ -129,7 +129,7 @@ export function DashboardPage() {
         subtitle="Visão geral da temporada atual, próximos jogos e destaques mensais do grupo."
       />
 
-      <NextMatchCard nextMatch={data.nextMatch} season={data.activeSeason} />
+      <NextMatchCard nextMatch={data.nextMatch} season={data.activeSeason} players={players} />
 
       <Grid container spacing={2}>
         {data.quickStats.map((stat) => (

@@ -7,8 +7,8 @@ import type {
   HallOfFameEntry,
   Match,
   MatchFormValues,
+  NextMatchConfirmation,
   NextMatchInfo,
-  NextMatchStatus,
   Player,
   PlayerStatistics,
   RankingRow,
@@ -43,25 +43,6 @@ function formatDecimal(value: number, digits = 1) {
   return value.toFixed(digits).replace(".", ",");
 }
 
-function formatPercentageLabel(value: number) {
-  return `${value.toFixed(2).replace(".", ",")}%`;
-}
-
-function translateHallOfFameCategory(category: string) {
-  switch (category) {
-    case "champion":
-      return "Campeão da temporada";
-    case "most_wins":
-      return "Mais sets vencidos";
-    case "best_win_rate":
-      return "Melhor aproveitamento";
-    case "most_active":
-      return "Jogador mais ativo";
-    default:
-      return category;
-  }
-}
-
 function getDashboardSeason(seasons: Season[]) {
   const currentYear = new Date().getFullYear();
   return seasons.find((season) => season.year === currentYear)
@@ -71,24 +52,6 @@ function getDashboardSeason(seasons: Season[]) {
 
 function buildNextMatchKey(seasonId: string) {
   return `next-match:${seasonId}`;
-}
-
-async function seasonHasMatches(seasonId: string) {
-  if (!hasSupabaseEnv) {
-    return mockMatches.length > 0;
-  }
-
-  const client = requireSupabase();
-  const { count, error } = await client
-    .from("matches")
-    .select("id", { count: "exact", head: true })
-    .eq("season_id", seasonId);
-
-  if (error) {
-    throw error;
-  }
-
-  return (count ?? 0) > 0;
 }
 
 async function refreshSeasonDerivedData(seasonId: string) {
@@ -995,6 +958,64 @@ export async function saveNextMatch(nextMatch: NextMatchInfo) {
   }
 
   return nextMatch;
+}
+
+export async function getNextMatchConfirmations(
+  seasonId: string,
+  matchDate: string
+): Promise<NextMatchConfirmation[]> {
+  if (!hasSupabaseEnv || !matchDate) {
+    return [];
+  }
+
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("next_match_confirmations")
+    .select("id, season_id, match_date, player_id, confirmed_at, players(display_name, photo_url)")
+    .eq("season_id", seasonId)
+    .eq("match_date", matchDate)
+    .order("confirmed_at", { ascending: true });
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível carregar as presenças confirmadas."));
+  }
+
+  return (data ?? []).map((row) => {
+    const player = Array.isArray(row.players) ? row.players[0] : row.players;
+    return {
+      id: row.id,
+      seasonId: row.season_id,
+      matchDate: row.match_date,
+      playerId: row.player_id,
+      playerName: player?.display_name ?? "Jogador",
+      photoUrl: player?.photo_url ?? null,
+      confirmedAt: row.confirmed_at
+    };
+  });
+}
+
+export async function confirmNextMatchPresence(input: {
+  seasonId: string;
+  matchDate: string;
+  playerId: string;
+}) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client.rpc("confirm_next_match_presence", {
+    target_season_id: input.seasonId,
+    target_match_date: input.matchDate,
+    target_player_id: input.playerId
+  });
+
+  if (error) {
+    if (error.code === "23505") {
+      throw new Error("Este jogador já confirmou presença neste jogo.");
+    }
+    throw new Error(getErrorMessage(error, "Não foi possível confirmar a presença."));
+  }
 }
 
 export async function savePlayer(player: Partial<Player>) {
