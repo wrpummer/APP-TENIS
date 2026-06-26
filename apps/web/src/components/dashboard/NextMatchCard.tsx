@@ -1,8 +1,8 @@
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import HowToRegRoundedIcon from "@mui/icons-material/HowToRegRounded";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
+import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
 import {
   Alert,
   Autocomplete,
@@ -14,8 +14,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Typography
@@ -26,10 +30,20 @@ import {
   confirmNextMatchPresence,
   getAdminSessionStatus,
   getNextMatchConfirmations,
-  saveNextMatch
+  removeNextMatchConfirmationAsAdmin,
+  saveNextMatch,
+  updateNextMatchAttendanceStatus,
+  withdrawNextMatchPresence
 } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
-import type { NextMatchInfo, NextMatchStatus, Player, Season } from "@/types/domain";
+import type {
+  NextMatchAttendanceStatus,
+  NextMatchConfirmation,
+  NextMatchInfo,
+  NextMatchStatus,
+  Player,
+  Season
+} from "@/types/domain";
 
 interface NextMatchCardProps {
   nextMatch: NextMatchInfo | null;
@@ -45,6 +59,17 @@ const statusOptions: Array<{
   { value: "confirmed", label: "Confirmado", color: "success" },
   { value: "pending", label: "Confirmação pendente", color: "warning" },
   { value: "cancelled", label: "Cancelado", color: "error" }
+];
+
+const attendanceOptions: Array<{
+  value: NextMatchAttendanceStatus;
+  label: string;
+  color: "default" | "success" | "error" | "info";
+}> = [
+  { value: "awaiting", label: "Aguardando", color: "default" },
+  { value: "played", label: "Jogou", color: "success" },
+  { value: "absent", label: "Faltou", color: "error" },
+  { value: "justified", label: "Justificado", color: "info" }
 ];
 
 function formatDate(date: string) {
@@ -66,6 +91,15 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function isWithinWithdrawalLimit(date: string, time: string) {
+  if (!date || !time) {
+    return false;
+  }
+
+  const scheduledAt = new Date(`${date}T${time}:00`);
+  return scheduledAt.getTime() - Date.now() <= 10 * 60 * 60 * 1000;
+}
+
 export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps) {
   const queryClient = useQueryClient();
   const [date, setDate] = useState(nextMatch?.date ?? "");
@@ -76,9 +110,13 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   const [isEditing, setIsEditing] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [confirmationCode, setConfirmationCode] = useState("");
   const [confirmationFeedback, setConfirmationFeedback] = useState<string | null>(null);
+  const [withdrawalTarget, setWithdrawalTarget] = useState<NextMatchConfirmation | null>(null);
+  const [withdrawalCode, setWithdrawalCode] = useState("");
 
   const publishedDate = nextMatch?.date ?? "";
+  const publishedTime = nextMatch?.time ?? "";
   const publishedStatus = nextMatch?.status ?? "pending";
   const confirmationQueryKey = queryKeys.nextMatchConfirmations(season.id, publishedDate);
   const activePlayers = useMemo(
@@ -95,7 +133,10 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
     setIsEditing(false);
     setConfirmationOpen(false);
     setSelectedPlayer(null);
+    setConfirmationCode("");
     setConfirmationFeedback(null);
+    setWithdrawalTarget(null);
+    setWithdrawalCode("");
   }, [nextMatch]);
 
   const { data: canEdit } = useQuery({
@@ -136,10 +177,48 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
       await queryClient.invalidateQueries({ queryKey: confirmationQueryKey });
       setConfirmationFeedback("Presença confirmada com sucesso!");
       setSelectedPlayer(null);
+      setConfirmationCode("");
       setConfirmationOpen(false);
     },
     onError: (error) => {
       setConfirmationFeedback(error instanceof Error ? error.message : "Não foi possível confirmar a presença.");
+    }
+  });
+
+  const withdrawalMutation = useMutation({
+    mutationFn: withdrawNextMatchPresence,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: confirmationQueryKey });
+      setConfirmationFeedback("Seu nome foi retirado da lista de presença.");
+      setWithdrawalTarget(null);
+      setWithdrawalCode("");
+    },
+    onError: (error) => {
+      setConfirmationFeedback(error instanceof Error ? error.message : "Não foi possível retirar a confirmação.");
+    }
+  });
+
+  const attendanceMutation = useMutation({
+    mutationFn: updateNextMatchAttendanceStatus,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: confirmationQueryKey });
+      setConfirmationFeedback("Status do jogador atualizado.");
+    },
+    onError: (error) => {
+      setConfirmationFeedback(error instanceof Error ? error.message : "Não foi possível atualizar o status.");
+    }
+  });
+
+  const adminRemovalMutation = useMutation({
+    mutationFn: removeNextMatchConfirmationAsAdmin,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: confirmationQueryKey });
+      setConfirmationFeedback("Jogador removido da lista de presença.");
+      setWithdrawalTarget(null);
+      setWithdrawalCode("");
+    },
+    onError: (error) => {
+      setConfirmationFeedback(error instanceof Error ? error.message : "Não foi possível remover o jogador.");
     }
   });
 
@@ -163,24 +242,57 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
 
   function handleOpenConfirmation() {
     setSelectedPlayer(null);
+    setConfirmationCode("");
     setConfirmationFeedback(null);
     setConfirmationOpen(true);
   }
 
   function handleConfirmPresence() {
-    if (!selectedPlayer || !publishedDate) {
+    if (!selectedPlayer || !publishedDate || confirmationCode.length !== 4) {
       return;
     }
 
     confirmationMutation.mutate({
       seasonId: season.id,
       matchDate: publishedDate,
-      playerId: selectedPlayer.id
+      playerId: selectedPlayer.id,
+      withdrawalCode: confirmationCode
+    });
+  }
+
+  function handleOpenWithdrawal(confirmation: NextMatchConfirmation) {
+    setConfirmationFeedback(null);
+    setWithdrawalCode("");
+    setWithdrawalTarget(confirmation);
+  }
+
+  function handleWithdrawPresence() {
+    if (!withdrawalTarget) {
+      return;
+    }
+
+    if (canEdit) {
+      adminRemovalMutation.mutate(withdrawalTarget.id);
+      return;
+    }
+
+    if (withdrawalCode.length !== 4) {
+      return;
+    }
+
+    withdrawalMutation.mutate({
+      confirmationId: withdrawalTarget.id,
+      withdrawalCode
     });
   }
 
   const activeStatus = statusOptions.find((option) => option.value === status) ?? statusOptions[1];
   const confirmationDisabled = !publishedDate || publishedStatus === "cancelled";
+  const withdrawalLocked = isWithinWithdrawalLimit(publishedDate, publishedTime);
+  const presenceFeedbackIsError = confirmationMutation.isError
+    || withdrawalMutation.isError
+    || attendanceMutation.isError
+    || adminRemovalMutation.isError;
 
   return (
     <Paper sx={{ p: { xs: 2, sm: 3 }, border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
@@ -231,7 +343,9 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
             <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "stretch", sm: "center" }} gap={1.5}>
               <Box>
                 <Typography fontWeight={800}>Presenças confirmadas ({confirmations.length})</Typography>
-                <Typography variant="body2" color="text.secondary">Selecione seu nome para entrar na lista.</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Confirme seu nome e crie um código de 4 números. Guarde o código caso precise desistir.
+                </Typography>
               </Box>
               <Button
                 variant="contained"
@@ -243,7 +357,7 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
               </Button>
             </Stack>
 
-            {confirmationFeedback && <Alert severity="success">{confirmationFeedback}</Alert>}
+            {confirmationFeedback && <Alert severity={presenceFeedbackIsError ? "error" : "success"}>{confirmationFeedback}</Alert>}
             {confirmationsError && (
               <Alert severity="error">
                 {confirmationsError instanceof Error ? confirmationsError.message : "Não foi possível carregar as confirmações."}
@@ -259,23 +373,85 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
             ) : confirmations.length === 0 ? (
               <Typography variant="body2" color="text.secondary">Ainda não há jogadores confirmados.</Typography>
             ) : (
-              <Stack direction="row" gap={1} flexWrap="wrap">
+              <Stack spacing={1}>
                 {confirmations.map((confirmation) => (
-                  <Chip
+                  <Paper
                     key={confirmation.id}
-                    avatar={
+                    variant="outlined"
+                    sx={{ p: 1.25, borderRadius: 2.5, bgcolor: "background.paper" }}
+                  >
+                    <Stack
+                      direction={{ xs: "column", sm: "row" }}
+                      alignItems={{ xs: "stretch", sm: "center" }}
+                      justifyContent="space-between"
+                      gap={1.25}
+                    >
+                      <Stack direction="row" alignItems="center" spacing={1.25}>
                       <Avatar src={confirmation.photoUrl ?? undefined} alt={confirmation.playerName}>
                         {getInitials(confirmation.playerName)}
                       </Avatar>
-                    }
-                    label={confirmation.playerName}
-                    color="success"
-                    variant="outlined"
-                    icon={<CheckCircleRoundedIcon />}
-                    sx={{ fontWeight: 700 }}
-                  />
+                        <Box>
+                          <Typography fontWeight={800}>{confirmation.playerName}</Typography>
+                          {!canEdit && (
+                            <Chip
+                              size="small"
+                              label={attendanceOptions.find((option) => option.value === confirmation.attendanceStatus)?.label ?? "Aguardando"}
+                              color={attendanceOptions.find((option) => option.value === confirmation.attendanceStatus)?.color ?? "default"}
+                            />
+                          )}
+                        </Box>
+                      </Stack>
+
+                      <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems={{ xs: "stretch", sm: "center" }}>
+                        {canEdit ? (
+                          <FormControl size="small" sx={{ minWidth: 150 }}>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                              label="Status"
+                              value={confirmation.attendanceStatus}
+                              disabled={attendanceMutation.isPending}
+                              onChange={(event) => {
+                                setConfirmationFeedback(null);
+                                attendanceMutation.mutate({
+                                  confirmationId: confirmation.id,
+                                  attendanceStatus: event.target.value as NextMatchAttendanceStatus
+                                });
+                              }}
+                            >
+                              {attendanceOptions.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        ) : null}
+
+                        {(confirmation.attendanceStatus === "awaiting" || canEdit) && (
+                          <Button
+                            size="small"
+                            color="error"
+                            variant="outlined"
+                            startIcon={<UndoRoundedIcon />}
+                            onClick={() => handleOpenWithdrawal(confirmation)}
+                            disabled={!canEdit && withdrawalLocked}
+                          >
+                            {canEdit ? "Remover" : "Desistir"}
+                          </Button>
+                        )}
+                      </Stack>
+                    </Stack>
+                  </Paper>
                 ))}
               </Stack>
+            )}
+
+            {publishedDate && publishedStatus !== "cancelled" && (
+              <Alert severity={withdrawalLocked ? "warning" : "info"}>
+                {withdrawalLocked
+                  ? "O prazo para desistir terminou. Não é possível retirar a confirmação nas 10 horas anteriores ao jogo."
+                  : publishedTime
+                    ? "Se precisar desistir, faça isso até 10 horas antes do horário do jogo e informe seu código de 4 números."
+                    : "Enquanto o horário não estiver definido, a desistência permanece disponível."}
+              </Alert>
             )}
           </Stack>
         </Paper>
@@ -336,7 +512,9 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
         <DialogTitle>Confirmar presença</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
-            <Typography color="text.secondary">Pesquise e selecione o seu nome na lista de jogadores.</Typography>
+            <Alert severity="info">
+              São apenas dois passos: escolha seu nome e crie um código de 4 números. Anote ou memorize esse código, pois ele será necessário se você desistir.
+            </Alert>
             <Autocomplete
               options={activePlayers}
               value={selectedPlayer}
@@ -362,13 +540,67 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
                 </Box>
               )}
             />
+            <TextField
+              label="Crie seu código de 4 números"
+              value={confirmationCode}
+              onChange={(event) => setConfirmationCode(event.target.value.replace(/\D/g, "").slice(0, 4))}
+              type="password"
+              helperText="Exemplo: 2580. Não use a senha do seu celular ou banco."
+              slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 4 } }}
+              fullWidth
+            />
             {confirmationMutation.isError && confirmationFeedback && <Alert severity="error">{confirmationFeedback}</Alert>}
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3 }}>
           <Button color="inherit" onClick={() => setConfirmationOpen(false)} disabled={confirmationMutation.isPending}>Cancelar</Button>
-          <Button variant="contained" onClick={handleConfirmPresence} disabled={!selectedPlayer || confirmationMutation.isPending}>
+          <Button variant="contained" onClick={handleConfirmPresence} disabled={!selectedPlayer || confirmationCode.length !== 4 || confirmationMutation.isPending}>
             {confirmationMutation.isPending ? "Confirmando..." : "Confirmar meu nome"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(withdrawalTarget)}
+        onClose={() => !withdrawalMutation.isPending && !adminRemovalMutation.isPending && setWithdrawalTarget(null)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>{canEdit ? "Remover jogador" : "Desistir do jogo"}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <Typography>Retirar <strong>{withdrawalTarget?.playerName}</strong> da lista de presença?</Typography>
+            {canEdit ? (
+              <Alert severity="warning">Como administrador, você pode remover este nome sem informar o código.</Alert>
+            ) : (
+              <>
+                <Alert severity="info">Digite o mesmo código de 4 números criado quando este nome foi confirmado.</Alert>
+                <TextField
+                  label="Código de 4 números"
+                  value={withdrawalCode}
+                  onChange={(event) => setWithdrawalCode(event.target.value.replace(/\D/g, "").slice(0, 4))}
+                  type="password"
+                  slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 4 } }}
+                  error={withdrawalMutation.isError}
+                  fullWidth
+                  autoFocus
+                />
+              </>
+            )}
+            {(withdrawalMutation.isError || adminRemovalMutation.isError) && confirmationFeedback && <Alert severity="error">{confirmationFeedback}</Alert>}
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button color="inherit" onClick={() => setWithdrawalTarget(null)} disabled={withdrawalMutation.isPending || adminRemovalMutation.isPending}>Voltar</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleWithdrawPresence}
+            disabled={(!canEdit && withdrawalCode.length !== 4) || withdrawalMutation.isPending || adminRemovalMutation.isPending}
+          >
+            {withdrawalMutation.isPending || adminRemovalMutation.isPending
+              ? "Retirando..."
+              : canEdit ? "Remover da lista" : "Sim, quero desistir"}
           </Button>
         </DialogActions>
       </Dialog>

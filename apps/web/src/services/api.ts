@@ -7,6 +7,7 @@ import type {
   HallOfFameEntry,
   Match,
   MatchFormValues,
+  NextMatchAttendanceStatus,
   NextMatchConfirmation,
   NextMatchInfo,
   Player,
@@ -971,7 +972,7 @@ export async function getNextMatchConfirmations(
   const client = requireSupabase();
   const { data, error } = await client
     .from("next_match_confirmations")
-    .select("id, season_id, match_date, player_id, confirmed_at, players(display_name, photo_url)")
+    .select("id, season_id, match_date, player_id, attendance_status, confirmed_at, players(display_name, photo_url)")
     .eq("season_id", seasonId)
     .eq("match_date", matchDate)
     .order("confirmed_at", { ascending: true });
@@ -989,6 +990,7 @@ export async function getNextMatchConfirmations(
       playerId: row.player_id,
       playerName: player?.display_name ?? "Jogador",
       photoUrl: player?.photo_url ?? null,
+      attendanceStatus: row.attendance_status as NextMatchAttendanceStatus,
       confirmedAt: row.confirmed_at
     };
   });
@@ -998,6 +1000,7 @@ export async function confirmNextMatchPresence(input: {
   seasonId: string;
   matchDate: string;
   playerId: string;
+  withdrawalCode: string;
 }) {
   if (!hasSupabaseEnv) {
     return;
@@ -1007,7 +1010,8 @@ export async function confirmNextMatchPresence(input: {
   const { error } = await client.rpc("confirm_next_match_presence", {
     target_season_id: input.seasonId,
     target_match_date: input.matchDate,
-    target_player_id: input.playerId
+    target_player_id: input.playerId,
+    target_withdrawal_code: input.withdrawalCode
   });
 
   if (error) {
@@ -1015,6 +1019,60 @@ export async function confirmNextMatchPresence(input: {
       throw new Error("Este jogador já confirmou presença neste jogo.");
     }
     throw new Error(getErrorMessage(error, "Não foi possível confirmar a presença."));
+  }
+}
+
+export async function withdrawNextMatchPresence(input: {
+  confirmationId: string;
+  withdrawalCode: string;
+}) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client.rpc("withdraw_next_match_presence", {
+    target_confirmation_id: input.confirmationId,
+    target_withdrawal_code: input.withdrawalCode
+  });
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível retirar a confirmação."));
+  }
+}
+
+export async function updateNextMatchAttendanceStatus(input: {
+  confirmationId: string;
+  attendanceStatus: NextMatchAttendanceStatus;
+}) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client
+    .from("next_match_confirmations")
+    .update({ attendance_status: input.attendanceStatus })
+    .eq("id", input.confirmationId);
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível alterar o status do jogador."));
+  }
+}
+
+export async function removeNextMatchConfirmationAsAdmin(confirmationId: string) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client
+    .from("next_match_confirmations")
+    .delete()
+    .eq("id", confirmationId);
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível remover o jogador da lista."));
   }
 }
 
