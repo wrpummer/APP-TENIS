@@ -153,7 +153,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
         displayName: fullName.trim(),
         phone: phone.trim(),
         photoUrl,
-        registeredAt: new Date(`${registeredAt}T00:00:00`).toISOString(),
+        registeredAt: `${registeredAt}T12:00:00.000Z`,
         status: status as "active" | "inactive"
       });
 

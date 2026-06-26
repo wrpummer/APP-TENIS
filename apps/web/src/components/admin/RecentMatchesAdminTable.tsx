@@ -24,6 +24,7 @@ import { ColoredScore } from "@/components/matches/ColoredScore";
 import { deleteMatch } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
 import type { Match, Player } from "@/types/domain";
+import { formatDateOnlyBR } from "@/utils/tennis";
 
 interface RecentMatchesAdminTableProps {
   matches: Match[];
@@ -37,10 +38,6 @@ function resolveTeam(match: Match, players: Player[], side: "A" | "B") {
     : [match.teamBPlayer1Id, match.teamBPlayer2Id];
 
   return ids.map((id) => players.find((player) => player.id === id)?.displayName ?? "Jogador").join(" + ");
-}
-
-function formatDate(value: string) {
-  return value.split("-").reverse().join("/");
 }
 
 export function RecentMatchesAdminTable({ matches, players, onEditMatch }: RecentMatchesAdminTableProps) {
@@ -60,7 +57,7 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
   }
 
   async function handleDelete(match: Match) {
-    const confirmed = window.confirm(`Deseja excluir a partida de ${formatDate(match.matchDate)} com placar ${match.resultSummary}?`);
+    const confirmed = window.confirm(`Deseja excluir a partida de ${formatDateOnlyBR(match.matchDate)} com placar ${match.resultSummary}?`);
     if (!confirmed) {
       return;
     }
@@ -77,6 +74,8 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
     }
   }
 
+  const visibleMatches = matches.slice(0, 10);
+
   return (
     <Paper sx={{ overflow: "hidden", border: "1px solid rgba(10,77,60,0.08)" }}>
       <Accordion
@@ -90,7 +89,7 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
           <Stack spacing={0.5} sx={{ width: "100%" }}>
             <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ pr: 1 }}>
               <Typography variant="h6">Últimos 10 lançamentos</Typography>
-              <Chip size="small" label={`${Math.min(matches.length, 10)} partida${Math.min(matches.length, 10) === 1 ? "" : "s"}`} color="primary" variant="outlined" />
+              <Chip size="small" label={`${visibleMatches.length} partida${visibleMatches.length === 1 ? "" : "s"}`} color="primary" variant="outlined" />
             </Stack>
             <AlertSlot severity={feedback?.type ?? "info"} message={feedback?.message ?? null} />
           </Stack>
@@ -98,11 +97,11 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
 
         <AccordionDetails sx={{ px: 0, pt: 0, pb: 0 }}>
           <Stack spacing={1.5} sx={{ display: { xs: "flex", md: "none" }, px: 2, pb: 2 }}>
-            {matches.slice(0, 10).map((match) => (
+            {visibleMatches.map((match) => (
               <Paper key={match.id} variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
                 <Stack spacing={1.5}>
                   <Stack direction="row" justifyContent="space-between" gap={1}>
-                    <Typography fontWeight={700}>{formatDate(match.matchDate)}</Typography>
+                    <Typography fontWeight={700}>{formatDateOnlyBR(match.matchDate)}</Typography>
                     <ColoredScore match={match} size="small" />
                   </Stack>
                   <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
@@ -136,9 +135,9 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
                 </TableRow>
               </TableHead>
               <TableBody>
-                {matches.slice(0, 10).map((match) => (
+                {visibleMatches.map((match) => (
                   <TableRow key={match.id} hover>
-                    <TableCell>{formatDate(match.matchDate)}</TableCell>
+                    <TableCell>{formatDateOnlyBR(match.matchDate)}</TableCell>
                     <TableCell>{resolveTeam(match, players, "A")}</TableCell>
                     <TableCell>{resolveTeam(match, players, "B")}</TableCell>
                     <TableCell>

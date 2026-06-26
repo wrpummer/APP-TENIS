@@ -26,19 +26,11 @@ import { AlertSlot } from "@/components/common/AlertSlot";
 import { deletePlayer, updatePlayerStatus } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
 import type { Player } from "@/types/domain";
+import { formatDateOnlyBR } from "@/utils/tennis";
 
 interface PlayersAdminTableProps {
   players: Player[];
   onEditPlayer: (player: Player) => void;
-}
-
-function formatDate(value?: string | null) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  const [year, month, day] = value.slice(0, 10).split("-");
-  return `${day}/${month}/${year}`;
 }
 
 export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTableProps) {
@@ -121,7 +113,7 @@ export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTablePr
                         {player.displayName}
                       </Typography>
                       <Typography color="text.secondary" variant="body2">
-                        Desde: {formatDate(player.registeredAt)}
+                        Desde: {formatDateOnlyBR(player.registeredAt)}
                       </Typography>
                     </Box>
                     <Chip
@@ -144,7 +136,7 @@ export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTablePr
                       variant="outlined"
                       color={player.status === "active" ? "warning" : "success"}
                       startIcon={player.status === "active" ? <PersonOffRoundedIcon /> : <RestartAltRoundedIcon />}
-                      onClick={() => handleToggleStatus(player)}
+                      onClick={() => void handleToggleStatus(player)}
                     >
                       {player.status === "active" ? "Inativar" : "Ativar"}
                     </Button>
@@ -153,7 +145,7 @@ export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTablePr
                       variant="outlined"
                       color="error"
                       startIcon={<DeleteOutlineRoundedIcon />}
-                      onClick={() => handleDelete(player)}
+                      onClick={() => void handleDelete(player)}
                     >
                       Excluir
                     </Button>
@@ -185,7 +177,7 @@ export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTablePr
                     </TableCell>
                     <TableCell>{player.displayName}</TableCell>
                     <TableCell>{player.phone || "Não informado"}</TableCell>
-                    <TableCell>{formatDate(player.registeredAt)}</TableCell>
+                    <TableCell>{formatDateOnlyBR(player.registeredAt)}</TableCell>
                     <TableCell>
                       <Chip
                         size="small"
@@ -203,11 +195,11 @@ export function PlayersAdminTable({ players, onEditPlayer }: PlayersAdminTablePr
                           variant="outlined"
                           color={player.status === "active" ? "warning" : "success"}
                           startIcon={player.status === "active" ? <PersonOffRoundedIcon /> : <RestartAltRoundedIcon />}
-                          onClick={() => handleToggleStatus(player)}
+                          onClick={() => void handleToggleStatus(player)}
                         >
                           {player.status === "active" ? "Inativar" : "Ativar"}
                         </Button>
-                        <Button size="small" variant="outlined" color="error" startIcon={<DeleteOutlineRoundedIcon />} onClick={() => handleDelete(player)}>
+                        <Button size="small" variant="outlined" color="error" startIcon={<DeleteOutlineRoundedIcon />} onClick={() => void handleDelete(player)}>
                           Excluir
                         </Button>
                       </Stack>

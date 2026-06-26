@@ -1,8 +1,7 @@
 import { Chip, Paper, Stack, Typography } from "@mui/material";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { ColoredScore } from "@/components/matches/ColoredScore";
 import type { Match, Player } from "@/types/domain";
+import { formatLongDateOnlyBR } from "@/utils/tennis";
 
 function resolveTeam(match: Match, players: Player[], side: "A" | "B") {
   const ids = side === "A"
@@ -57,12 +56,7 @@ export function MatchHistoryList({ matches, players }: MatchHistoryListProps) {
                 />
               </Stack>
               <Typography color="text.secondary" sx={{ mt: 1 }}>
-                <Typography
-                  component="span"
-                  color="text.secondary"
-                >
-                  {format(new Date(match.matchDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                </Typography>
+                {formatLongDateOnlyBR(match.matchDate)}
               </Typography>
             </div>
             <div>

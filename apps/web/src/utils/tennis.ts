@@ -3,7 +3,7 @@
 export const monthLabels = [
   "Janeiro",
   "Fevereiro",
-  "Marco",
+  "Março",
   "Abril",
   "Maio",
   "Junho",
@@ -14,6 +14,30 @@ export const monthLabels = [
   "Novembro",
   "Dezembro"
 ];
+
+export const shortMonthLabels = monthLabels.map((month) => month.slice(0, 3));
+
+export function formatDateOnlyBR(value?: string | null): string {
+  if (!value) {
+    return "Não informado";
+  }
+
+  const [year, month, day] = value.slice(0, 10).split("-");
+  if (!year || !month || !day) {
+    return "Não informado";
+  }
+
+  return `${day}/${month}/${year}`;
+}
+
+export function formatLongDateOnlyBR(value: string): string {
+  const [year, month, day] = value.slice(0, 10).split("-").map(Number);
+  if (!year || !month || !day) {
+    return "Data não informada";
+  }
+
+  return `${String(day).padStart(2, "0")} de ${monthLabels[month - 1]?.toLowerCase() ?? "mês"} de ${year}`;
+}
 
 export function summarizeSets(sets: MatchSet[]): string {
   return sets

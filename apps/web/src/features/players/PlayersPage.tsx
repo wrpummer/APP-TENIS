@@ -4,16 +4,7 @@ import { useState } from "react";
 import { LoadingState } from "@/components/common/LoadingState";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { usePlayerStatistics, usePlayers } from "@/hooks/usePlayers";
-import { formatPercentage } from "@/utils/tennis";
-
-function formatDate(value?: string | null) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  const [year, month, day] = value.slice(0, 10).split("-");
-  return `${day}/${month}/${year}`;
-}
+import { formatDateOnlyBR, formatPercentage } from "@/utils/tennis";
 
 function normalizeSearch(value: string) {
   return value
@@ -83,7 +74,7 @@ export function PlayersPage() {
                             label={player.status === "active" ? "Ativo" : "Inativo"}
                             color={player.status === "active" ? "success" : "default"}
                           />
-                          <Typography color="text.secondary">Jogador desde: {formatDate(player.registeredAt)}</Typography>
+                          <Typography color="text.secondary">Jogador desde: {formatDateOnlyBR(player.registeredAt)}</Typography>
                         </Stack>
                       </Stack>
                     </Stack>
@@ -95,14 +86,14 @@ export function PlayersPage() {
                     {playerStatistics ? (
                       <Stack spacing={1}>
                         <Typography color="text.secondary">
-                          {playerStatistics.matchesPlayed} jogos | {playerStatistics.wins} vitórias | {formatPercentage(playerStatistics.winRate)}
+                          {playerStatistics.matchesPlayed} jogos | {playerStatistics.wins} sets vencidos | {formatPercentage(playerStatistics.winRate)}
                         </Typography>
                         <Typography>Parceiro favorito: {playerStatistics.favoritePartner ?? "A definir"}</Typography>
                         <Typography>Melhor parceiro: {playerStatistics.bestPartner ?? "A definir"}</Typography>
                         <Typography>Rival mais enfrentado: {playerStatistics.mostFacedRival ?? "A definir"}</Typography>
                         <Typography>Rival mais difícil: {playerStatistics.hardestRival ?? "A definir"}</Typography>
-                        <Typography>Maior sequência de vitórias: {playerStatistics.bestWinStreak}</Typography>
-                        <Typography>Maior sequência de derrotas: {playerStatistics.worstLossStreak}</Typography>
+                        <Typography>Maior sequência de sets vencidos: {playerStatistics.bestWinStreak}</Typography>
+                        <Typography>Maior sequência de sets perdidos: {playerStatistics.worstLossStreak}</Typography>
                         <Typography>Melhor mês: {playerStatistics.bestMonth ?? "Sem dados"}</Typography>
                       </Stack>
                     ) : (

@@ -14,7 +14,7 @@ import type {
   RankingRow,
   Season
 } from "@/types/domain";
-import { inferWinnerTeam, monthLabels, slugifyName, summarizeSets } from "@/utils/tennis";
+import { inferWinnerTeam, monthLabels, shortMonthLabels, slugifyName, summarizeSets } from "@/utils/tennis";
 
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error && error.message) {
@@ -137,7 +137,7 @@ function buildLastTwelveMonthsWindow() {
     const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
     const year = date.getFullYear();
     const monthIndex = date.getMonth();
-    const month = monthLabels[monthIndex]?.slice(0, 3) ?? `M${monthIndex + 1}`;
+    const month = shortMonthLabels[monthIndex] ?? `M${monthIndex + 1}`;
     months.push({
       key: formatMonthKey(year, monthIndex),
       label: `${month}/${year}`,
@@ -221,6 +221,27 @@ function getSetBasedPointsForTeam(match: Match, team: "A" | "B") {
   }, 0);
 }
 
+function getTeamSetSummary(match: Match, team: "A" | "B") {
+  return match.sets.reduce(
+    (summary, set) => {
+      const ownGames = team === "A" ? set.teamAGames : set.teamBGames;
+      const opponentGames = team === "A" ? set.teamBGames : set.teamAGames;
+
+      summary.gamesWon += ownGames;
+      summary.gamesLost += opponentGames;
+
+      if (ownGames > opponentGames) {
+        summary.setsWon += 1;
+      } else if (ownGames < opponentGames) {
+        summary.setsLost += 1;
+      }
+
+      return summary;
+    },
+    { setsWon: 0, setsLost: 0, gamesWon: 0, gamesLost: 0 }
+  );
+}
+
 function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: string): RankingRow[] {
   if (matches.length === 0) {
     return [];
@@ -259,10 +280,7 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
         continue;
       }
 
-      const isWinner = slot.team === match.winnerTeam;
       aggregate.matchesPlayed += 1;
-      aggregate.wins += isWinner ? 1 : 0;
-      aggregate.losses += isWinner ? 0 : 1;
       aggregate.points += getSetBasedPointsForTeam(match, slot.team);
       if (match.notes?.trim()) {
         aggregate.matchNotes.push({
@@ -273,18 +291,13 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
         });
       }
 
-      for (const set of match.sets) {
-        const ownGames = slot.team === "A" ? set.teamAGames : set.teamBGames;
-        const opponentGames = slot.team === "A" ? set.teamBGames : set.teamAGames;
-        aggregate.gamesWon += ownGames;
-        aggregate.gamesLost += opponentGames;
-
-        if (ownGames > opponentGames) {
-          aggregate.setsWon += 1;
-        } else if (ownGames < opponentGames) {
-          aggregate.setsLost += 1;
-        }
-      }
+      const setSummary = getTeamSetSummary(match, slot.team);
+      aggregate.wins += setSummary.setsWon;
+      aggregate.losses += setSummary.setsLost;
+      aggregate.setsWon += setSummary.setsWon;
+      aggregate.setsLost += setSummary.setsLost;
+      aggregate.gamesWon += setSummary.gamesWon;
+      aggregate.gamesLost += setSummary.gamesLost;
     }
   }
 
@@ -292,8 +305,8 @@ function buildRankingFromMatches(matches: Match[], players: Player[], seasonId: 
     .map((aggregate) => ({
       ...aggregate,
       rankingPosition: 0,
-      winRate: aggregate.matchesPlayed > 0
-        ? Number(((aggregate.wins / aggregate.matchesPlayed) * 100).toFixed(2))
+      winRate: aggregate.wins + aggregate.losses > 0
+        ? Number(((aggregate.wins / (aggregate.wins + aggregate.losses)) * 100).toFixed(2))
         : 0,
       matchNotes: aggregate.matchNotes,
       importedFromLegacy: false
@@ -327,26 +340,27 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
   }
 
   const playersById = new Map(players.map((player) => [player.id, player]));
-  const partnerRows = new Map<string, Map<string, { matches: number; wins: number }>>();
+  const partnerRows = new Map<string, Map<string, { matches: number; wins: number; losses: number }>>();
   const rivalRows = new Map<string, Map<string, { matches: number; wins: number; losses: number }>>();
   const monthlyRows = new Map<string, Map<number, { points: number; wins: number }>>();
-  const streakRows = new Map<string, Array<{ date: string; matchId: string; isWin: boolean }>>();
+  const streakRows = new Map<string, Array<{ date: string; matchId: string; setOrder: number; isWin: boolean }>>();
 
-  const addPartner = (playerId: string, partnerId: string, isWin: boolean) => {
-    const playerMap = partnerRows.get(playerId) ?? new Map<string, { matches: number; wins: number }>();
-    const row = playerMap.get(partnerId) ?? { matches: 0, wins: 0 };
-    row.matches += 1;
-    row.wins += isWin ? 1 : 0;
+  const addPartner = (playerId: string, partnerId: string, matches: number, setWins: number, setLosses: number) => {
+    const playerMap = partnerRows.get(playerId) ?? new Map<string, { matches: number; wins: number; losses: number }>();
+    const row = playerMap.get(partnerId) ?? { matches: 0, wins: 0, losses: 0 };
+    row.matches += matches;
+    row.wins += setWins;
+    row.losses += setLosses;
     playerMap.set(partnerId, row);
     partnerRows.set(playerId, playerMap);
   };
 
-  const addRival = (playerId: string, rivalId: string, isWin: boolean) => {
+  const addRival = (playerId: string, rivalId: string, matches: number, setWins: number, setLosses: number) => {
     const playerMap = rivalRows.get(playerId) ?? new Map<string, { matches: number; wins: number; losses: number }>();
     const row = playerMap.get(rivalId) ?? { matches: 0, wins: 0, losses: 0 };
-    row.matches += 1;
-    row.wins += isWin ? 1 : 0;
-    row.losses += isWin ? 0 : 1;
+    row.matches += matches;
+    row.wins += setWins;
+    row.losses += setLosses;
     playerMap.set(rivalId, row);
     rivalRows.set(playerId, playerMap);
   };
@@ -361,33 +375,45 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
     ];
 
     for (const team of teams) {
-      const isWin = team.side === match.winnerTeam;
       const teamPoints = getSetBasedPointsForTeam(match, team.side);
+      const teamSetSummary = getTeamSetSummary(match, team.side);
       for (const playerId of team.players) {
         const monthMap = monthlyRows.get(playerId) ?? new Map<number, { points: number; wins: number }>();
         const monthRow = monthMap.get(month) ?? { points: 0, wins: 0 };
         monthRow.points += teamPoints;
-        monthRow.wins += isWin ? 1 : 0;
+        monthRow.wins += teamSetSummary.setsWon;
         monthMap.set(month, monthRow);
         monthlyRows.set(playerId, monthMap);
 
         const playerStreaks = streakRows.get(playerId) ?? [];
-        playerStreaks.push({ date: match.matchDate, matchId: match.id, isWin });
+        for (const set of match.sets) {
+          const setWinner = getSetWinnerTeam(set);
+          if (setWinner) {
+            playerStreaks.push({
+              date: match.matchDate,
+              matchId: match.id,
+              setOrder: set.setOrder,
+              isWin: setWinner === team.side
+            });
+          }
+        }
         streakRows.set(playerId, playerStreaks);
 
         for (const partnerId of team.players.filter((candidate) => candidate !== playerId)) {
-          addPartner(playerId, partnerId, isWin);
+          addPartner(playerId, partnerId, 1, teamSetSummary.setsWon, teamSetSummary.setsLost);
         }
 
         for (const rivalId of team.rivals) {
-          addRival(playerId, rivalId, isWin);
+          addRival(playerId, rivalId, 1, teamSetSummary.setsWon, teamSetSummary.setsLost);
         }
       }
     }
   }
 
   const getBestStreaks = (playerId: string) => {
-    const rows = (streakRows.get(playerId) ?? []).sort((a, b) => a.date.localeCompare(b.date) || a.matchId.localeCompare(b.matchId));
+    const rows = (streakRows.get(playerId) ?? []).sort((a, b) =>
+      a.date.localeCompare(b.date) || a.matchId.localeCompare(b.matchId) || a.setOrder - b.setOrder
+    );
     let currentWin = 0;
     let currentLoss = 0;
     let bestWin = 0;
@@ -422,8 +448,10 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
   const getBestPartner = (playerId: string) => {
     const rows = Array.from(partnerRows.get(playerId)?.entries() ?? []);
     const best = rows.sort((a, b) => {
-      const rateA = a[1].matches > 0 ? a[1].wins / a[1].matches : 0;
-      const rateB = b[1].matches > 0 ? b[1].wins / b[1].matches : 0;
+      const totalA = a[1].wins + a[1].losses;
+      const totalB = b[1].wins + b[1].losses;
+      const rateA = totalA > 0 ? a[1].wins / totalA : 0;
+      const rateB = totalB > 0 ? b[1].wins / totalB : 0;
       return rateB - rateA || b[1].wins - a[1].wins || b[1].matches - a[1].matches || a[0].localeCompare(b[0]);
     })[0];
     return best ? playersById.get(best[0])?.displayName ?? null : null;
@@ -442,8 +470,10 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
   const getHardestRival = (playerId: string) => {
     const rows = Array.from(rivalRows.get(playerId)?.entries() ?? []);
     const best = rows.sort((a, b) => {
-      const rateA = a[1].matches > 0 ? a[1].wins / a[1].matches : 0;
-      const rateB = b[1].matches > 0 ? b[1].wins / b[1].matches : 0;
+      const totalA = a[1].wins + a[1].losses;
+      const totalB = b[1].wins + b[1].losses;
+      const rateA = totalA > 0 ? a[1].wins / totalA : 0;
+      const rateB = totalB > 0 ? b[1].wins / totalB : 0;
       return rateA - rateB || b[1].losses - a[1].losses || b[1].matches - a[1].matches || a[0].localeCompare(b[0]);
     })[0];
     return best ? playersById.get(best[0])?.displayName ?? null : null;
@@ -678,9 +708,10 @@ export async function getDashboard(): Promise<DashboardData> {
   const monthlyPlayerAppearances = new Map<string, Map<string, number>>();
   const monthlyPlayerPoints = new Map<string, Map<string, number>>();
   for (const match of chartMatches) {
-    const date = new Date(`${match.matchDate}T00:00:00`);
-    const key = formatMonthKey(date.getFullYear(), date.getMonth());
-    const label = monthLabels[date.getMonth()]?.slice(0, 3) ?? `M${date.getMonth() + 1}`;
+    const year = Number(match.matchDate.slice(0, 4));
+    const monthIndex = Number(match.matchDate.slice(5, 7)) - 1;
+    const key = formatMonthKey(year, monthIndex);
+    const label = shortMonthLabels[monthIndex] ?? `M${monthIndex + 1}`;
     const current = matchesPerMonthMap.get(key) ?? { month: label, matches: 0, sets: 0 };
     current.matches += 1;
     current.sets += match.sets.length;
@@ -709,7 +740,6 @@ export async function getDashboard(): Promise<DashboardData> {
     monthlyPlayerPoints.set(key, pointsRow);
   }
 
-  const monthKeys = lastTwelveMonths.months.map((item) => item.key);
   const matchesPerMonth = lastTwelveMonths.months.map((item) => {
     const row = matchesPerMonthMap.get(item.key);
     return {
