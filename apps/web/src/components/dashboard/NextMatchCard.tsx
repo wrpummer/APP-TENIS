@@ -201,7 +201,10 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   const attendanceMutation = useMutation({
     mutationFn: updateNextMatchAttendanceStatus,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: confirmationQueryKey });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: confirmationQueryKey }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.shame })
+      ]);
       setConfirmationFeedback("Status do jogador atualizado.");
     },
     onError: (error) => {

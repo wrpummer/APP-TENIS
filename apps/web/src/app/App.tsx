@@ -7,6 +7,7 @@ import { HistoryPage } from "@/features/history/HistoryPage";
 import { HeadToHeadPage } from "@/features/head-to-head/HeadToHeadPage";
 import { PlayersPage } from "@/features/players/PlayersPage";
 import { RankingPage } from "@/features/ranking/RankingPage";
+import { ShamePage } from "@/features/shame/ShamePage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "jogadores", element: <PlayersPage /> },
       { path: "historico", element: <HistoryPage /> },
       { path: "hall-da-fama", element: <HallOfFamePage /> },
+      { path: "dick-vigarista", element: <ShamePage /> },
       { path: "confronto-direto", element: <HeadToHeadPage /> },
       { path: "admin", element: <AdminPage /> }
     ]

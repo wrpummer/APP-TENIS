@@ -136,6 +136,16 @@ export interface NextMatchConfirmation {
   confirmedAt: string;
 }
 
+export interface ShameEntry {
+  id: string;
+  playerId: string;
+  playerName: string;
+  photoUrl?: string | null;
+  matchDate: string;
+  matchTime?: string | null;
+  matchLocation?: string | null;
+}
+
 export interface DashboardData {
   activeSeason: Season;
   ranking: RankingRow[];

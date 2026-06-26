@@ -5,6 +5,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SportsTennisRoundedIcon from "@mui/icons-material/SportsTennisRounded";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import {
   AppBar,
   Box,
@@ -29,6 +30,7 @@ const links = [
   { label: "Jogadores", href: "/jogadores", icon: <PersonRoundedIcon fontSize="small" /> },
   { label: "Histórico", href: "/historico", icon: <HistoryEduRoundedIcon fontSize="small" /> },
   { label: "Hall da Fama", href: "/hall-da-fama", icon: <EmojiEventsRoundedIcon fontSize="small" /> },
+  { label: "Dick Vigarista", href: "/dick-vigarista", icon: <WarningAmberRoundedIcon fontSize="small" /> },
   { label: "Admin", href: "/admin", icon: <ManageAccountsRoundedIcon fontSize="small" /> }
 ];
 

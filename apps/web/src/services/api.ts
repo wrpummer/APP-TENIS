@@ -13,7 +13,8 @@ import type {
   Player,
   PlayerStatistics,
   RankingRow,
-  Season
+  Season,
+  ShameEntry
 } from "@/types/domain";
 import { inferWinnerTeam, monthLabels, shortMonthLabels, slugifyName, summarizeSets } from "@/utils/tennis";
 
@@ -1074,6 +1075,36 @@ export async function removeNextMatchConfirmationAsAdmin(confirmationId: string)
   if (error) {
     throw new Error(getErrorMessage(error, "Não foi possível remover o jogador da lista."));
   }
+}
+
+export async function getShameEntries(): Promise<ShameEntry[]> {
+  if (!hasSupabaseEnv) {
+    return [];
+  }
+
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("next_match_confirmations")
+    .select("id, player_id, match_date, match_time, match_location, players(display_name, photo_url)")
+    .eq("attendance_status", "absent")
+    .order("match_date", { ascending: false });
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível carregar o Cantinho da Vergonha."));
+  }
+
+  return (data ?? []).map((row) => {
+    const player = Array.isArray(row.players) ? row.players[0] : row.players;
+    return {
+      id: row.id,
+      playerId: row.player_id,
+      playerName: player?.display_name ?? "Jogador",
+      photoUrl: player?.photo_url ?? null,
+      matchDate: row.match_date,
+      matchTime: row.match_time,
+      matchLocation: row.match_location
+    };
+  });
 }
 
 export async function savePlayer(player: Partial<Player>) {
