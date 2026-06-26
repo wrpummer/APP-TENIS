@@ -117,7 +117,7 @@ export const mockMatches: Match[] = [
 
 export const mockHallOfFame: HallOfFameEntry[] = [
   { category: "Campeão da temporada", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 274 },
-  { category: "Mais vitórias", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 64 },
+  { category: "Mais sets vencidos", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 64 },
   { category: "Melhor aproveitamento", playerId: mockPlayers[2].id, playerName: "Hellinton", photoUrl: null, valueNumber: 54.12 },
   { category: "Jogador mais ativo", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 122 }
 ];

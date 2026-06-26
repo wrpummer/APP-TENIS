@@ -52,7 +52,7 @@ function translateHallOfFameCategory(category: string) {
     case "champion":
       return "Campeão da temporada";
     case "most_wins":
-      return "Mais vitórias";
+      return "Mais sets vencidos";
     case "best_win_rate":
       return "Melhor aproveitamento";
     case "most_active":
@@ -530,7 +530,7 @@ function buildHallOfFameFromRanking(ranking: RankingRow[]): HallOfFameEntry[] {
 
   return [
     createEntry("Campeão da temporada", maxPoints, ranking.filter((row) => row.points === maxPoints)),
-    createEntry("Mais vitórias", maxWins, ranking.filter((row) => row.wins === maxWins)),
+    createEntry("Mais sets vencidos", maxWins, ranking.filter((row) => row.wins === maxWins)),
     createEntry("Melhor aproveitamento", maxWinRate, ranking.filter((row) => row.winRate === maxWinRate)),
     createEntry("Jogador mais ativo", maxMatches, ranking.filter((row) => row.matchesPlayed === maxMatches))
   ];
