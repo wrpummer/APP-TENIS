@@ -185,13 +185,13 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   return (
     <Paper sx={{ p: { xs: 2, sm: 3 }, border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
       <Stack spacing={2.5}>
-        <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" gap={2}>
-          <div>
+        <Box>
+          <Stack direction="row" spacing={1.25} alignItems="center" flexWrap="wrap" useFlexGap>
             <Typography variant="h5">Próximo jogo</Typography>
-            <Typography color="text.secondary">Temporada {season.year}</Typography>
-          </div>
-          <Chip label={activeStatus.label} color={activeStatus.color} sx={{ fontWeight: 700, alignSelf: "flex-start" }} />
-        </Stack>
+            <Chip label={activeStatus.label} color={activeStatus.color} sx={{ fontWeight: 700 }} />
+          </Stack>
+          <Typography color="text.secondary">Temporada {season.year}</Typography>
+        </Box>
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 4 }}>
