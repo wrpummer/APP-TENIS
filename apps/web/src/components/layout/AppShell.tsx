@@ -25,7 +25,7 @@ import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const links = [
-  { label: "Resumo", href: "/", icon: <HomeRoundedIcon fontSize="small" /> },
+  { label: "Principal", href: "/", icon: <HomeRoundedIcon fontSize="small" /> },
   { label: "Ranking", href: "/ranking", icon: <SportsTennisRoundedIcon fontSize="small" /> },
   { label: "Jogadores", href: "/jogadores", icon: <PersonRoundedIcon fontSize="small" /> },
   { label: "Histórico", href: "/historico", icon: <HistoryEduRoundedIcon fontSize="small" /> },
