@@ -126,7 +126,7 @@ export function DashboardPage() {
     <Stack spacing={4}>
       <SectionHeader
         title={`Temporada ${data.activeSeason.year}`}
-        subtitle="Visão geral da temporada atual, próximos jogos e destaques mensais do grupo."
+        subtitle="Visão geral da temporada atual, próxima partida e destaques mensais do grupo."
       />
 
       <NextMatchCard nextMatch={data.nextMatch} season={data.activeSeason} players={players} />
@@ -207,12 +207,12 @@ export function DashboardPage() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <MonthlyHighlightPanel
             title="Jogador mais frequente"
-            subtitle="Mais jogos no mês. Em caso de empate, vence quem tiver mais pontos."
+            subtitle="Mais partidas no mês. Em caso de empate, vence quem tiver mais pontos."
             accent="#118ab2"
             rows={monthlyMostActive.map((row) => ({
               label: row.label,
               playerNames: row.leaders,
-              mainValue: `${row.matches} jogos`,
+              mainValue: `${row.matches} partidas`,
               detail: row.matches > 0 ? `${row.points} pontos no mês` : "Sem dados no mês"
             }))}
           />
@@ -220,13 +220,13 @@ export function DashboardPage() {
 
         <Grid size={{ xs: 12, lg: 6 }}>
           <MonthlyHighlightPanel
-            title="Qtde SETS do mês"
-            subtitle="Quantidade de sets registrados nos últimos 3 meses."
+            title="Partidas no mês"
+            subtitle="Quantidade de partidas registradas nos últimos 3 meses."
             accent="#7a5c00"
             rows={matchesPerMonth.map((row) => ({
               label: row.label,
-              mainValue: `${row.sets} sets`,
-              detail: row.sets > 0 ? "Sets registrados no mês" : "Sem sets no mês"
+              mainValue: `${row.matches} partidas`,
+              detail: row.matches > 0 ? "Partidas registradas no mês" : "Sem partidas no mês"
             }))}
           />
         </Grid>

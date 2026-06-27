@@ -42,7 +42,7 @@ export function HeadToHeadPage() {
     <Stack spacing={3}>
       <SectionHeader
         title="Confronto direto"
-        subtitle="Compare rapidamente dois jogadores e veja quem leva vantagem nos jogos registrados."
+        subtitle="Compare rapidamente dois jogadores e veja quem leva vantagem nas partidas registradas."
       />
       <Paper sx={{ p: 3, border: "1px solid rgba(10,77,60,0.08)" }}>
         <Stack spacing={2}>
@@ -68,7 +68,7 @@ export function HeadToHeadPage() {
               <Stack direction="row" spacing={2} alignItems="center">
                 <SwapHorizRoundedIcon />
                 <div>
-                  <Typography variant="h6">{comparison.matchesPlayed} jogos em comum</Typography>
+                  <Typography variant="h6">{comparison.matchesPlayed} partidas em comum</Typography>
                   <Typography>
                     Jogador A venceu {comparison.playerAWins} e Jogador B venceu {comparison.playerBWins}.
                   </Typography>

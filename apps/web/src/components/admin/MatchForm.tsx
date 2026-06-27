@@ -1,6 +1,4 @@
-﻿import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
-import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import {
   Alert,
@@ -17,8 +15,8 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
 import { saveMatch } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
@@ -33,10 +31,10 @@ interface MatchFormProps {
   onCancelEdit?: () => void;
 }
 
-type MatchFormSetState = Omit<MatchSet, "teamAGames" | "teamBGames"> & {
+type MatchScoreState = Omit<MatchSet, "teamAGames" | "teamBGames"> & {
   teamAGames: number | null;
   teamBGames: number | null;
-  isEnabled: boolean;
+  isEnabled: true;
   notes: string;
 };
 
@@ -49,50 +47,56 @@ interface MatchFormState {
   teamBPlayer1Id: string;
   teamBPlayer2Id: string;
   notes: string;
-  sets: MatchFormSetState[];
+  sets: [MatchScoreState];
 }
 
-const createInitialSets = (): MatchFormSetState[] => [
-  { setOrder: 1, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: true },
-  { setOrder: 2, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: false },
-  { setOrder: 3, teamAGames: null, teamBGames: null, isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null, deucesCount: null, notes: "", isEnabled: false }
-];
-
-function createInitialForm(seasonId: string): MatchFormState {
+function createInitialScore(): MatchScoreState {
   return {
-    id: undefined as string | undefined,
-    seasonId,
+    setOrder: 1,
+    teamAGames: null,
+    teamBGames: null,
+    isTiebreak: false,
+    isSuperTiebreak: false,
+    tiebreakPointsA: null,
+    tiebreakPointsB: null,
+    deucesCount: null,
+    notes: "",
+    isEnabled: true
+  };
+}
+
+function createInitialForm(): MatchFormState {
+  return {
+    id: undefined,
+    seasonId: "",
     matchDate: "",
     teamAPlayer1Id: "",
     teamAPlayer2Id: "",
     teamBPlayer1Id: "",
     teamBPlayer2Id: "",
     notes: "",
-    sets: createInitialSets()
+    sets: [createInitialScore()]
   };
 }
 
 function buildMatchPayload(form: MatchFormState) {
   return {
     ...form,
-    sets: form.sets.map((set) => ({
-      ...set,
-      teamAGames: set.teamAGames ?? 0,
-      teamBGames: set.teamBGames ?? 0
-    }))
+    sets: [{
+      ...form.sets[0],
+      setOrder: 1,
+      teamAGames: form.sets[0].teamAGames ?? 0,
+      teamBGames: form.sets[0].teamBGames ?? 0
+    }]
   };
 }
 
 function validateMatchDraft(form: MatchFormState) {
   const issues: string[] = [];
+  const score = form.sets[0];
 
-  if (!form.seasonId) {
-    issues.push("Selecione a temporada.");
-  }
-
-  if (!form.matchDate) {
-    issues.push("Informe a data da partida.");
-  }
+  if (!form.seasonId) issues.push("Selecione a temporada.");
+  if (!form.matchDate) issues.push("Informe a data da partida.");
 
   const selectedPlayers = [form.teamAPlayer1Id, form.teamAPlayer2Id, form.teamBPlayer1Id, form.teamBPlayer2Id];
   if (selectedPlayers.some((playerId) => !playerId)) {
@@ -101,35 +105,29 @@ function validateMatchDraft(form: MatchFormState) {
     issues.push("Cada partida deve ter quatro jogadores diferentes.");
   }
 
-  for (const set of form.sets.filter((item) => item.isEnabled)) {
-    if (set.teamAGames == null || set.teamBGames == null) {
-      issues.push(`Preencha o placar do set ${set.setOrder}.`);
-    }
+  if (score.teamAGames == null || score.teamBGames == null) {
+    issues.push("Preencha o placar da partida.");
   }
 
-  if (issues.length > 0) {
-    return issues;
-  }
-
-  return validateMatch(buildMatchPayload(form));
+  return issues.length > 0 ? issues : validateMatch(buildMatchPayload(form));
 }
 
 export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdit }: MatchFormProps) {
   const queryClient = useQueryClient();
   const activePlayers = players.filter((player) => player.status === "active");
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [form, setForm] = useState(createInitialForm(""));
+  const [form, setForm] = useState<MatchFormState>(createInitialForm());
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [successToastOpen, setSuccessToastOpen] = useState(false);
   const validationIssues = useMemo(() => validateMatchDraft(form), [form]);
+  const score = form.sets[0];
 
   useEffect(() => {
-    if (!editingMatch) {
-      return;
-    }
+    if (!editingMatch) return;
 
+    const existingScore = editingMatch.sets[0];
     setForm({
       id: editingMatch.id,
       seasonId: editingMatch.seasonId,
@@ -139,64 +137,33 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       teamBPlayer1Id: editingMatch.teamBPlayer1Id,
       teamBPlayer2Id: editingMatch.teamBPlayer2Id,
       notes: editingMatch.notes ?? "",
-      sets: createInitialSets().map((defaultSet) => {
-        const existing = editingMatch.sets.find((item) => item.setOrder === defaultSet.setOrder);
-        return existing ? { ...defaultSet, ...existing, notes: existing.notes ?? "", isEnabled: true } : defaultSet;
-      })
+      sets: [{
+        ...createInitialScore(),
+        ...existingScore,
+        setOrder: 1,
+        notes: existingScore?.notes ?? "",
+        isEnabled: true
+      }]
     });
-    setShowAdvanced(Boolean(editingMatch.sets.some((set) => set.isTiebreak || set.deucesCount || set.notes)));
+    setShowAdvanced(Boolean(existingScore?.isTiebreak || existingScore?.deucesCount || existingScore?.notes));
     setMessage(null);
     setError(null);
   }, [editingMatch]);
 
   function resetForm() {
-    setForm(createInitialForm(""));
+    setForm(createInitialForm());
     setShowAdvanced(false);
   }
 
-  function updateSet(setOrder: number, patch: Partial<MatchFormSetState>) {
+  function updateScore(patch: Partial<MatchScoreState>) {
     setForm((current) => ({
       ...current,
-      sets: current.sets.map((currentSet) =>
-        currentSet.setOrder === setOrder
-          ? { ...currentSet, ...patch, notes: patch.notes ?? currentSet.notes }
-          : currentSet
-      )
-    }));
-  }
-
-  function clearSet(setOrder: number, currentSet: MatchFormSetState): MatchFormSetState {
-    return {
-      ...currentSet,
-      isEnabled: false,
-      teamAGames: null,
-      teamBGames: null,
-      isTiebreak: false,
-      isSuperTiebreak: false,
-      tiebreakPointsA: null,
-      tiebreakPointsB: null,
-      deucesCount: null,
-      notes: ""
-    };
-  }
-
-  function removeSet(setOrder: number) {
-    setForm((current) => ({
-      ...current,
-      sets: current.sets.map((currentSet) => {
-        if (currentSet.setOrder === setOrder || (setOrder === 2 && currentSet.setOrder === 3)) {
-          return clearSet(currentSet.setOrder, currentSet);
-        }
-
-        return currentSet;
-      })
+      sets: [{ ...current.sets[0], ...patch, notes: patch.notes ?? current.sets[0].notes }]
     }));
   }
 
   async function handleSave() {
-    if (validationIssues.length > 0) {
-      return;
-    }
+    if (validationIssues.length > 0) return;
 
     try {
       setIsSaving(true);
@@ -214,61 +181,41 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       setMessage(
         form.id
           ? "Partida atualizada com sucesso."
-          : `Partida salva com sucesso. Vencedor: Dupla ${inferWinnerTeam(payload.sets)} | ${summarizeSets(payload.sets)}`
+          : `Partida salva com sucesso. Vencedor: Dupla ${inferWinnerTeam(payload.sets)} | Placar: ${summarizeSets(payload.sets)}`
       );
       setSuccessToastOpen(true);
       resetForm();
       onSaved?.();
     } catch (caughtError) {
       setMessage(null);
-      setError(
-        caughtError instanceof Error
-          ? caughtError.message
-          : "Nao foi possivel salvar a partida. Verifique os dados e tente novamente."
-      );
+      setError(caughtError instanceof Error ? caughtError.message : "Não foi possível salvar a partida.");
     } finally {
       setIsSaving(false);
     }
   }
 
   return (
-    <Paper sx={{ p: 3, border: "1px solid rgba(10,77,60,0.08)" }}>
+    <Paper sx={{ p: { xs: 2, sm: 3 }, border: "1px solid rgba(10,77,60,0.08)" }}>
       <Stack spacing={2}>
         <Typography variant="h6">{form.id ? "Editar partida" : "Registrar partida"}</Typography>
-        <Typography color="text.secondary">
-          Lance rapidamente os sets e, se quiser, abra os detalhes avançados para tiebreak, super tiebreak e deuces.
-        </Typography>
+        <Alert severity="info">
+          Cada lançamento corresponde a uma partida. Informe apenas um placar; não existe segundo ou terceiro set neste cadastro.
+        </Alert>
         <AlertSlot
           severity={validationIssues.length > 0 ? "warning" : error ? "error" : "success"}
           message={validationIssues.length > 0 ? validationIssues.join(" ") : error ?? message}
           minHeight={88}
         />
+
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 3 }}>
-            <TextField
-              select
-              fullWidth
-              label="Temporada"
-              value={form.seasonId}
-              onChange={(event) => setForm((current) => ({ ...current, seasonId: event.target.value }))}
-            >
+            <TextField select fullWidth label="Temporada" value={form.seasonId} onChange={(event) => setForm((current) => ({ ...current, seasonId: event.target.value }))}>
               <MenuItem value="">Selecione</MenuItem>
-              {seasons.map((season) => (
-                <MenuItem key={season.id} value={season.id}>
-                  {season.year}
-                </MenuItem>
-              ))}
+              {seasons.map((season) => <MenuItem key={season.id} value={season.id}>{season.year}</MenuItem>)}
             </TextField>
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
-            <TextField
-              fullWidth
-              type="date"
-              label="Data"
-              value={form.matchDate}
-              onChange={(event) => setForm((current) => ({ ...current, matchDate: event.target.value }))}
-              InputLabelProps={{ shrink: true }}
-            />
+            <TextField fullWidth type="date" label="Data" value={form.matchDate} onChange={(event) => setForm((current) => ({ ...current, matchDate: event.target.value }))} slotProps={{ inputLabel: { shrink: true } }} />
           </Grid>
           {[
             ["teamAPlayer1Id", "Dupla A - Jogador 1"],
@@ -277,292 +224,98 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             ["teamBPlayer2Id", "Dupla B - Jogador 2"]
           ].map(([field, label]) => (
             <Grid key={field} size={{ xs: 12, md: 3 }}>
-              <TextField
-                select
-                fullWidth
-                label={label}
-                value={form[field as keyof typeof form] as string}
-                onChange={(event) => setForm((current) => ({ ...current, [field]: event.target.value }))}
-              >
+              <TextField select fullWidth label={label} value={form[field as keyof MatchFormState] as string} onChange={(event) => setForm((current) => ({ ...current, [field]: event.target.value }))}>
                 <MenuItem value="">Selecione</MenuItem>
-                {activePlayers.map((player) => (
-                  <MenuItem key={player.id} value={player.id}>
-                    {player.displayName}
-                  </MenuItem>
-                ))}
+                {activePlayers.map((player) => <MenuItem key={player.id} value={player.id}>{player.displayName}</MenuItem>)}
               </TextField>
             </Grid>
           ))}
 
+          <Grid size={{ xs: 12 }}><Divider /></Grid>
+
           <Grid size={{ xs: 12 }}>
-            <Divider />
+            <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
+              <Stack spacing={2}>
+                <Typography variant="subtitle1" fontWeight={800}>Placar da partida</Typography>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <TextField fullWidth label="Games da dupla A" type="number" value={score.teamAGames ?? ""} slotProps={{ htmlInput: { min: 0, max: score.isSuperTiebreak ? 1 : 7 } }} helperText={score.isSuperTiebreak ? "Use 1-0 ou 0-1." : "Placar normal: 0 a 7."} onChange={(event) => updateScore({ teamAGames: event.target.value === "" ? null : Number(event.target.value) })} />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <TextField fullWidth label="Games da dupla B" type="number" value={score.teamBGames ?? ""} slotProps={{ htmlInput: { min: 0, max: score.isSuperTiebreak ? 1 : 7 } }} helperText={score.isSuperTiebreak ? "Use 1-0 ou 0-1." : "Placar normal: 0 a 7."} onChange={(event) => updateScore({ teamBGames: event.target.value === "" ? null : Number(event.target.value) })} />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <FormControlLabel
+                      control={<Checkbox checked={score.isTiebreak} onChange={(event) => updateScore({ isTiebreak: event.target.checked, isSuperTiebreak: event.target.checked ? score.isSuperTiebreak : false, tiebreakPointsA: event.target.checked ? score.tiebreakPointsA : null, tiebreakPointsB: event.target.checked ? score.tiebreakPointsB : null })} />}
+                      label="Houve tiebreak na partida"
+                    />
+                  </Grid>
+                  {score.isTiebreak && (
+                    <>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <TextField fullWidth label="Pontos tiebreak A" type="number" value={score.tiebreakPointsA ?? ""} slotProps={{ htmlInput: { min: 0, max: 30 } }} onChange={(event) => updateScore({ tiebreakPointsA: event.target.value === "" ? null : Number(event.target.value) })} />
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <TextField fullWidth label="Pontos tiebreak B" type="number" value={score.tiebreakPointsB ?? ""} slotProps={{ htmlInput: { min: 0, max: 30 } }} onChange={(event) => updateScore({ tiebreakPointsB: event.target.value === "" ? null : Number(event.target.value) })} />
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+              </Stack>
+            </Paper>
           </Grid>
 
-          {form.sets.filter((set) => set.isEnabled).map((set) => (
-            <Grid key={set.setOrder} size={{ xs: 12 }}>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
-                <Stack spacing={2}>
-                  <Stack direction={{ xs: "column", md: "row" }} spacing={2} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "center" }}>
-                    <Typography variant="subtitle1" fontWeight={700}>
-                      Set {set.setOrder}
-                    </Typography>
-                    {set.setOrder > 1 && (
-                      <Button
-                        size="small"
-                        color="inherit"
-                        startIcon={<RemoveCircleOutlineRoundedIcon />}
-                        onClick={() => removeSet(set.setOrder)}
-                      >
-                        Remover set
-                      </Button>
-                    )}
-                  </Stack>
-
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 3 }}>
-                      <TextField
-                        fullWidth
-                        label="Games dupla A"
-                        type="number"
-                        value={set.teamAGames ?? ""}
-                        inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
-                        onChange={(event) => updateSet(set.setOrder, { teamAGames: event.target.value === "" ? null : Number(event.target.value) })}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 3 }}>
-                      <TextField
-                        fullWidth
-                        label="Games dupla B"
-                        type="number"
-                        value={set.teamBGames ?? ""}
-                        inputProps={{ min: 0, max: set.isSuperTiebreak ? 1 : 7 }}
-                        helperText={set.isSuperTiebreak ? "Use 1-0 ou 0-1 no 3º set." : "Set normal: 0 a 7."}
-                        onChange={(event) => updateSet(set.setOrder, { teamBGames: event.target.value === "" ? null : Number(event.target.value) })}
-                      />
-                    </Grid>
-                    {showAdvanced && (
-                      <>
-                        <Grid size={{ xs: 12, md: 3 }}>
-                          <TextField
-                            fullWidth
-                            label="Deuces no set"
-                            type="number"
-                            value={set.deucesCount ?? ""}
-                            onChange={(event) => updateSet(set.setOrder, { deucesCount: event.target.value === "" ? null : Number(event.target.value) })}
-                          />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 3 }}>
-                          <TextField
-                            fullWidth
-                            label="Observação do set"
-                            value={set.notes ?? ""}
-                            onChange={(event) => updateSet(set.setOrder, { notes: event.target.value })}
-                          />
-                        </Grid>
-                      </>
-                    )}
-                    <Grid size={{ xs: 12 }}>
-                      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={set.isTiebreak}
-                              onChange={(event) =>
-                                updateSet(set.setOrder, {
-                                  isTiebreak: event.target.checked,
-                                  tiebreakPointsA: event.target.checked ? set.tiebreakPointsA : null,
-                                  tiebreakPointsB: event.target.checked ? set.tiebreakPointsB : null,
-                                  isSuperTiebreak: event.target.checked ? set.isSuperTiebreak : false
-                                })
-                              }
-                            />
-                          }
-                          label="Houve tiebreak no set"
-                        />
-                        {showAdvanced && (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={Boolean(set.isSuperTiebreak)}
-                                disabled={!set.isTiebreak || set.setOrder !== 3}
-                                onChange={(event) =>
-                                  updateSet(set.setOrder, {
-                                    isSuperTiebreak: event.target.checked,
-                                    teamAGames: event.target.checked ? 1 : set.teamAGames,
-                                    teamBGames: event.target.checked ? 0 : set.teamBGames
-                                  })
-                                }
-                              />
-                            }
-                            label="3º set foi super tiebreak"
-                          />
-                        )}
-                        {set.isSuperTiebreak && (
-                          <Alert severity="info" sx={{ alignItems: "center" }}>
-                            No super tiebreak, registre o set como 1-0 ou 0-1 e informe abaixo o placar real, por exemplo 10-8.
-                          </Alert>
-                        )}
-                        {set.setOrder < 3 && set.isSuperTiebreak && (
-                          <Alert severity="warning">
-                            Super tiebreak deve ser usado somente no 3º set.
-                          </Alert>
-                        )}
-                        {showAdvanced && set.setOrder === 3 && !set.isTiebreak && (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={Boolean(set.isSuperTiebreak)}
-                                onChange={(event) =>
-                                  updateSet(set.setOrder, {
-                                    isSuperTiebreak: event.target.checked,
-                                    isTiebreak: event.target.checked,
-                                    teamAGames: event.target.checked ? 1 : set.teamAGames,
-                                    teamBGames: event.target.checked ? 0 : set.teamBGames
-                                  })
-                                }
-                              />
-                            }
-                            label="Usar super tiebreak no 3º set"
-                          />
-                        )}
-                      </Stack>
-                    </Grid>
-
-                    {set.isTiebreak && (
-                      <>
-                        <Grid size={{ xs: 12, md: 3 }}>
-                          <TextField
-                            fullWidth
-                            label="Pontos tiebreak A"
-                            type="number"
-                            value={set.tiebreakPointsA ?? ""}
-                            inputProps={{ min: 0, max: 30 }}
-                            helperText={set.isSuperTiebreak ? "Ex.: 10" : "Ex.: 7"}
-                            onChange={(event) => updateSet(set.setOrder, { tiebreakPointsA: event.target.value === "" ? null : Number(event.target.value) })}
-                          />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 3 }}>
-                          <TextField
-                            fullWidth
-                            label="Pontos tiebreak B"
-                            type="number"
-                            value={set.tiebreakPointsB ?? ""}
-                            inputProps={{ min: 0, max: 30 }}
-                            helperText={set.isSuperTiebreak ? "Ex.: 8" : "Ex.: 4"}
-                            onChange={(event) => updateSet(set.setOrder, { tiebreakPointsB: event.target.value === "" ? null : Number(event.target.value) })}
-                          />
-                        </Grid>
-                      </>
-                    )}
-                  </Grid>
-                </Stack>
-              </Paper>
-            </Grid>
-          ))}
-          {!form.sets[1].isEnabled && (
-            <Grid size={{ xs: 12 }}>
-              <Button
-                variant="outlined"
-                startIcon={<AddRoundedIcon />}
-                onClick={() => updateSet(2, { isEnabled: true })}
-              >
-                Adicionar 2º set
-              </Button>
-            </Grid>
-          )}
-
-          {form.sets[1].isEnabled && !form.sets[2].isEnabled && (
-            <Grid size={{ xs: 12 }}>
-              <Button
-                variant="outlined"
-                startIcon={<AddRoundedIcon />}
-                onClick={() => updateSet(3, { isEnabled: true })}
-              >
-                Adicionar 3º set
-              </Button>
-            </Grid>
-          )}
-
           <Grid size={{ xs: 12 }}>
-            <Button
-              variant="text"
-              color="inherit"
-              startIcon={<ExpandMoreRoundedIcon />}
-              onClick={() => setShowAdvanced((current) => !current)}
-            >
+            <Button variant="text" color="inherit" startIcon={<ExpandMoreRoundedIcon />} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? "Ocultar detalhes avançados" : "Mostrar detalhes avançados"}
             </Button>
           </Grid>
-
           <Grid size={{ xs: 12 }}>
             <Collapse in={showAdvanced}>
-              <Alert severity="info">
-                Use os detalhes avançados apenas quando quiser enriquecer a estatística. O cadastro rápido continua funcionando só com os sets.
-              </Alert>
+              <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12 }}>
+                    <FormControlLabel
+                      control={<Checkbox checked={Boolean(score.isSuperTiebreak)} onChange={(event) => updateScore({ isSuperTiebreak: event.target.checked, isTiebreak: event.target.checked || score.isTiebreak, teamAGames: event.target.checked ? 1 : score.teamAGames, teamBGames: event.target.checked ? 0 : score.teamBGames })} />}
+                      label="A partida foi decidida por super tiebreak"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <TextField fullWidth label="Quantidade de deuces" type="number" value={score.deucesCount ?? ""} onChange={(event) => updateScore({ deucesCount: event.target.value === "" ? null : Number(event.target.value) })} />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 8 }}>
+                    <TextField fullWidth label="Observação do placar" value={score.notes} onChange={(event) => updateScore({ notes: event.target.value })} />
+                  </Grid>
+                </Grid>
+              </Paper>
             </Collapse>
           </Grid>
 
           <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              multiline
-              minRows={3}
-              label="Observacoes"
-              value={form.notes}
-              onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))}
-            />
+            <TextField fullWidth multiline minRows={3} label="Observações da partida" value={form.notes} onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))} />
           </Grid>
         </Grid>
+
         <Alert severity="success">
-          Resumo automatico: {validationIssues.length > 0 ? "preencha os campos para visualizar o resultado." : `vencedor da partida = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets.filter((set) => set.isEnabled !== false))} | ${summarizeSets(buildMatchPayload(form).sets)}`}
+          Resumo automático: {validationIssues.length > 0 ? "preencha os campos para visualizar o resultado." : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)}`}
         </Alert>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleSave} fullWidth disabled={isSaving}>
             {form.id ? "Salvar alterações" : "Salvar partida"}
           </Button>
           {form.id && (
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={() => {
-                resetForm();
-                setMessage(null);
-                setError(null);
-                onCancelEdit?.();
-              }}
-              fullWidth
-            >
+            <Button variant="outlined" color="inherit" onClick={() => { resetForm(); setMessage(null); setError(null); onCancelEdit?.(); }} fullWidth>
               Cancelar edição
             </Button>
           )}
         </Stack>
       </Stack>
-      <Snackbar
-        open={successToastOpen}
-        autoHideDuration={3500}
-        onClose={(_, reason) => {
-          if (reason === "clickaway") {
-            return;
-          }
 
-          setSuccessToastOpen(false);
-        }}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          severity="success"
-          variant="filled"
-          onClose={() => setSuccessToastOpen(false)}
-          sx={{ width: "100%" }}
-        >
+      <Snackbar open={successToastOpen} autoHideDuration={3500} onClose={(_, reason) => reason !== "clickaway" && setSuccessToastOpen(false)} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="success" variant="filled" onClose={() => setSuccessToastOpen(false)} sx={{ width: "100%" }}>
           {message ?? "Partida salva com sucesso."}
         </Alert>
       </Snackbar>
     </Paper>
   );
 }
-
-
-
-

@@ -76,11 +76,11 @@ export function RankingTable({ rows }: RankingTableProps) {
 
               <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                 <StatPill label="Pontos" value={row.points} />
-                <StatPill label="Jogos" value={row.matchesPlayed} />
-                <StatPill label="Sets vencidos" value={row.wins} />
-                <StatPill label="Sets perdidos" value={row.losses} />
+                <StatPill label="Partidas" value={row.matchesPlayed} />
+                <StatPill label="Vitórias" value={row.wins} />
+                <StatPill label="Derrotas" value={row.losses} />
                 <StatPill label="Aproveitamento" value={formatPercentage(row.winRate)} />
-                <StatPill label="Saldo sets" value={row.setsWon - row.setsLost} />
+                <StatPill label="Saldo" value={row.setsWon - row.setsLost} />
               </Stack>
             </Stack>
           </Paper>
@@ -94,11 +94,11 @@ export function RankingTable({ rows }: RankingTableProps) {
               <TableCell>Pos.</TableCell>
               <TableCell>Jogador</TableCell>
               <TableCell align="right">Pontos</TableCell>
-              <TableCell align="right">Jogos</TableCell>
-              <TableCell align="right">Sets vencidos</TableCell>
-              <TableCell align="right">Sets perdidos</TableCell>
+              <TableCell align="right">Partidas</TableCell>
+              <TableCell align="right">Vitórias</TableCell>
+              <TableCell align="right">Derrotas</TableCell>
               <TableCell align="right">Aproveitamento</TableCell>
-              <TableCell align="right">Saldo sets</TableCell>
+              <TableCell align="right">Saldo</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

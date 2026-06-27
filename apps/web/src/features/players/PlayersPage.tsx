@@ -86,14 +86,14 @@ export function PlayersPage() {
                     {playerStatistics ? (
                       <Stack spacing={1}>
                         <Typography color="text.secondary">
-                          {playerStatistics.matchesPlayed} jogos | {playerStatistics.wins} sets vencidos | {formatPercentage(playerStatistics.winRate)}
+                          {playerStatistics.matchesPlayed} partidas | {playerStatistics.wins} vitórias | {formatPercentage(playerStatistics.winRate)}
                         </Typography>
                         <Typography>Parceiro favorito: {playerStatistics.favoritePartner ?? "A definir"}</Typography>
                         <Typography>Melhor parceiro: {playerStatistics.bestPartner ?? "A definir"}</Typography>
                         <Typography>Rival mais enfrentado: {playerStatistics.mostFacedRival ?? "A definir"}</Typography>
                         <Typography>Rival mais difícil: {playerStatistics.hardestRival ?? "A definir"}</Typography>
-                        <Typography>Maior sequência de sets vencidos: {playerStatistics.bestWinStreak}</Typography>
-                        <Typography>Maior sequência de sets perdidos: {playerStatistics.worstLossStreak}</Typography>
+                        <Typography>Maior sequência de vitórias: {playerStatistics.bestWinStreak}</Typography>
+                        <Typography>Maior sequência de derrotas: {playerStatistics.worstLossStreak}</Typography>
                         <Typography>Melhor mês: {playerStatistics.bestMonth ?? "Sem dados"}</Typography>
                       </Stack>
                     ) : (

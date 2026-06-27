@@ -36,7 +36,7 @@ export function RankingPage() {
     <Stack spacing={3}>
       <SectionHeader
         title="Ranking geral"
-        subtitle="Classificação atual com pontos por set: 3 pontos para cada set vencido e 1 ponto para cada set perdido."
+        subtitle="Classificação atual: 3 pontos por vitória e 1 ponto por derrota em cada partida."
         action={
           <Button
             variant="contained"

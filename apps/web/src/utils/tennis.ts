@@ -118,32 +118,28 @@ export function validateMatch(values: MatchFormValues): string[] {
   const completedSets = activeSets.filter((set) => Number.isFinite(set.teamAGames) && Number.isFinite(set.teamBGames) && !(set.teamAGames === 0 && set.teamBGames === 0));
 
   if (completedSets.length < 1) {
-    issues.push("Informe pelo menos um set válido.");
+    issues.push("Informe um placar válido para a partida.");
   }
 
   for (const set of completedSets) {
     if (set.teamAGames === set.teamBGames) {
-      issues.push(`O set ${set.setOrder} nao pode terminar empatado.`);
+      issues.push("A partida não pode terminar empatada.");
     }
 
     if (set.isSuperTiebreak) {
-      if (set.setOrder !== 3) {
-        issues.push("Super tiebreak só deve ser usado no 3º set.");
-      }
-
       if (!isSuperTiebreakSetScoreValid(set)) {
-        issues.push("No super tiebreak, o placar do set deve ser 1-0 ou 0-1.");
+        issues.push("No super tiebreak, o placar da partida deve ser 1-0 ou 0-1.");
       }
     } else if (!isRegularSetScoreValid(set)) {
-      issues.push(`O placar do set ${set.setOrder} não segue uma combinação válida de tênis.`);
+      issues.push("O placar da partida não segue uma combinação válida de tênis.");
     }
 
     if (set.isTiebreak && !isTiebreakPointsValid(set.tiebreakPointsA, set.tiebreakPointsB, Boolean(set.isSuperTiebreak))) {
-      issues.push(`O placar do tiebreak no set ${set.setOrder} está inválido.`);
+      issues.push("O placar do tiebreak está inválido.");
     }
 
     if (!set.isTiebreak && (set.tiebreakPointsA != null || set.tiebreakPointsB != null)) {
-      issues.push(`Remova os pontos de tiebreak do set ${set.setOrder} ou marque que houve tiebreak.`);
+      issues.push("Remova os pontos de tiebreak ou marque que houve tiebreak.");
     }
   }
 

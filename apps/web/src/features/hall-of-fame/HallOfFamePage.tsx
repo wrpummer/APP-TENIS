@@ -20,8 +20,8 @@ function getValueLabel(category: string) {
   switch (category) {
     case "Campeão da temporada":
       return "pontos";
-    case "Mais sets vencidos":
-      return "sets vencidos";
+    case "Mais vitórias":
+      return "vitórias";
     case "Melhor aproveitamento":
       return "aproveitamento";
     case "Jogador mais ativo":

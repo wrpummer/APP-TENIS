@@ -495,7 +495,7 @@ function buildHallOfFameFromRanking(ranking: RankingRow[]): HallOfFameEntry[] {
 
   return [
     createEntry("Campeão da temporada", maxPoints, ranking.filter((row) => row.points === maxPoints)),
-    createEntry("Mais sets vencidos", maxWins, ranking.filter((row) => row.wins === maxWins)),
+    createEntry("Mais vitórias", maxWins, ranking.filter((row) => row.wins === maxWins)),
     createEntry("Melhor aproveitamento", maxWinRate, ranking.filter((row) => row.winRate === maxWinRate)),
     createEntry("Jogador mais ativo", maxMatches, ranking.filter((row) => row.matchesPlayed === maxMatches))
   ];
@@ -665,11 +665,11 @@ export async function getDashboard(): Promise<DashboardData> {
 
   const quickStats = [
     { label: "Partidas registradas", value: String(matches.length), detail: "temporada atual" },
-    { label: "Jogadores ativos", value: String(activePlayersCount), detail: `${playersWithMatchesCount} com pelo menos 1 jogo` },
-    { label: "Média mensal", value: matches.length > 0 ? formatDecimal(averagePerMonth, 1) : "0,0", detail: "partidas por mês com jogos" }
+    { label: "Jogadores ativos", value: String(activePlayersCount), detail: `${playersWithMatchesCount} com pelo menos 1 partida` },
+    { label: "Média mensal", value: matches.length > 0 ? formatDecimal(averagePerMonth, 1) : "0,0", detail: "partidas nos meses com atividade" }
   ];
 
-  const matchesPerMonthMap = new Map<string, { month: string; matches: number; sets: number }>();
+  const matchesPerMonthMap = new Map<string, { month: string; matches: number }>();
   const monthlyPlayerAppearances = new Map<string, Map<string, number>>();
   const monthlyPlayerPoints = new Map<string, Map<string, number>>();
   for (const match of chartMatches) {
@@ -677,9 +677,8 @@ export async function getDashboard(): Promise<DashboardData> {
     const monthIndex = Number(match.matchDate.slice(5, 7)) - 1;
     const key = formatMonthKey(year, monthIndex);
     const label = shortMonthLabels[monthIndex] ?? `M${monthIndex + 1}`;
-    const current = matchesPerMonthMap.get(key) ?? { month: label, matches: 0, sets: 0 };
+    const current = matchesPerMonthMap.get(key) ?? { month: label, matches: 0 };
     current.matches += 1;
-    current.sets += match.sets.length;
     matchesPerMonthMap.set(key, current);
     const playerIds = [match.teamAPlayer1Id, match.teamAPlayer2Id, match.teamBPlayer1Id, match.teamBPlayer2Id];
     const appearanceRow = monthlyPlayerAppearances.get(key) ?? new Map<string, number>();
@@ -711,8 +710,7 @@ export async function getDashboard(): Promise<DashboardData> {
       month: item.month,
       year: item.year,
       label: item.label,
-      matches: row?.matches ?? 0,
-      sets: row?.sets ?? 0
+      matches: row?.matches ?? 0
     };
   });
   const playersById = new Map(players.map((player) => [player.id, player]));
@@ -1212,7 +1210,10 @@ export async function deletePlayer(playerId: string) {
 }
 
 export async function saveMatch(values: MatchFormValues) {
-  const persistedSets = values.sets.filter((set) => set.isEnabled !== false && !(set.teamAGames === 0 && set.teamBGames === 0));
+  const persistedSets = values.sets
+    .filter((set) => set.isEnabled !== false && !(set.teamAGames === 0 && set.teamBGames === 0))
+    .slice(0, 1)
+    .map((set) => ({ ...set, setOrder: 1 }));
   const winnerTeam = inferWinnerTeam(persistedSets);
   const resultSummary = summarizeSets(persistedSets);
 
@@ -1249,7 +1250,7 @@ export async function saveMatch(values: MatchFormValues) {
   if (values.id) {
     const { error: deleteSetsError } = await client.from("match_sets").delete().eq("match_id", values.id);
     if (deleteSetsError) {
-      throw new Error(getErrorMessage(deleteSetsError, "Nao foi possivel atualizar os sets existentes da partida."));
+      throw new Error(getErrorMessage(deleteSetsError, "Não foi possível atualizar o placar anterior da partida."));
     }
   }
 
@@ -1272,7 +1273,7 @@ export async function saveMatch(values: MatchFormValues) {
     throw new Error(
       getErrorMessage(
         setsError,
-        "Nao foi possivel salvar os sets da partida."
+        "Não foi possível salvar o placar da partida."
       )
     );
   }

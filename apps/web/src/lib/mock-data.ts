@@ -74,11 +74,10 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[5].id,
     teamBPlayer2Id: mockPlayers[7].id,
     winnerTeam: "B",
-    resultSummary: "6-3 / 6-2",
+    resultSummary: "3-6",
     source: "legacy_import",
     sets: [
-      { setOrder: 1, teamAGames: 3, teamBGames: 6, isTiebreak: false },
-      { setOrder: 2, teamAGames: 2, teamBGames: 6, isTiebreak: false }
+      { setOrder: 1, teamAGames: 3, teamBGames: 6, isTiebreak: false }
     ]
   },
   {
@@ -90,11 +89,10 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[0].id,
     teamBPlayer2Id: mockPlayers[9].id,
     winnerTeam: "B",
-    resultSummary: "6-3 / 7-5",
+    resultSummary: "3-6",
     source: "legacy_import",
     sets: [
-      { setOrder: 1, teamAGames: 3, teamBGames: 6, isTiebreak: false },
-      { setOrder: 2, teamAGames: 5, teamBGames: 7, isTiebreak: false }
+      { setOrder: 1, teamAGames: 3, teamBGames: 6, isTiebreak: false }
     ]
   },
   {
@@ -106,18 +104,17 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[7].id,
     teamBPlayer2Id: mockPlayers[5].id,
     winnerTeam: "A",
-    resultSummary: "6-4 / 6-1",
+    resultSummary: "6-4",
     source: "legacy_import",
     sets: [
-      { setOrder: 1, teamAGames: 6, teamBGames: 4, isTiebreak: false },
-      { setOrder: 2, teamAGames: 6, teamBGames: 1, isTiebreak: false }
+      { setOrder: 1, teamAGames: 6, teamBGames: 4, isTiebreak: false }
     ]
   }
 ];
 
 export const mockHallOfFame: HallOfFameEntry[] = [
   { category: "Campeão da temporada", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 274 },
-  { category: "Mais sets vencidos", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 64 },
+  { category: "Mais vitórias", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 64 },
   { category: "Melhor aproveitamento", playerId: mockPlayers[2].id, playerName: "Hellinton", photoUrl: null, valueNumber: 54.12 },
   { category: "Jogador mais ativo", playerId: mockPlayers[0].id, playerName: "Carlos Eduardo", photoUrl: null, valueNumber: 122 }
 ];
@@ -147,15 +144,15 @@ export const mockDashboard: DashboardData = {
   },
   quickStats: [
     { label: "Partidas registradas", value: "98", detail: "temporada atual" },
-    { label: "Jogadores ativos", value: "18", detail: "com pelo menos 1 jogo" },
-    { label: "Média mensal", value: "19,6", detail: "partidas por mês com jogos" }
+    { label: "Jogadores ativos", value: "18", detail: "com pelo menos 1 partida" },
+    { label: "Média mensal", value: "19,6", detail: "partidas nos meses com atividade" }
   ],
   matchesPerMonth: [
-    { month: "Jan", year: 2026, label: "Jan/2026", matches: 29, sets: 64 },
-    { month: "Fev", year: 2026, label: "Fev/2026", matches: 23, sets: 51 },
-    { month: "Mar", year: 2026, label: "Mar/2026", matches: 20, sets: 44 },
-    { month: "Abr", year: 2026, label: "Abr/2026", matches: 19, sets: 43 },
-    { month: "Mai", year: 2026, label: "Mai/2026", matches: 26, sets: 59 }
+    { month: "Jan", year: 2026, label: "Jan/2026", matches: 29 },
+    { month: "Fev", year: 2026, label: "Fev/2026", matches: 23 },
+    { month: "Mar", year: 2026, label: "Mar/2026", matches: 20 },
+    { month: "Abr", year: 2026, label: "Abr/2026", matches: 19 },
+    { month: "Mai", year: 2026, label: "Mai/2026", matches: 26 }
   ],
   monthlyChampions: [
     { month: "Jan", year: 2026, label: "Jan/2026", playerName: "Carlos Eduardo", leaders: ["Carlos Eduardo"], points: 69 },
