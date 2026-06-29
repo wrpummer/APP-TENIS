@@ -131,10 +131,7 @@ export function ShamePage() {
                 Dick Vigarista
               </Typography>
               <Typography variant="h6" sx={{ color: "rgba(255,248,223,0.86)", maxWidth: 650 }}>
-                Causos, momentos engraçados, pequenas pilantragens e tudo aquilo que merece entrar para o folclore das quadras.
-              </Typography>
-              <Typography variant="body2" sx={{ color: "rgba(255,248,223,0.72)" }}>
-                Escreva com bom humor e respeito. O mural é público: qualquer pessoa pode publicar, editar ou apagar uma história.
+                Escreva aqui o seu relato para deixar registrado no painel.
               </Typography>
             </Stack>
           </Grid>
