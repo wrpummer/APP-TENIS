@@ -125,9 +125,9 @@ export function ShamePage() {
       >
         <Grid container alignItems="stretch">
           <Grid size={{ xs: 12, md: 7 }}>
-            <Stack spacing={2} sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+            <Stack spacing={1.25} sx={{ p: { xs: 2.5, sm: 3, md: 3.5 } }}>
               <Typography variant="overline" fontWeight={900} color="#ffd447">Mural aberto do tênis</Typography>
-              <Typography variant="h2" sx={{ fontSize: { xs: "2.35rem", md: "4rem" }, lineHeight: 0.95 }}>
+              <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "3rem" }, lineHeight: 1 }}>
                 Dick Vigarista
               </Typography>
               <Typography variant="h6" sx={{ color: "rgba(255,248,223,0.86)", maxWidth: 650 }}>
@@ -136,7 +136,7 @@ export function ShamePage() {
             </Stack>
           </Grid>
           <Grid size={{ xs: 12, md: 5 }}>
-            <Box component="img" src="/dick-vigarista.jpg" alt="Dick Vigarista" sx={{ width: "100%", height: { xs: 250, md: "100%" }, minHeight: { md: 350 }, objectFit: "cover", display: "block" }} />
+            <Box component="img" src="/dick-vigarista.jpg" alt="Dick Vigarista" sx={{ width: "100%", height: { xs: 180, md: "100%" }, minHeight: { md: 245 }, objectFit: "cover", display: "block" }} />
           </Grid>
         </Grid>
       </Paper>
