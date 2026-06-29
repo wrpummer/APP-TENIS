@@ -136,14 +136,14 @@ export interface NextMatchConfirmation {
   confirmedAt: string;
 }
 
-export interface ShameEntry {
+export interface FunnyStory {
   id: string;
-  playerId: string;
-  playerName: string;
-  photoUrl?: string | null;
-  matchDate: string;
-  matchTime?: string | null;
-  matchLocation?: string | null;
+  authorName: string;
+  eventDate: string;
+  location: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DashboardData {

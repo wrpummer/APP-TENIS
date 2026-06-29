@@ -10,5 +10,5 @@ export const queryKeys = {
   history: (seasonId: string) => ["history", seasonId] as const,
   recentMatches: ["recent-matches"] as const,
   hallOfFame: (seasonId: string) => ["hall-of-fame", seasonId] as const,
-  shame: ["shame"] as const
+  funnyStories: ["funny-stories"] as const
 };

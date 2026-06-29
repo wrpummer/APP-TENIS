@@ -7,14 +7,14 @@ import type {
   HallOfFameEntry,
   Match,
   MatchFormValues,
+  FunnyStory,
   NextMatchAttendanceStatus,
   NextMatchConfirmation,
   NextMatchInfo,
   Player,
   PlayerStatistics,
   RankingRow,
-  Season,
-  ShameEntry
+  Season
 } from "@/types/domain";
 import { inferWinnerTeam, monthLabels, shortMonthLabels, slugifyName, summarizeSets } from "@/utils/tennis";
 
@@ -1075,34 +1075,71 @@ export async function removeNextMatchConfirmationAsAdmin(confirmationId: string)
   }
 }
 
-export async function getShameEntries(): Promise<ShameEntry[]> {
+export async function getFunnyStories(): Promise<FunnyStory[]> {
   if (!hasSupabaseEnv) {
     return [];
   }
 
   const client = requireSupabase();
   const { data, error } = await client
-    .from("next_match_confirmations")
-    .select("id, player_id, match_date, match_time, match_location, players(display_name, photo_url)")
-    .eq("attendance_status", "absent")
-    .order("match_date", { ascending: false });
+    .from("funny_stories")
+    .select("id, author_name, event_date, location, content, created_at, updated_at")
+    .order("event_date", { ascending: false })
+    .order("created_at", { ascending: false });
 
   if (error) {
-    throw new Error(getErrorMessage(error, "Não foi possível carregar o Cantinho da Vergonha."));
+    throw new Error(getErrorMessage(error, "Não foi possível carregar as histórias."));
   }
 
-  return (data ?? []).map((row) => {
-    const player = Array.isArray(row.players) ? row.players[0] : row.players;
-    return {
-      id: row.id,
-      playerId: row.player_id,
-      playerName: player?.display_name ?? "Jogador",
-      photoUrl: player?.photo_url ?? null,
-      matchDate: row.match_date,
-      matchTime: row.match_time,
-      matchLocation: row.match_location
-    };
-  });
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    authorName: row.author_name,
+    eventDate: row.event_date,
+    location: row.location,
+    content: row.content,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }));
+}
+
+export async function saveFunnyStory(story: {
+  id?: string;
+  authorName: string;
+  eventDate: string;
+  location: string;
+  content: string;
+}) {
+  const payload = {
+    author_name: story.authorName.trim(),
+    event_date: story.eventDate,
+    location: story.location.trim(),
+    content: story.content.trim()
+  };
+
+  if (!hasSupabaseEnv) {
+    return payload;
+  }
+
+  const client = requireSupabase();
+  const { error } = story.id
+    ? await client.from("funny_stories").update(payload).eq("id", story.id)
+    : await client.from("funny_stories").insert(payload);
+
+  if (error) {
+    throw new Error(getErrorMessage(error, story.id ? "Não foi possível editar a história." : "Não foi possível publicar a história."));
+  }
+}
+
+export async function deleteFunnyStory(storyId: string) {
+  if (!hasSupabaseEnv) {
+    return;
+  }
+
+  const client = requireSupabase();
+  const { error } = await client.from("funny_stories").delete().eq("id", storyId);
+  if (error) {
+    throw new Error(getErrorMessage(error, "Não foi possível apagar a história."));
+  }
 }
 
 export async function savePlayer(player: Partial<Player>) {
