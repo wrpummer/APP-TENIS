@@ -138,6 +138,7 @@ export interface NextMatchConfirmation {
 
 export interface FunnyStory {
   id: string;
+  authorPlayerId?: string | null;
   authorName: string;
   eventDate: string;
   location: string;

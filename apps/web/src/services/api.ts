@@ -1083,7 +1083,7 @@ export async function getFunnyStories(): Promise<FunnyStory[]> {
   const client = requireSupabase();
   const { data, error } = await client
     .from("funny_stories")
-    .select("id, author_name, event_date, location, content, created_at, updated_at")
+    .select("id, author_player_id, author_name, event_date, location, content, created_at, updated_at")
     .order("event_date", { ascending: false })
     .order("created_at", { ascending: false });
 
@@ -1093,6 +1093,7 @@ export async function getFunnyStories(): Promise<FunnyStory[]> {
 
   return (data ?? []).map((row) => ({
     id: row.id,
+    authorPlayerId: row.author_player_id,
     authorName: row.author_name,
     eventDate: row.event_date,
     location: row.location,
@@ -1104,13 +1105,15 @@ export async function getFunnyStories(): Promise<FunnyStory[]> {
 
 export async function saveFunnyStory(story: {
   id?: string;
-  authorName: string;
+  authorPlayerId: string;
+  authorName?: string;
   eventDate: string;
   location: string;
   content: string;
 }) {
   const payload = {
-    author_name: story.authorName.trim(),
+    author_player_id: story.authorPlayerId,
+    author_name: story.authorName?.trim() || "Jogador selecionado",
     event_date: story.eventDate,
     location: story.location.trim(),
     content: story.content.trim()

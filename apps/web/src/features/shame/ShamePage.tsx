@@ -10,6 +10,7 @@ import {
   Button,
   Grid,
   IconButton,
+  MenuItem,
   Paper,
   Snackbar,
   Stack,
@@ -21,6 +22,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { LoadingState } from "@/components/common/LoadingState";
 import { useFunnyStories } from "@/hooks/useFunnyStories";
+import { usePlayers } from "@/hooks/usePlayers";
 import { deleteFunnyStory, saveFunnyStory } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
 import type { FunnyStory } from "@/types/domain";
@@ -28,14 +30,14 @@ import { formatDateOnlyBR } from "@/utils/tennis";
 
 interface StoryFormState {
   id?: string;
-  authorName: string;
+  authorPlayerId: string;
   eventDate: string;
   location: string;
   content: string;
 }
 
 const emptyForm: StoryFormState = {
-  authorName: "",
+  authorPlayerId: "",
   eventDate: "",
   location: "",
   content: ""
@@ -45,11 +47,12 @@ export function ShamePage() {
   const queryClient = useQueryClient();
   const formRef = useRef<HTMLDivElement | null>(null);
   const { data: stories = [], isLoading, error } = useFunnyStories();
+  const { data: players = [], isLoading: playersLoading } = usePlayers();
   const [form, setForm] = useState<StoryFormState>(emptyForm);
   const [feedback, setFeedback] = useState<{ severity: "success" | "error"; message: string } | null>(null);
   const [toastOpen, setToastOpen] = useState(false);
   const isEditing = Boolean(form.id);
-  const formValid = form.authorName.trim().length >= 2
+  const formValid = Boolean(form.authorPlayerId)
     && Boolean(form.eventDate)
     && form.location.trim().length >= 2
     && form.content.trim().length >= 3;
@@ -89,7 +92,9 @@ export function ShamePage() {
   function handleEdit(story: FunnyStory) {
     setForm({
       id: story.id,
-      authorName: story.authorName,
+      authorPlayerId: story.authorPlayerId
+        ?? players.find((player) => player.displayName === story.authorName)?.id
+        ?? "",
       eventDate: story.eventDate,
       location: story.location,
       content: story.content
@@ -108,7 +113,7 @@ export function ShamePage() {
     }
   }
 
-  if (isLoading) {
+  if (isLoading || playersLoading) {
     return <LoadingState />;
   }
 
@@ -153,7 +158,21 @@ export function ShamePage() {
 
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 4 }}>
-              <TextField label="Seu nome" value={form.authorName} onChange={(event) => setForm((current) => ({ ...current, authorName: event.target.value }))} helperText="Nome de quem está escrevendo" inputProps={{ maxLength: 80 }} fullWidth />
+              <TextField
+                select
+                label="Seu nome"
+                value={form.authorPlayerId}
+                onChange={(event) => setForm((current) => ({ ...current, authorPlayerId: event.target.value }))}
+                helperText="Selecione quem está escrevendo"
+                fullWidth
+              >
+                <MenuItem value="">Selecione seu nome</MenuItem>
+                {players.map((player) => (
+                  <MenuItem key={player.id} value={player.id}>
+                    {player.displayName}{player.status === "inactive" ? " (inativo)" : ""}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField label="Data do jogo" type="date" value={form.eventDate} onChange={(event) => setForm((current) => ({ ...current, eventDate: event.target.value }))} slotProps={{ inputLabel: { shrink: true } }} fullWidth />
