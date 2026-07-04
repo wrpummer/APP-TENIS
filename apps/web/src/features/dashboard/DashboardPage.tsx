@@ -57,7 +57,7 @@ function LeaderNames({ names }: { names?: string[] }) {
 
 function MonthlyHighlightPanel({ title, subtitle, rows, accent }: MonthlyHighlightPanelProps) {
   const current = rows.at(-1);
-  const previousRows = rows.slice(0, -1);
+  const previousRows = rows.slice(0, -1).reverse();
 
   return (
     <Paper sx={{ p: 3, height: "100%", border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
