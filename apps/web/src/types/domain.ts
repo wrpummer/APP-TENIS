@@ -123,8 +123,6 @@ export interface NextMatchInfo {
   status: NextMatchStatus;
 }
 
-export type NextMatchAttendanceStatus = "awaiting" | "played" | "absent" | "justified";
-
 export interface NextMatchConfirmation {
   id: string;
   seasonId: string;
@@ -132,7 +130,6 @@ export interface NextMatchConfirmation {
   playerId: string;
   playerName: string;
   photoUrl?: string | null;
-  attendanceStatus: NextMatchAttendanceStatus;
   confirmedAt: string;
 }
 

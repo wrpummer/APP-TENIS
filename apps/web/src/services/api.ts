@@ -8,7 +8,6 @@ import type {
   Match,
   MatchFormValues,
   FunnyStory,
-  NextMatchAttendanceStatus,
   NextMatchConfirmation,
   NextMatchInfo,
   Player,
@@ -971,7 +970,7 @@ export async function getNextMatchConfirmations(
   const client = requireSupabase();
   const { data, error } = await client
     .from("next_match_confirmations")
-    .select("id, season_id, match_date, player_id, attendance_status, confirmed_at, players(display_name, photo_url)")
+    .select("id, season_id, match_date, player_id, confirmed_at, players(display_name, photo_url)")
     .eq("season_id", seasonId)
     .eq("match_date", matchDate)
     .order("confirmed_at", { ascending: true });
@@ -989,7 +988,6 @@ export async function getNextMatchConfirmations(
       playerId: row.player_id,
       playerName: player?.display_name ?? "Jogador",
       photoUrl: player?.photo_url ?? null,
-      attendanceStatus: row.attendance_status as NextMatchAttendanceStatus,
       confirmedAt: row.confirmed_at
     };
   });
@@ -1037,25 +1035,6 @@ export async function withdrawNextMatchPresence(input: {
 
   if (error) {
     throw new Error(getErrorMessage(error, "Não foi possível retirar a confirmação."));
-  }
-}
-
-export async function updateNextMatchAttendanceStatus(input: {
-  confirmationId: string;
-  attendanceStatus: NextMatchAttendanceStatus;
-}) {
-  if (!hasSupabaseEnv) {
-    return;
-  }
-
-  const client = requireSupabase();
-  const { error } = await client
-    .from("next_match_confirmations")
-    .update({ attendance_status: input.attendanceStatus })
-    .eq("id", input.confirmationId);
-
-  if (error) {
-    throw new Error(getErrorMessage(error, "Não foi possível alterar o status do jogador."));
   }
 }
 
