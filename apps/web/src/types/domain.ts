@@ -120,6 +120,7 @@ export interface NextMatchInfo {
   date: string;
   time: string;
   location: string;
+  comment: string;
   status: NextMatchStatus;
 }
 

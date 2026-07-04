@@ -9,7 +9,6 @@ import {
   Avatar,
   Box,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,7 +20,7 @@ import {
   Typography
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   confirmNextMatchPresence,
   getAdminSessionStatus,
@@ -34,7 +33,6 @@ import { queryKeys } from "@/services/queryKeys";
 import type {
   NextMatchConfirmation,
   NextMatchInfo,
-  NextMatchStatus,
   Player,
   Season
 } from "@/types/domain";
@@ -44,16 +42,6 @@ interface NextMatchCardProps {
   season: Season;
   players: Player[];
 }
-
-const statusOptions: Array<{
-  value: NextMatchStatus;
-  label: string;
-  color: "success" | "warning" | "error";
-}> = [
-  { value: "confirmed", label: "Confirmado", color: "success" },
-  { value: "pending", label: "Confirmação pendente", color: "warning" },
-  { value: "cancelled", label: "Cancelado", color: "error" }
-];
 
 function formatDate(date: string) {
   if (!date) {
@@ -90,10 +78,11 @@ function getWithdrawalState(date: string, time: string): "open" | "locked" | "pa
 
 export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps) {
   const queryClient = useQueryClient();
+  const agendaFormRef = useRef<HTMLDivElement | null>(null);
   const [date, setDate] = useState(nextMatch?.date ?? "");
   const [time, setTime] = useState(nextMatch?.time ?? "");
   const [location, setLocation] = useState(nextMatch?.location ?? "");
-  const [status, setStatus] = useState<NextMatchStatus>(nextMatch?.status ?? "pending");
+  const [comment, setComment] = useState(nextMatch?.comment ?? "");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -116,7 +105,7 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
     setDate(nextMatch?.date ?? "");
     setTime(nextMatch?.time ?? "");
     setLocation(nextMatch?.location ?? "");
-    setStatus(nextMatch?.status ?? "pending");
+    setComment(nextMatch?.comment ?? "");
     setFeedback(null);
     setIsEditing(false);
     setConfirmationOpen(false);
@@ -203,13 +192,26 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
     setDate(nextMatch?.date ?? "");
     setTime(nextMatch?.time ?? "");
     setLocation(nextMatch?.location ?? "");
-    setStatus(nextMatch?.status ?? "pending");
+    setComment(nextMatch?.comment ?? "");
     setFeedback(null);
   }
 
   function handleStartEditing() {
-    resetForm();
+    const shouldCreateNewAgenda = !publishedDate || getWithdrawalState(publishedDate, publishedTime) === "passed";
+    if (shouldCreateNewAgenda) {
+      setDate("");
+      setTime("");
+      setLocation("");
+      setComment("");
+      setFeedback(null);
+    } else {
+      resetForm();
+    }
     setIsEditing(true);
+    requestAnimationFrame(() => {
+      const top = (agendaFormRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - 92;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
   }
 
   function handleCancelEditing() {
@@ -264,6 +266,8 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   }
 
   const withdrawalState = getWithdrawalState(publishedDate, publishedTime);
+  const shouldCreateNewAgenda = !publishedDate || withdrawalState === "passed";
+  const agendaFormValid = Boolean(date && time && location.trim().length >= 2);
   const confirmationDisabled = !publishedDate || publishedStatus === "cancelled" || withdrawalState === "passed";
   const presenceFeedbackIsError = confirmationMutation.isError
     || withdrawalMutation.isError
@@ -272,10 +276,17 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   return (
     <Paper sx={{ p: { xs: 2, sm: 3 }, border: "1px solid rgba(10,77,60,0.08)", borderRadius: 4 }}>
       <Stack spacing={2.5}>
-        <Box>
-          <Typography variant="h5">Próximo jogo</Typography>
-          <Typography color="text.secondary">Temporada {season.year}</Typography>
-        </Box>
+        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "stretch", sm: "center" }} gap={1.5}>
+          <Box>
+            <Typography variant="h5">Próximo jogo</Typography>
+            <Typography color="text.secondary">Temporada {season.year}</Typography>
+          </Box>
+          {!isEditing && (
+            <Button variant="outlined" onClick={handleStartEditing}>
+              {shouldCreateNewAgenda ? "Agendar novo jogo" : "Editar agenda"}
+            </Button>
+          )}
+        </Stack>
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -306,6 +317,13 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
             </Stack>
           </Grid>
         </Grid>
+
+        {comment.trim() && !isEditing && (
+          <Paper variant="outlined" sx={{ p: 1.75, borderRadius: 3, bgcolor: "rgba(245,159,0,0.07)", borderColor: "rgba(154,103,0,0.2)" }}>
+            <Typography variant="caption" color="text.secondary">Comentário sobre o jogo</Typography>
+            <Typography sx={{ whiteSpace: "pre-line" }}>{comment}</Typography>
+          </Paper>
+        )}
 
         <Paper
           variant="outlined"
@@ -399,55 +417,59 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
           </Stack>
         </Paper>
 
-        {canEdit && (
-          isEditing ? (
+        {isEditing ? (
+          <Paper ref={agendaFormRef} variant="outlined" sx={{ p: 2, borderRadius: 3, bgcolor: "rgba(10,77,60,0.025)" }}>
             <Stack spacing={2}>
+              <Box>
+                <Typography fontWeight={850}>{shouldCreateNewAgenda ? "Agendar novo jogo" : "Editar agenda"}</Typography>
+                <Typography variant="body2" color="text.secondary">Preencha os dados e confirme somente depois de revisar.</Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <TextField label="Data" type="date" value={date} onChange={(event) => setDate(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} fullWidth />
+                  <TextField label="Data" type="date" value={date} onChange={(event) => setDate(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} fullWidth required />
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <TextField label="Horário" type="time" value={time} onChange={(event) => setTime(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} fullWidth />
+                  <TextField label="Horário" type="time" value={time} onChange={(event) => setTime(event.target.value)} slotProps={{ inputLabel: { shrink: true } }} fullWidth required />
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
-                  <TextField label="Local" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Ex.: Quadra coberta" fullWidth />
+                  <TextField label="Local" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Ex.: Quadra coberta" inputProps={{ maxLength: 150 }} fullWidth required />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    label="Comentário sobre o jogo"
+                    value={comment}
+                    onChange={(event) => setComment(event.target.value)}
+                    placeholder="Ex.: Levar bolas novas e chegar 15 minutos antes."
+                    helperText={`${comment.length}/1000 caracteres. Este comentário será público.`}
+                    inputProps={{ maxLength: 1000 }}
+                    multiline
+                    minRows={3}
+                    fullWidth
+                  />
                 </Grid>
               </Grid>
-
-              <Stack direction={{ xs: "column", md: "row" }} spacing={1} alignItems={{ xs: "stretch", md: "center" }}>
-                {statusOptions.map((option) => (
-                  <Chip
-                    key={option.value}
-                    label={option.label}
-                    color={status === option.value ? option.color : "default"}
-                    variant={status === option.value ? "filled" : "outlined"}
-                    onClick={() => setStatus(option.value)}
-                    sx={{ fontWeight: 700 }}
-                  />
-                ))}
-              </Stack>
 
               {feedback && <Alert severity={saveMutation.isError ? "error" : "success"}>{feedback}</Alert>}
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ alignSelf: "flex-start" }}>
                 <Button
                   variant="contained"
-                  onClick={() => saveMutation.mutate({ seasonId: season.id, date, time, location, status })}
-                  disabled={saveMutation.isPending}
+                  onClick={() => saveMutation.mutate({ seasonId: season.id, date, time, location, comment, status: "confirmed" })}
+                  disabled={!agendaFormValid || saveMutation.isPending}
                 >
-                  {saveMutation.isPending ? "Salvando..." : "Salvar próximo jogo"}
+                  {saveMutation.isPending ? "Salvando..." : "Confirmar a alteração?"}
                 </Button>
                 <Button variant="outlined" color="inherit" onClick={handleCancelEditing} disabled={saveMutation.isPending}>
-                  Cancelar
+                  Cancelar sem salvar
                 </Button>
               </Stack>
             </Stack>
-          ) : (
-            <Stack spacing={2} alignItems="flex-start">
-              {feedback && <Alert severity="success" sx={{ width: "100%" }}>{feedback}</Alert>}
-              <Button variant="outlined" onClick={handleStartEditing}>Editar próximo jogo</Button>
-            </Stack>
-          )
+          </Paper>
+        ) : (
+          <Stack spacing={1.25} alignItems="flex-start">
+            {feedback && <Alert severity="success" sx={{ width: "100%" }}>{feedback}</Alert>}
+            <Typography variant="caption" color="text.secondary">A agenda é pública e pode ser atualizada por qualquer pessoa.</Typography>
+          </Stack>
         )}
       </Stack>
 

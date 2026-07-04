@@ -83,6 +83,7 @@ function normalizeNextMatchValue(value: unknown, seasonId: string): NextMatchInf
     date: typeof candidate.date === "string" ? candidate.date : "",
     time: typeof candidate.time === "string" ? candidate.time : "",
     location: typeof candidate.location === "string" ? candidate.location : "",
+    comment: typeof candidate.comment === "string" ? candidate.comment : "",
     status: (candidate.status === "confirmed" || candidate.status === "cancelled" || candidate.status === "pending")
       ? candidate.status
       : "pending"
@@ -939,17 +940,12 @@ export async function saveNextMatch(nextMatch: NextMatchInfo) {
   }
 
   const client = requireSupabase();
-  const { error } = await client.from("system_settings").upsert({
-    key: buildNextMatchKey(nextMatch.seasonId),
-    value: {
-      date: nextMatch.date,
-      time: nextMatch.time,
-      location: nextMatch.location,
-      status: nextMatch.status
-    },
-    description: `Próximo jogo da temporada ${nextMatch.seasonId}`
-  }, {
-    onConflict: "key"
+  const { error } = await client.rpc("save_public_next_match", {
+    target_season_id: nextMatch.seasonId,
+    target_date: nextMatch.date,
+    target_time: nextMatch.time,
+    target_location: nextMatch.location,
+    target_comment: nextMatch.comment
   });
 
   if (error) {

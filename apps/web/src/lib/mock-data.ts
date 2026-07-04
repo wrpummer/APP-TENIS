@@ -140,6 +140,7 @@ export const mockDashboard: DashboardData = {
     date: "2026-06-21",
     time: "08:30",
     location: "Quadra Coberta",
+    comment: "",
     status: "confirmed"
   },
   quickStats: [
