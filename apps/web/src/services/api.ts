@@ -773,14 +773,22 @@ export async function getDashboard(): Promise<DashboardData> {
   };
 }
 
-export async function getRanking(seasonId?: string): Promise<RankingRow[]> {
+export async function getRanking(seasonId?: string, month?: number): Promise<RankingRow[]> {
   if (!hasSupabaseEnv) {
-    return mockRanking;
+    if (!month) {
+      return mockRanking;
+    }
+
+    const filteredMatches = mockMatches.filter((match) => Number(match.matchDate.slice(5, 7)) === month);
+    return buildRankingFromMatches(filteredMatches, mockPlayers, mockSeason.id);
   }
 
   const resolvedSeasonId = seasonId ?? getDashboardSeason(await getSeasons()).id;
   const [players, matches] = await Promise.all([getPlayers(), getMatchesBySeason(resolvedSeasonId)]);
-  return buildRankingFromMatches(matches, players, resolvedSeasonId);
+  const filteredMatches = month
+    ? matches.filter((match) => Number(match.matchDate.slice(5, 7)) === month)
+    : matches;
+  return buildRankingFromMatches(filteredMatches, players, resolvedSeasonId);
 }
 
 export async function getPlayers(): Promise<Player[]> {
