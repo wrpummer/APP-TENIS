@@ -74,6 +74,8 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[5].id,
     teamBPlayer2Id: mockPlayers[7].id,
     winnerTeam: "B",
+    isWalkover: false,
+    walkoverTeam: null,
     resultSummary: "3-6",
     source: "legacy_import",
     sets: [
@@ -89,6 +91,8 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[0].id,
     teamBPlayer2Id: mockPlayers[9].id,
     winnerTeam: "B",
+    isWalkover: false,
+    walkoverTeam: null,
     resultSummary: "3-6",
     source: "legacy_import",
     sets: [
@@ -104,6 +108,8 @@ export const mockMatches: Match[] = [
     teamBPlayer1Id: mockPlayers[7].id,
     teamBPlayer2Id: mockPlayers[5].id,
     winnerTeam: "A",
+    isWalkover: false,
+    walkoverTeam: null,
     resultSummary: "6-4",
     source: "legacy_import",
     sets: [

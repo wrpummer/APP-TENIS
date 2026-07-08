@@ -47,6 +47,8 @@ export interface Match {
   teamBPlayer1Id: string;
   teamBPlayer2Id: string;
   winnerTeam: TeamSide;
+  isWalkover: boolean;
+  walkoverTeam?: TeamSide | null;
   resultSummary: string;
   source: "manual" | "legacy_import";
   notes?: string | null;
@@ -175,6 +177,8 @@ export interface MatchFormValues {
   teamAPlayer2Id: string;
   teamBPlayer1Id: string;
   teamBPlayer2Id: string;
+  isWalkover: boolean;
+  walkoverTeam?: TeamSide | null;
   sets: MatchSet[];
   notes?: string;
 }

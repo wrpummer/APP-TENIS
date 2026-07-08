@@ -175,9 +175,17 @@ function getSetWinnerTeam(set: Match["sets"][number]): "A" | "B" | null {
   return null;
 }
 
+function getMatchWinnerTeam(match: Match, set: Match["sets"][number]) {
+  if (match.isWalkover && match.walkoverTeam) {
+    return match.walkoverTeam === "A" ? "B" : "A";
+  }
+
+  return getSetWinnerTeam(set);
+}
+
 function getSetBasedPointsForTeam(match: Match, team: "A" | "B") {
   return match.sets.reduce((total, set) => {
-    const setWinner = getSetWinnerTeam(set);
+    const setWinner = getMatchWinnerTeam(match, set);
     if (!setWinner) {
       return total;
     }
@@ -195,9 +203,10 @@ function getTeamSetSummary(match: Match, team: "A" | "B") {
       summary.gamesWon += ownGames;
       summary.gamesLost += opponentGames;
 
-      if (ownGames > opponentGames) {
+      const winnerTeam = getMatchWinnerTeam(match, set);
+      if (winnerTeam === team) {
         summary.setsWon += 1;
-      } else if (ownGames < opponentGames) {
+      } else if (winnerTeam) {
         summary.setsLost += 1;
       }
 
@@ -352,7 +361,7 @@ function buildPlayerStatisticsFromMatches(matches: Match[], players: Player[], s
 
         const playerStreaks = streakRows.get(playerId) ?? [];
         for (const set of match.sets) {
-          const setWinner = getSetWinnerTeam(set);
+          const setWinner = getMatchWinnerTeam(match, set);
           if (setWinner) {
             playerStreaks.push({
               date: match.matchDate,
@@ -611,6 +620,8 @@ export async function getDashboard(): Promise<DashboardData> {
     teamBPlayer1Id: row.team_b_player_1_id,
     teamBPlayer2Id: row.team_b_player_2_id,
     winnerTeam: row.winner_team,
+    isWalkover: Boolean(row.is_walkover),
+    walkoverTeam: row.walkover_team as "A" | "B" | null,
     resultSummary: row.result_summary,
     source: row.source,
     notes: row.notes,
@@ -638,6 +649,8 @@ export async function getDashboard(): Promise<DashboardData> {
     teamBPlayer1Id: row.team_b_player_1_id,
     teamBPlayer2Id: row.team_b_player_2_id,
     winnerTeam: row.winner_team,
+    isWalkover: Boolean(row.is_walkover),
+    walkoverTeam: row.walkover_team as "A" | "B" | null,
     resultSummary: row.result_summary,
     source: row.source,
     notes: row.notes,
@@ -835,6 +848,8 @@ function mapMatchRows(rows: Record<string, unknown>[]): Match[] {
     teamBPlayer1Id: String(row.team_b_player_1_id),
     teamBPlayer2Id: String(row.team_b_player_2_id),
     winnerTeam: row.winner_team as "A" | "B",
+    isWalkover: Boolean(row.is_walkover),
+    walkoverTeam: row.walkover_team == null ? null : row.walkover_team as "A" | "B",
     resultSummary: String(row.result_summary),
     source: row.source as "manual" | "legacy_import",
     notes: row.notes == null ? null : String(row.notes),
@@ -1234,11 +1249,16 @@ export async function deletePlayer(playerId: string) {
 
 export async function saveMatch(values: MatchFormValues) {
   const persistedSets = values.sets
-    .filter((set) => set.isEnabled !== false && !(set.teamAGames === 0 && set.teamBGames === 0))
+    .filter((set) => set.isEnabled !== false && (values.isWalkover || !(set.teamAGames === 0 && set.teamBGames === 0)))
     .slice(0, 1)
     .map((set) => ({ ...set, setOrder: 1 }));
-  const winnerTeam = inferWinnerTeam(persistedSets);
-  const resultSummary = summarizeSets(persistedSets);
+  const winnerTeam = values.isWalkover && values.walkoverTeam
+    ? values.walkoverTeam === "A" ? "B" : "A"
+    : inferWinnerTeam(persistedSets);
+  const frozenScore = summarizeSets(persistedSets) || "0-0";
+  const resultSummary = values.isWalkover && values.walkoverTeam
+    ? `W.O. Dupla ${values.walkoverTeam} (placar interrompido ${frozenScore})`
+    : frozenScore;
 
   if (!hasSupabaseEnv) {
     return { winnerTeam, resultSummary };
@@ -1253,6 +1273,8 @@ export async function saveMatch(values: MatchFormValues) {
     team_b_player_1_id: values.teamBPlayer1Id,
     team_b_player_2_id: values.teamBPlayer2Id,
     winner_team: winnerTeam,
+    is_walkover: values.isWalkover,
+    walkover_team: values.isWalkover ? values.walkoverTeam ?? null : null,
     result_summary: resultSummary,
     notes: values.notes ?? null
   };

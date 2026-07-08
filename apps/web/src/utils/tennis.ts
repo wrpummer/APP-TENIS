@@ -114,6 +114,26 @@ export function validateMatch(values: MatchFormValues): string[] {
     issues.push("Cada partida deve ter quatro jogadores diferentes.");
   }
 
+  if (values.isWalkover) {
+    if (values.walkoverTeam !== "A" && values.walkoverTeam !== "B") {
+      issues.push("Selecione a dupla que desistiu por W.O.");
+    }
+
+    const interruptedScore = values.sets[0];
+    if (!interruptedScore
+      || !Number.isFinite(interruptedScore.teamAGames)
+      || !Number.isFinite(interruptedScore.teamBGames)
+      || interruptedScore.teamAGames < 0
+      || interruptedScore.teamBGames < 0
+      || interruptedScore.teamAGames > 7
+      || interruptedScore.teamBGames > 7
+    ) {
+      issues.push("Informe o placar congelado entre 0 e 7 para cada dupla.");
+    }
+
+    return issues;
+  }
+
   const activeSets = values.sets.filter((set) => set.isEnabled !== false);
   const completedSets = activeSets.filter((set) => Number.isFinite(set.teamAGames) && Number.isFinite(set.teamBGames) && !(set.teamAGames === 0 && set.teamBGames === 0));
 

@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
 import { saveMatch } from "@/services/api";
 import { queryKeys } from "@/services/queryKeys";
-import type { Match, MatchSet, Player, Season } from "@/types/domain";
+import type { Match, MatchSet, Player, Season, TeamSide } from "@/types/domain";
 import { inferWinnerTeam, summarizeSets, validateMatch } from "@/utils/tennis";
 
 interface MatchFormProps {
@@ -46,6 +46,8 @@ interface MatchFormState {
   teamAPlayer2Id: string;
   teamBPlayer1Id: string;
   teamBPlayer2Id: string;
+  isWalkover: boolean;
+  walkoverTeam: TeamSide | null;
   notes: string;
   sets: [MatchScoreState];
 }
@@ -74,6 +76,8 @@ function createInitialForm(): MatchFormState {
     teamAPlayer2Id: "",
     teamBPlayer1Id: "",
     teamBPlayer2Id: "",
+    isWalkover: false,
+    walkoverTeam: null,
     notes: "",
     sets: [createInitialScore()]
   };
@@ -109,6 +113,10 @@ function validateMatchDraft(form: MatchFormState) {
     issues.push("Preencha o placar da partida.");
   }
 
+  if (form.isWalkover && !form.walkoverTeam) {
+    issues.push("Selecione a dupla que desistiu por W.O.");
+  }
+
   return issues.length > 0 ? issues : validateMatch(buildMatchPayload(form));
 }
 
@@ -136,6 +144,8 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       teamAPlayer2Id: editingMatch.teamAPlayer2Id,
       teamBPlayer1Id: editingMatch.teamBPlayer1Id,
       teamBPlayer2Id: editingMatch.teamBPlayer2Id,
+      isWalkover: editingMatch.isWalkover,
+      walkoverTeam: editingMatch.walkoverTeam ?? null,
       notes: editingMatch.notes ?? "",
       sets: [{
         ...createInitialScore(),
@@ -181,7 +191,9 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       setMessage(
         form.id
           ? "Partida atualizada com sucesso."
-          : `Partida salva com sucesso. Vencedor: Dupla ${inferWinnerTeam(payload.sets)} | Placar: ${summarizeSets(payload.sets)}`
+          : form.isWalkover && form.walkoverTeam
+            ? `Partida salva com sucesso. W.O. da Dupla ${form.walkoverTeam}; vitória da Dupla ${form.walkoverTeam === "A" ? "B" : "A"}.`
+            : `Partida salva com sucesso. Vencedor: Dupla ${inferWinnerTeam(payload.sets)} | Placar: ${summarizeSets(payload.sets)}`
       );
       setSuccessToastOpen(true);
       resetForm();
@@ -231,6 +243,52 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             </Grid>
           ))}
 
+          <Grid size={{ xs: 12 }}>
+            <Paper variant="outlined" sx={{ p: 2, borderRadius: 3, bgcolor: form.isWalkover ? "rgba(211,47,47,0.04)" : "transparent" }}>
+              <Stack spacing={1.5}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={form.isWalkover}
+                      onChange={(event) => setForm((current) => ({
+                        ...current,
+                        isWalkover: event.target.checked,
+                        walkoverTeam: event.target.checked ? current.walkoverTeam : null,
+                        sets: event.target.checked
+                          ? [{ ...current.sets[0], isTiebreak: false, isSuperTiebreak: false, tiebreakPointsA: null, tiebreakPointsB: null }]
+                          : current.sets
+                      }))}
+                    />
+                  }
+                  label="Partida encerrada por W.O."
+                />
+                {form.isWalkover && (
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid size={{ xs: 12, sm: 5 }}>
+                      <TextField
+                        select
+                        label="Dupla que desistiu"
+                        value={form.walkoverTeam ?? ""}
+                        onChange={(event) => setForm((current) => ({ ...current, walkoverTeam: event.target.value as TeamSide }))}
+                        helperText="Selecione quem não conseguiu continuar"
+                        fullWidth
+                      >
+                        <MenuItem value="">Selecione</MenuItem>
+                        <MenuItem value="A">Dupla A</MenuItem>
+                        <MenuItem value="B">Dupla B</MenuItem>
+                      </TextField>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 7 }}>
+                      <Alert severity="warning">
+                        O placar será congelado. A outra dupla vencerá por W.O.; vencedores receberão 3 pontos e desistentes receberão 1 ponto.
+                      </Alert>
+                    </Grid>
+                  </Grid>
+                )}
+              </Stack>
+            </Paper>
+          </Grid>
+
           <Grid size={{ xs: 12 }}><Divider /></Grid>
 
           <Grid size={{ xs: 12 }}>
@@ -244,13 +302,13 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <TextField fullWidth label="Games da dupla B" type="number" value={score.teamBGames ?? ""} slotProps={{ htmlInput: { min: 0, max: score.isSuperTiebreak ? 1 : 7 } }} helperText={score.isSuperTiebreak ? "Use 1-0 ou 0-1." : "Placar normal: 0 a 7."} onChange={(event) => updateScore({ teamBGames: event.target.value === "" ? null : Number(event.target.value) })} />
                   </Grid>
-                  <Grid size={{ xs: 12 }}>
+                  {!form.isWalkover && <Grid size={{ xs: 12 }}>
                     <FormControlLabel
                       control={<Checkbox checked={score.isTiebreak} onChange={(event) => updateScore({ isTiebreak: event.target.checked, isSuperTiebreak: event.target.checked ? score.isSuperTiebreak : false, tiebreakPointsA: event.target.checked ? score.tiebreakPointsA : null, tiebreakPointsB: event.target.checked ? score.tiebreakPointsB : null })} />}
                       label="Houve tiebreak na partida"
                     />
-                  </Grid>
-                  {score.isTiebreak && (
+                  </Grid>}
+                  {!form.isWalkover && score.isTiebreak && (
                     <>
                       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <TextField fullWidth label="Pontos tiebreak A" type="number" value={score.tiebreakPointsA ?? ""} slotProps={{ htmlInput: { min: 0, max: 30 } }} onChange={(event) => updateScore({ tiebreakPointsA: event.target.value === "" ? null : Number(event.target.value) })} />
@@ -265,12 +323,12 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             </Paper>
           </Grid>
 
-          <Grid size={{ xs: 12 }}>
+          {!form.isWalkover && <Grid size={{ xs: 12 }}>
             <Button variant="text" color="inherit" startIcon={<ExpandMoreRoundedIcon />} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? "Ocultar detalhes avançados" : "Mostrar detalhes avançados"}
             </Button>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
+          </Grid>}
+          {!form.isWalkover && <Grid size={{ xs: 12 }}>
             <Collapse in={showAdvanced}>
               <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
                 <Grid container spacing={2}>
@@ -289,7 +347,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                 </Grid>
               </Paper>
             </Collapse>
-          </Grid>
+          </Grid>}
 
           <Grid size={{ xs: 12 }}>
             <TextField fullWidth multiline minRows={3} label="Observações da partida" value={form.notes} onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))} />
@@ -297,7 +355,11 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
         </Grid>
 
         <Alert severity="success">
-          Resumo automático: {validationIssues.length > 0 ? "preencha os campos para visualizar o resultado." : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)}`}
+          Resumo automático: {validationIssues.length > 0
+            ? "preencha os campos para visualizar o resultado."
+            : form.isWalkover && form.walkoverTeam
+              ? `W.O. da Dupla ${form.walkoverTeam} | vencedora = Dupla ${form.walkoverTeam === "A" ? "B" : "A"} | placar congelado ${summarizeSets(buildMatchPayload(form).sets) || "0-0"}`
+              : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)}`}
         </Alert>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleSave} fullWidth disabled={isSaving}>

@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import type { Match } from "@/types/domain";
 
 const teamAColor = "#0a4d3c";
@@ -33,6 +33,9 @@ export function ColoredScore({ match, size = "medium" }: ColoredScoreProps) {
           )}
         </Stack>
       ))}
+      {match.isWalkover && match.walkoverTeam && (
+        <Chip size="small" color="error" variant="outlined" label={`W.O. Dupla ${match.walkoverTeam}`} sx={{ fontWeight: 800 }} />
+      )}
     </Stack>
   );
 }
