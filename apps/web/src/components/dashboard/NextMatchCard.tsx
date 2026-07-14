@@ -76,6 +76,16 @@ function getWithdrawalState(date: string, time: string): "open" | "locked" | "pa
   return millisecondsUntilGame <= 6 * 60 * 60 * 1000 ? "locked" : "open";
 }
 
+function isConfirmationClosed(date: string) {
+  if (!date) {
+    return false;
+  }
+
+  const [year, month, day] = date.split("-").map(Number);
+  const endOfScheduledDay = new Date(year, month - 1, day, 23, 59, 59, 999);
+  return Date.now() > endOfScheduledDay.getTime();
+}
+
 export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps) {
   const queryClient = useQueryClient();
   const agendaFormRef = useRef<HTMLDivElement | null>(null);
@@ -266,9 +276,10 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
   }
 
   const withdrawalState = getWithdrawalState(publishedDate, publishedTime);
+  const confirmationClosed = isConfirmationClosed(publishedDate);
   const shouldCreateNewAgenda = !publishedDate || withdrawalState === "passed";
   const agendaFormValid = Boolean(date && time && location.trim().length >= 2);
-  const confirmationDisabled = !publishedDate || publishedStatus === "cancelled" || withdrawalState === "passed";
+  const confirmationDisabled = !publishedDate || publishedStatus === "cancelled" || confirmationClosed;
   const presenceFeedbackIsError = confirmationMutation.isError
     || withdrawalMutation.isError
     || adminRemovalMutation.isError;
@@ -337,7 +348,7 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
                   Confirme seu nome e crie um código de 4 números. Guarde o código caso precise desistir.
                 </Typography>
               </Box>
-              {withdrawalState !== "passed" && (
+              {!confirmationClosed && (
                 <Button
                   variant="contained"
                   startIcon={<HowToRegRoundedIcon />}
