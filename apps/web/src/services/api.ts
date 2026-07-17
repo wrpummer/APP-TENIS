@@ -908,14 +908,30 @@ export async function getRecentMatches(): Promise<Match[]> {
   }
 
   const client = requireSupabase();
-  const { data, error } = await client
-    .from("matches")
-    .select("*, match_sets(*)")
-    .order("match_date", { ascending: false })
-    .limit(12);
-  if (error) throw error;
+  const pageSize = 1000;
+  const rows: Record<string, unknown>[] = [];
+  let from = 0;
 
-  return mapMatchRows((data ?? []) as Record<string, unknown>[]);
+  while (true) {
+    const { data, error } = await client
+      .from("matches")
+      .select("*, match_sets(*)")
+      .order("match_date", { ascending: false })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    const page = (data ?? []) as Record<string, unknown>[];
+    rows.push(...page);
+
+    if (page.length < pageSize) {
+      break;
+    }
+
+    from += pageSize;
+  }
+
+  return mapMatchRows(rows);
 }
 
 export async function getHallOfFame(seasonId?: string): Promise<HallOfFameEntry[]> {

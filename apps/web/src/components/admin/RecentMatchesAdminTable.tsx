@@ -15,10 +15,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography
 } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertSlot } from "@/components/common/AlertSlot";
 import { ColoredScore } from "@/components/matches/ColoredScore";
 import { deleteMatch } from "@/services/api";
@@ -44,6 +45,10 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
   const queryClient = useQueryClient();
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [visibleCount, setVisibleCount] = useState(20);
 
   async function refreshMatches() {
     await Promise.all([
@@ -65,16 +70,60 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
     try {
       await deleteMatch(match.id);
       await refreshMatches();
-      setFeedback({ type: "success", message: "Lançamento excluído com sucesso." });
+      setFeedback({ type: "success", message: "Lancamento excluido com sucesso." });
     } catch (caughtError) {
       setFeedback({
         type: "error",
-        message: caughtError instanceof Error ? caughtError.message : "Não foi possível excluir o lançamento."
+        message: caughtError instanceof Error ? caughtError.message : "Nao foi possivel excluir o lancamento."
       });
     }
   }
 
-  const visibleMatches = matches.slice(0, 10);
+  const filteredMatches = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return matches.filter((match) => {
+      if (startDate && match.matchDate < startDate) {
+        return false;
+      }
+
+      if (endDate && match.matchDate > endDate) {
+        return false;
+      }
+
+      if (!normalizedSearch) {
+        return true;
+      }
+
+      const searchableText = [
+        formatDateOnlyBR(match.matchDate),
+        match.matchDate,
+        match.resultSummary,
+        match.notes,
+        resolveTeam(match, players, "A"),
+        resolveTeam(match, players, "B"),
+        match.isWalkover ? "wo w.o. walkover" : ""
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(normalizedSearch);
+    });
+  }, [endDate, matches, players, search, startDate]);
+
+  const visibleMatches = filteredMatches.slice(0, visibleCount);
+  const hasFilters = Boolean(search.trim() || startDate || endDate);
+
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [search, startDate, endDate]);
+
+  function clearFilters() {
+    setSearch("");
+    setStartDate("");
+    setEndDate("");
+  }
 
   return (
     <Paper sx={{ overflow: "hidden", border: "1px solid rgba(10,77,60,0.08)" }}>
@@ -88,16 +137,59 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
         <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
           <Stack spacing={0.5} sx={{ width: "100%" }}>
             <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ pr: 1 }}>
-              <Typography variant="h6">Últimos 10 lançamentos</Typography>
-              <Chip size="small" label={`${visibleMatches.length} partida${visibleMatches.length === 1 ? "" : "s"}`} color="primary" variant="outlined" />
+              <Typography variant="h6">Partidas cadastradas</Typography>
+              <Chip
+                size="small"
+                label={`${visibleMatches.length} de ${filteredMatches.length} partida${filteredMatches.length === 1 ? "" : "s"}`}
+                color="primary"
+                variant="outlined"
+              />
             </Stack>
             <AlertSlot severity={feedback?.type ?? "info"} message={feedback?.message ?? null} />
           </Stack>
         </AccordionSummary>
 
         <AccordionDetails sx={{ px: 0, pt: 0, pb: 0 }}>
+          <Stack spacing={1.5} sx={{ px: 2, pb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Use a busca para encontrar qualquer partida por jogador, placar, data, observacao ou W.O.
+            </Typography>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={1.25}>
+              <TextField
+                label="Buscar partida"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Ex.: Ailson, 20/07/2026, W.O."
+                fullWidth
+              />
+              <TextField
+                label="De"
+                type="date"
+                value={startDate}
+                onChange={(event) => setStartDate(event.target.value)}
+                slotProps={{ inputLabel: { shrink: true } }}
+                sx={{ minWidth: { md: 170 } }}
+              />
+              <TextField
+                label="Ate"
+                type="date"
+                value={endDate}
+                onChange={(event) => setEndDate(event.target.value)}
+                slotProps={{ inputLabel: { shrink: true } }}
+                sx={{ minWidth: { md: 170 } }}
+              />
+              {hasFilters && (
+                <Button variant="outlined" color="inherit" onClick={clearFilters} sx={{ minWidth: 130 }}>
+                  Limpar
+                </Button>
+              )}
+            </Stack>
+          </Stack>
+
           <Stack spacing={1.5} sx={{ display: { xs: "flex", md: "none" }, px: 2, pb: 2 }}>
-            {visibleMatches.map((match) => (
+            {visibleMatches.length === 0 ? (
+              <Typography color="text.secondary">Nenhuma partida encontrada com estes filtros.</Typography>
+            ) : visibleMatches.map((match) => (
               <Paper key={match.id} variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
                 <Stack spacing={1.5}>
                   <Stack direction="row" justifyContent="space-between" gap={1}>
@@ -131,11 +223,17 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
                   <TableCell>Dupla A</TableCell>
                   <TableCell>Dupla B</TableCell>
                   <TableCell>Placar</TableCell>
-                  <TableCell align="right">Ações</TableCell>
+                  <TableCell align="right">Acoes</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {visibleMatches.map((match) => (
+                {visibleMatches.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <Typography color="text.secondary">Nenhuma partida encontrada com estes filtros.</Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : visibleMatches.map((match) => (
                   <TableRow key={match.id} hover>
                     <TableCell>{formatDateOnlyBR(match.matchDate)}</TableCell>
                     <TableCell>{resolveTeam(match, players, "A")}</TableCell>
@@ -158,6 +256,14 @@ export function RecentMatchesAdminTable({ matches, players, onEditMatch }: Recen
               </TableBody>
             </Table>
           </Box>
+
+          {visibleMatches.length < filteredMatches.length && (
+            <Stack alignItems="center" sx={{ px: 2, py: 2 }}>
+              <Button variant="outlined" onClick={() => setVisibleCount((current) => current + 20)}>
+                Mostrar mais partidas
+              </Button>
+            </Stack>
+          )}
         </AccordionDetails>
       </Accordion>
     </Paper>
