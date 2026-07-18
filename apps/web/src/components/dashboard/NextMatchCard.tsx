@@ -23,7 +23,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   confirmNextMatchPresence,
-  getAdminSessionStatus,
   getNextMatchConfirmations,
   removeNextMatchConfirmationAsAdmin,
   saveNextMatch,
@@ -126,10 +125,7 @@ export function NextMatchCard({ nextMatch, season, players }: NextMatchCardProps
     setWithdrawalCode("");
   }, [nextMatch]);
 
-  const { data: canEdit } = useQuery({
-    queryKey: queryKeys.adminSession,
-    queryFn: getAdminSessionStatus
-  });
+  const canEdit = false;
 
   const {
     data: confirmations = [],
