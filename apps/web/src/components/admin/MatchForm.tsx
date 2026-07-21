@@ -52,6 +52,8 @@ interface MatchFormState {
   sets: [MatchScoreState];
 }
 
+const LAST_MATCH_FORM_KEY = "ranking-tennis:last-match-form";
+
 function createInitialScore(): MatchScoreState {
   return {
     setOrder: 1,
@@ -80,6 +82,14 @@ function createInitialForm(): MatchFormState {
     walkoverTeam: null,
     notes: "",
     sets: [createInitialScore()]
+  };
+}
+
+function createRepeatForm(form: MatchFormState): MatchFormState {
+  return {
+    ...form,
+    id: undefined,
+    sets: [{ ...form.sets[0], id: undefined }]
   };
 }
 
@@ -133,7 +143,17 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
   const score = form.sets[0];
 
   useEffect(() => {
-    if (!editingMatch) return;
+    if (!editingMatch) {
+      const savedForm = window.localStorage.getItem(LAST_MATCH_FORM_KEY);
+      if (!savedForm) return;
+
+      try {
+        setForm(createRepeatForm(JSON.parse(savedForm) as MatchFormState));
+      } catch {
+        window.localStorage.removeItem(LAST_MATCH_FORM_KEY);
+      }
+      return;
+    }
 
     const existingScore = editingMatch.sets[0];
     setForm({
@@ -196,7 +216,9 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             : `Partida salva com sucesso. Vencedor: Dupla ${inferWinnerTeam(payload.sets)} | Placar: ${summarizeSets(payload.sets)}`
       );
       setSuccessToastOpen(true);
-      resetForm();
+      const repeatForm = createRepeatForm(form);
+      window.localStorage.setItem(LAST_MATCH_FORM_KEY, JSON.stringify(repeatForm));
+      setForm(repeatForm);
       onSaved?.();
     } catch (caughtError) {
       setMessage(null);
