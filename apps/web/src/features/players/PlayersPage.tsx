@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
   InputAdornment,
   Paper,
   Stack,
@@ -50,40 +49,35 @@ export function PlayersPage() {
   return (
     <Stack spacing={3}>
       <SectionHeader
-        title={(
-          <Stack direction="row" spacing={1} alignItems="center">
-            <span>Jogadores</span>
-            <IconButton
-              aria-label="Ver explicacao dos resultados dos jogadores"
-              color="primary"
-              size="small"
-              onClick={() => setHelpOpen(true)}
-              sx={{
-                border: "1px solid rgba(10,77,60,0.18)",
-                bgcolor: "rgba(10,77,60,0.06)"
-              }}
-            >
-              <InfoOutlinedIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        )}
+        title="Jogadores"
         subtitle="Lista completa de todos os jogadores cadastrados, inclusive novos registros feitos pelo painel administrativo."
       />
 
-      <TextField
-        label="Pesquisar jogador"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder="Digite o nome para encontrar rapidamente"
-        fullWidth
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchRoundedIcon />
-            </InputAdornment>
-          )
-        }}
-      />
+      <Stack spacing={1} alignItems="flex-start">
+        <TextField
+          label="Pesquisar jogador"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Digite o nome para encontrar rapidamente"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRoundedIcon />
+              </InputAdornment>
+            )
+          }}
+        />
+        <Button
+          variant="text"
+          color="primary"
+          startIcon={<InfoOutlinedIcon />}
+          onClick={() => setHelpOpen(true)}
+          sx={{ fontWeight: 800, px: 0.5 }}
+        >
+          Saiba como é calculado
+        </Button>
+      </Stack>
 
       {filteredPlayers.length === 0 ? (
         <Alert severity="info">Nenhum jogador encontrado com esse nome.</Alert>
