@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface SectionHeaderProps {
-  title: string;
+  title: ReactNode;
   subtitle: string;
   action?: ReactNode;
 }

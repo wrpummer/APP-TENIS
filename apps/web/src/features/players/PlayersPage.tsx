@@ -1,5 +1,22 @@
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { Alert, Avatar, Chip, Grid, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {
+  Alert,
+  Avatar,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material";
 import { useState } from "react";
 import { LoadingState } from "@/components/common/LoadingState";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -18,6 +35,7 @@ export function PlayersPage() {
   const { data: players, isLoading: playersLoading } = usePlayers();
   const { data: statistics, isLoading: statisticsLoading } = usePlayerStatistics();
   const [search, setSearch] = useState("");
+  const [helpOpen, setHelpOpen] = useState(false);
 
   if (playersLoading || statisticsLoading || !players || !statistics) {
     return <LoadingState />;
@@ -32,7 +50,23 @@ export function PlayersPage() {
   return (
     <Stack spacing={3}>
       <SectionHeader
-        title="Jogadores"
+        title={(
+          <Stack direction="row" spacing={1} alignItems="center">
+            <span>Jogadores</span>
+            <IconButton
+              aria-label="Ver explicacao dos resultados dos jogadores"
+              color="primary"
+              size="small"
+              onClick={() => setHelpOpen(true)}
+              sx={{
+                border: "1px solid rgba(10,77,60,0.18)",
+                bgcolor: "rgba(10,77,60,0.06)"
+              }}
+            >
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        )}
         subtitle="Lista completa de todos os jogadores cadastrados, inclusive novos registros feitos pelo painel administrativo."
       />
 
@@ -111,6 +145,52 @@ export function PlayersPage() {
           })}
         </Grid>
       )}
+
+      <Dialog open={helpOpen} onClose={() => setHelpOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Como os resultados dos jogadores são calculados</DialogTitle>
+        <DialogContent>
+          <Stack spacing={1.5} sx={{ pt: 1 }}>
+            <Typography>
+              Cada lançamento feito no Admin conta como uma partida. Se for super tiebreak, ele também conta como uma partida normal para as estatísticas.
+            </Typography>
+            <Typography>
+              <strong>Partidas:</strong> quantidade de partidas em que o jogador participou.
+            </Typography>
+            <Typography>
+              <strong>Vitórias e derrotas:</strong> mostram quantas partidas o jogador venceu ou perdeu. Como cada cadastro representa uma partida, isso acompanha o resultado daquele lançamento.
+            </Typography>
+            <Typography>
+              <strong>Aproveitamento:</strong> percentual de vitórias do jogador, calculado por vitórias divididas pelo total de partidas com resultado.
+            </Typography>
+            <Typography>
+              <strong>Pontuação:</strong> a dupla vencedora recebe 3 pontos para cada jogador; a dupla perdedora recebe 1 ponto para cada jogador.
+            </Typography>
+            <Typography>
+              <strong>Parceiro favorito:</strong> jogador que mais atuou junto com a pessoa.
+            </Typography>
+            <Typography>
+              <strong>Melhor parceiro:</strong> parceiro com melhor aproveitamento junto com a pessoa, usando vitórias e derrotas da dupla.
+            </Typography>
+            <Typography>
+              <strong>Rival mais enfrentado:</strong> adversário que mais apareceu do outro lado da quadra.
+            </Typography>
+            <Typography>
+              <strong>Rival mais difícil:</strong> adversário contra quem o jogador teve pior aproveitamento.
+            </Typography>
+            <Typography>
+              <strong>Sequências:</strong> maior quantidade seguida de vitórias ou derrotas, respeitando a ordem das datas cadastradas.
+            </Typography>
+            <Typography>
+              <strong>Melhor mês:</strong> mês em que o jogador somou mais pontos. Em empate, o app olha mais vitórias.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button variant="contained" onClick={() => setHelpOpen(false)}>
+            Entendi
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 }
