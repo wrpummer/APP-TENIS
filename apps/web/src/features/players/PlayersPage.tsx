@@ -75,7 +75,7 @@ export function PlayersPage() {
           onClick={() => setHelpOpen(true)}
           sx={{ fontWeight: 800, px: 0.5 }}
         >
-          Saiba como é calculado
+          Entenda os cálculos
         </Button>
       </Stack>
 
