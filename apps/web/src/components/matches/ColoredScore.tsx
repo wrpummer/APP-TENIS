@@ -28,7 +28,7 @@ export function ColoredScore({ match, size = "medium" }: ColoredScoreProps) {
           </Typography>
           {set.isTiebreak && set.tiebreakPointsA != null && set.tiebreakPointsB != null && (
             <Typography component="span" color="text.secondary" sx={{ fontSize: size === "small" ? "0.75rem" : "0.82rem" }}>
-              ({set.tiebreakPointsA}-{set.tiebreakPointsB} TB)
+              ({set.tiebreakPointsA}-{set.tiebreakPointsB} {set.isSuperTiebreak ? "STB" : "TB"})
             </Typography>
           )}
         </Stack>

@@ -157,7 +157,7 @@ export function PlayersPage() {
               <strong>Aproveitamento:</strong> percentual de vitórias do jogador, calculado por vitórias divididas pelo total de partidas com resultado.
             </Typography>
             <Typography>
-              <strong>Pontuação:</strong> a dupla vencedora recebe 3 pontos para cada jogador; a dupla perdedora recebe 1 ponto para cada jogador.
+              <strong>Pontuação:</strong> em partida normal, a dupla vencedora recebe 3 pontos para cada jogador e a dupla perdedora recebe 1 ponto para cada jogador. Se for Super Tie-break, a dupla vencedora recebe 4 pontos e a dupla perdedora continua com 1 ponto.
             </Typography>
             <Typography>
               <strong>Parceiro favorito:</strong> jogador que mais atuou junto com a pessoa.

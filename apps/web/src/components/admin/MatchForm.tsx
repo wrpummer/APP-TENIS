@@ -324,6 +324,17 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <TextField fullWidth label="Games da dupla B" type="number" value={score.teamBGames ?? ""} slotProps={{ htmlInput: { min: 0, max: score.isSuperTiebreak ? 1 : 7 } }} helperText={score.isSuperTiebreak ? "Use 1-0 ou 0-1." : "Placar normal: 0 a 7."} onChange={(event) => updateScore({ teamBGames: event.target.value === "" ? null : Number(event.target.value) })} />
                   </Grid>
+                  {!form.isWalkover && (
+                    <Grid size={{ xs: 12 }}>
+                      <FormControlLabel
+                        control={<Checkbox checked={Boolean(score.isSuperTiebreak)} onChange={(event) => updateScore({ isSuperTiebreak: event.target.checked, isTiebreak: event.target.checked || score.isTiebreak, teamAGames: event.target.checked ? 1 : score.teamAGames, teamBGames: event.target.checked ? 0 : score.teamBGames })} />}
+                        label="Super Tie-break"
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        Marcado: dupla vencedora recebe 4 pontos; dupla perdedora continua com 1 ponto.
+                      </Typography>
+                    </Grid>
+                  )}
                   {!form.isWalkover && <Grid size={{ xs: 12 }}>
                     <FormControlLabel
                       control={<Checkbox checked={score.isTiebreak} onChange={(event) => updateScore({ isTiebreak: event.target.checked, isSuperTiebreak: event.target.checked ? score.isSuperTiebreak : false, tiebreakPointsA: event.target.checked ? score.tiebreakPointsA : null, tiebreakPointsB: event.target.checked ? score.tiebreakPointsB : null })} />}
@@ -354,12 +365,6 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             <Collapse in={showAdvanced}>
               <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
                 <Grid container spacing={2}>
-                  <Grid size={{ xs: 12 }}>
-                    <FormControlLabel
-                      control={<Checkbox checked={Boolean(score.isSuperTiebreak)} onChange={(event) => updateScore({ isSuperTiebreak: event.target.checked, isTiebreak: event.target.checked || score.isTiebreak, teamAGames: event.target.checked ? 1 : score.teamAGames, teamBGames: event.target.checked ? 0 : score.teamBGames })} />}
-                      label="A partida foi decidida por super tiebreak"
-                    />
-                  </Grid>
                   <Grid size={{ xs: 12, md: 4 }}>
                     <TextField fullWidth label="Quantidade de deuces" type="number" value={score.deucesCount ?? ""} onChange={(event) => updateScore({ deucesCount: event.target.value === "" ? null : Number(event.target.value) })} />
                   </Grid>
@@ -381,7 +386,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             ? "preencha os campos para visualizar o resultado."
             : form.isWalkover && form.walkoverTeam
               ? `W.O. da Dupla ${form.walkoverTeam} | vencedora = Dupla ${form.walkoverTeam === "A" ? "B" : "A"} | placar congelado ${summarizeSets(buildMatchPayload(form).sets) || "0-0"}`
-              : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)}`}
+              : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)} | ${score.isSuperTiebreak ? "Super Tie-break: vencedor 4 pts, perdedor 1 pt" : "pontuação: vencedor 3 pts, perdedor 1 pt"}`}
         </Alert>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleSave} fullWidth disabled={isSaving}>

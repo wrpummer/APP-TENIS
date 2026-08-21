@@ -45,7 +45,7 @@ export function summarizeSets(sets: MatchSet[]): string {
     .map((set) => {
       const base = `${set.teamAGames}-${set.teamBGames}`;
       if (set.isTiebreak && Number.isFinite(set.tiebreakPointsA) && Number.isFinite(set.tiebreakPointsB)) {
-        return `${base} (${set.tiebreakPointsA}-${set.tiebreakPointsB} TB)`;
+        return `${base} (${set.tiebreakPointsA}-${set.tiebreakPointsB} ${set.isSuperTiebreak ? "STB" : "TB"})`;
       }
 
       return base;
