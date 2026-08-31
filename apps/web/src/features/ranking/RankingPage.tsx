@@ -47,7 +47,7 @@ export function RankingPage() {
     <Stack spacing={3}>
       <SectionHeader
         title="Ranking geral"
-        subtitle="Classificação atual: 3 pontos por vitória e 1 por derrota. No Super Tie-break, a dupla vencedora recebe 4 pontos."
+        subtitle="Classificação atual: partida normal vale 3 pontos por vitória e 1 por derrota. Super Tie-break vale 1 ponto ao vencedor e 0 ao perdedor."
         action={
           <Button
             variant="contained"

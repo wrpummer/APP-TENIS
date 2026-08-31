@@ -331,7 +331,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
                         label="Super Tie-break"
                       />
                       <Typography variant="body2" color="text.secondary">
-                        Marcado: dupla vencedora recebe 4 pontos; dupla perdedora continua com 1 ponto.
+                        Marcado: dupla vencedora recebe 1 ponto; dupla perdedora recebe 0 ponto.
                       </Typography>
                     </Grid>
                   )}
@@ -386,7 +386,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
             ? "preencha os campos para visualizar o resultado."
             : form.isWalkover && form.walkoverTeam
               ? `W.O. da Dupla ${form.walkoverTeam} | vencedora = Dupla ${form.walkoverTeam === "A" ? "B" : "A"} | placar congelado ${summarizeSets(buildMatchPayload(form).sets) || "0-0"}`
-              : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)} | ${score.isSuperTiebreak ? "Super Tie-break: vencedor 4 pts, perdedor 1 pt" : "pontuação: vencedor 3 pts, perdedor 1 pt"}`}
+              : `vencedor = Dupla ${inferWinnerTeam(buildMatchPayload(form).sets)} | placar ${summarizeSets(buildMatchPayload(form).sets)} | ${score.isSuperTiebreak ? "Super Tie-break: vencedor 1 pt, perdedor 0 pt" : "pontuação: vencedor 3 pts, perdedor 1 pt"}`}
         </Alert>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
           <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={handleSave} fullWidth disabled={isSaving}>

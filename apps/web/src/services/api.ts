@@ -190,8 +190,11 @@ function getSetBasedPointsForTeam(match: Match, team: "A" | "B") {
       return total;
     }
 
-    const winnerPoints = set.isSuperTiebreak ? 4 : 3;
-    return total + (setWinner === team ? winnerPoints : 1);
+    if (set.isSuperTiebreak) {
+      return total + (setWinner === team ? 1 : 0);
+    }
+
+    return total + (setWinner === team ? 3 : 1);
   }, 0);
 }
 
