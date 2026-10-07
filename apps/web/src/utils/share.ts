@@ -202,7 +202,7 @@ export async function exportMatchesAsPdf(
     if (hasNumericScore) {
       pdf.setTextColor(10, 77, 60);
       pdf.setFont("helvetica", match.winnerTeam === "A" ? "bold" : "normal");
-      pdf.setFontSize(match.winnerTeam === "A" ? 24 : 12);
+      pdf.setFontSize(12);
       pdf.text(String(scoreA), scoreX, y + 12, { align: "center" });
       pdf.setTextColor(105, 115, 109);
       pdf.setFont("helvetica", "normal");
@@ -210,7 +210,7 @@ export async function exportMatchesAsPdf(
       pdf.text("-", scoreX + 12, y + 12, { align: "center" });
       pdf.setTextColor(154, 103, 0);
       pdf.setFont("helvetica", match.winnerTeam === "B" ? "bold" : "normal");
-      pdf.setFontSize(match.winnerTeam === "B" ? 24 : 12);
+      pdf.setFontSize(12);
       pdf.text(String(scoreB), scoreX + 24, y + 12, { align: "center" });
     } else {
       pdf.setFont("helvetica", "bold");
