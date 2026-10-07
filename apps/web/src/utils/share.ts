@@ -1,7 +1,7 @@
 import domToImage from "dom-to-image-more";
 import { jsPDF } from "jspdf/dist/jspdf.umd.min.js";
 import type { Match, Player } from "@/types/domain";
-import { formatLongDateOnlyBR } from "@/utils/tennis";
+import { formatDateOnlyBR, formatLongDateOnlyBR } from "@/utils/tennis";
 
 export async function exportElementAsPng(element: HTMLElement, fileName: string) {
   const dataUrl = await domToImage.toPng(element, {
@@ -48,20 +48,20 @@ async function imageUrlToDataUrl(url?: string | null): Promise<{ dataUrl: string
 function drawPlayer(pdf: jsPDF, player: Player | undefined, x: number, y: number, color: [number, number, number]) {
   const photo = (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null } | undefined)?.pdfPhoto;
   if (photo) {
-    pdf.addImage(photo.dataUrl, photo.format, x, y - 3.5, 7, 7, undefined, "FAST");
+    pdf.addImage(photo.dataUrl, photo.format, x, y - 3, 6, 6, undefined, "FAST");
   } else {
     pdf.setFillColor(...color);
-    pdf.circle(x + 3.5, y, 3.5, "F");
+    pdf.circle(x + 3, y, 3, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(6.5);
-    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3.5, y + 2, { align: "center" });
+    pdf.setFontSize(6);
+    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3, y + 1.8, { align: "center" });
   }
 
   pdf.setTextColor(35, 48, 43);
   pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(9);
-  pdf.text(player?.displayName ?? "Jogador", x + 10, y + 1.8);
+  pdf.setFontSize(8.3);
+  pdf.text(player?.displayName ?? "Jogador", x + 8.5, y + 1.6);
 }
 
 export async function exportMatchesAsPdf(
@@ -124,24 +124,24 @@ export async function exportMatchesAsPdf(
       y = 35;
     }
 
-    const rowHeight = match.notes?.trim() ? 36 : 31;
+    const rowHeight = match.notes?.trim() ? 31 : 27;
     pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
     pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(10);
+    pdf.setFontSize(8);
     pdf.setTextColor(10, 77, 60);
-    pdf.text(formatLongDateOnlyBR(match.matchDate), margin + 5, y + 1);
+    pdf.text(formatDateOnlyBR(match.matchDate), margin + 5, y + 1);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
+    pdf.setFontSize(7);
     pdf.setTextColor(105, 115, 109);
-    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 7);
+    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 6);
 
-    const teamAX = margin + 45;
-    const teamBX = margin + 105;
+    const teamAX = margin + 37;
+    const teamBX = margin + 96;
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(9);
+    pdf.setFontSize(8);
     pdf.setTextColor(10, 77, 60);
     pdf.text("DUPLA A", teamAX, y - 1);
     pdf.setTextColor(154, 103, 0);
