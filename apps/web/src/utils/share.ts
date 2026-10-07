@@ -48,20 +48,20 @@ async function imageUrlToDataUrl(url?: string | null): Promise<{ dataUrl: string
 function drawPlayer(pdf: jsPDF, player: Player | undefined, x: number, y: number, color: [number, number, number]) {
   const photo = (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null } | undefined)?.pdfPhoto;
   if (photo) {
-    pdf.addImage(photo.dataUrl, photo.format, x, y - 3, 6, 6, undefined, "FAST");
+    pdf.addImage(photo.dataUrl, photo.format, x, y - 4.5, 9, 9, undefined, "FAST");
   } else {
     pdf.setFillColor(...color);
-    pdf.circle(x + 3, y, 3, "F");
+    pdf.circle(x + 4.5, y, 4.5, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(6);
-    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3, y + 1.8, { align: "center" });
+    pdf.setFontSize(8);
+    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 4.5, y + 2.8, { align: "center" });
   }
 
   pdf.setTextColor(35, 48, 43);
   pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(8.3);
-  pdf.text(player?.displayName ?? "Jogador", x + 8.5, y + 1.6);
+  pdf.setFontSize(13);
+  pdf.text(player?.displayName ?? "Jogador", x + 12, y + 2.8);
 }
 
 export async function exportMatchesAsPdf(
@@ -124,11 +124,11 @@ export async function exportMatchesAsPdf(
       y = 35;
     }
 
-    const rowHeight = match.notes?.trim() ? 31 : 27;
+    const rowHeight = match.notes?.trim() ? 49 : 43;
     pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
     pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8);
+    pdf.setFontSize(9);
     pdf.setTextColor(10, 77, 60);
     pdf.text(formatDateOnlyBR(match.matchDate), margin + 5, y + 1);
     pdf.setFont("helvetica", "normal");
@@ -141,22 +141,22 @@ export async function exportMatchesAsPdf(
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8);
+    pdf.setFontSize(11);
     pdf.setTextColor(10, 77, 60);
     pdf.text("DUPLA A", teamAX, y - 1);
     pdf.setTextColor(154, 103, 0);
     pdf.text("DUPLA B", teamBX, y - 1);
-    drawPlayer(pdf, teamA[0], teamAX, y + 7, [10, 77, 60]);
-    drawPlayer(pdf, teamA[1], teamAX, y + 18, [10, 77, 60]);
-    drawPlayer(pdf, teamB[0], teamBX, y + 7, [154, 103, 0]);
-    drawPlayer(pdf, teamB[1], teamBX, y + 18, [154, 103, 0]);
+    drawPlayer(pdf, teamA[0], teamAX, y + 10, [10, 77, 60]);
+    drawPlayer(pdf, teamA[1], teamAX, y + 26, [10, 77, 60]);
+    drawPlayer(pdf, teamB[0], teamBX, y + 10, [154, 103, 0]);
+    drawPlayer(pdf, teamB[1], teamBX, y + 26, [154, 103, 0]);
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(13);
+    pdf.setFontSize(26);
     pdf.setTextColor(match.winnerTeam === "A" ? 10 : 154, match.winnerTeam === "A" ? 77 : 103, match.winnerTeam === "A" ? 60 : 0);
     pdf.text(match.resultSummary || "-", pageWidth - margin - 7, y + 3, { align: "right" });
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
+    pdf.setFontSize(10);
     pdf.setTextColor(105, 115, 109);
     pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 7, y + 10, { align: "right" });
     if (match.notes?.trim()) {
