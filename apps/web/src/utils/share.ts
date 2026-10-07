@@ -144,8 +144,8 @@ export async function exportMatchesAsPdf(
     }
 
     pdf.setTextColor(35, 48, 43);
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8.2);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
     pdf.text(player?.displayName ?? "Jogador", x + 8, y + 1.2, { maxWidth: 47 });
   };
 
@@ -154,7 +154,7 @@ export async function exportMatchesAsPdf(
   let y = 40;
   if (matches.length === 0) {
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(11);
+    pdf.setFontSize(10);
     pdf.text("Nenhuma partida encontrada para este período.", margin, y + 12);
   }
 
@@ -178,11 +178,11 @@ export async function exportMatchesAsPdf(
     });
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8.5);
+    pdf.setFontSize(10);
     pdf.setTextColor(10, 77, 60);
     pdf.text(formatDateOnlyBR(match.matchDate), margin + 3, y + 7);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(6.8);
+    pdf.setFontSize(8);
     pdf.setTextColor(105, 115, 109);
     pdf.text(match.courtName?.trim() || "Local não informado", margin + 3, y + 14, { maxWidth: 25 });
 
@@ -196,7 +196,7 @@ export async function exportMatchesAsPdf(
     drawTablePlayer(teamB[1], teamBX, y + 14, [154, 103, 0]);
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(13);
+    pdf.setFontSize(20);
     pdf.setTextColor(match.winnerTeam === "A" ? 10 : 154, match.winnerTeam === "A" ? 77 : 103, match.winnerTeam === "A" ? 60 : 0);
     pdf.text(match.resultSummary || "-", pageWidth - margin - 5, y + 9, { align: "right" });
     pdf.setFont("helvetica", "normal");
