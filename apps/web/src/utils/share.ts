@@ -159,7 +159,7 @@ export async function exportMatchesAsPdf(
   }
 
   matches.forEach((match, index) => {
-    const rowHeight = match.notes?.trim() ? 26 : 20;
+    const rowHeight = match.notes?.trim() ? 32 : 26;
     if (y + rowHeight > pageHeight - 17) {
       drawFooter();
       pdf.addPage();
@@ -203,15 +203,15 @@ export async function exportMatchesAsPdf(
       pdf.setTextColor(10, 77, 60);
       pdf.setFont("helvetica", match.winnerTeam === "A" ? "bold" : "normal");
       pdf.setFontSize(12);
-      pdf.text(String(scoreA), scoreX, y + 12, { align: "center" });
+      pdf.text(String(scoreA), scoreX, y + 8, { align: "center" });
       pdf.setTextColor(105, 115, 109);
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(12);
-      pdf.text("-", scoreX + 12, y + 12, { align: "center" });
+      pdf.text("-", scoreX + 12, y + 8, { align: "center" });
       pdf.setTextColor(154, 103, 0);
       pdf.setFont("helvetica", match.winnerTeam === "B" ? "bold" : "normal");
       pdf.setFontSize(12);
-      pdf.text(String(scoreB), scoreX + 24, y + 12, { align: "center" });
+      pdf.text(String(scoreB), scoreX + 24, y + 8, { align: "center" });
       const firstSet = match.sets[0];
       if (firstSet?.isTiebreak && Number.isFinite(firstSet.tiebreakPointsA) && Number.isFinite(firstSet.tiebreakPointsB)) {
         pdf.setFont("helvetica", "normal");
@@ -220,7 +220,7 @@ export async function exportMatchesAsPdf(
         pdf.text(
           `${firstSet.isSuperTiebreak ? "STB" : "TB"}: ${firstSet.tiebreakPointsA}-${firstSet.tiebreakPointsB}`,
           scoreX + 12,
-          y + 18,
+          y + 15,
           { align: "center" }
         );
       }
@@ -228,12 +228,12 @@ export async function exportMatchesAsPdf(
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(12);
       pdf.setTextColor(35, 48, 43);
-      pdf.text(match.resultSummary || "-", pageWidth - margin - 5, y + 10, { align: "right" });
+      pdf.text(match.resultSummary || "-", pageWidth - margin - 5, y + 8, { align: "right" });
     }
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(7.5);
     pdf.setTextColor(105, 115, 109);
-    pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 5, y + 15, { align: "right" });
+    pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 5, y + 22, { align: "right" });
     if (match.notes?.trim()) {
       pdf.setFontSize(7);
       pdf.text(`Obs.: ${pdf.splitTextToSize(match.notes.trim(), pageWidth - margin * 2 - 8).slice(0, 1).join(" ")}`, margin + 3, y + rowHeight - 4);
