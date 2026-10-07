@@ -215,7 +215,7 @@ export async function exportMatchesAsPdf(
       const firstSet = match.sets[0];
       if (firstSet?.isTiebreak && Number.isFinite(firstSet.tiebreakPointsA) && Number.isFinite(firstSet.tiebreakPointsB)) {
         pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(7);
+        pdf.setFontSize(12);
         pdf.setTextColor(105, 115, 109);
         pdf.text(
           `${firstSet.isSuperTiebreak ? "STB" : "TB"}: ${firstSet.tiebreakPointsA}-${firstSet.tiebreakPointsB}`,
