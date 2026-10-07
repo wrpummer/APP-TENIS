@@ -21,16 +21,22 @@ interface ExportPdfOptions {
   subtitle?: string;
 }
 
-async function imageUrlToDataUrl(url?: string | null): Promise<string | null> {
+async function imageUrlToDataUrl(url?: string | null): Promise<{ dataUrl: string; format: "PNG" | "JPEG" } | null> {
   if (!url) return null;
 
   try {
     const response = await fetch(url, { mode: "cors" });
     if (!response.ok) return null;
     const blob = await response.blob();
-    return await new Promise<string | null>((resolve) => {
+    return await new Promise<{ dataUrl: string; format: "PNG" | "JPEG" } | null>((resolve) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null);
+      reader.onload = () => {
+        if (typeof reader.result !== "string") {
+          resolve(null);
+          return;
+        }
+        resolve({ dataUrl: reader.result, format: blob.type === "image/png" ? "PNG" : "JPEG" });
+      };
       reader.onerror = () => resolve(null);
       reader.readAsDataURL(blob);
     });
@@ -40,22 +46,22 @@ async function imageUrlToDataUrl(url?: string | null): Promise<string | null> {
 }
 
 function drawPlayer(pdf: jsPDF, player: Player | undefined, x: number, y: number, color: [number, number, number]) {
-  const photo = (player as Player & { pdfPhoto?: string | null } | undefined)?.pdfPhoto;
+  const photo = (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null } | undefined)?.pdfPhoto;
   if (photo) {
-    pdf.addImage(photo, "JPEG", x, y - 3.5, 7, 7, undefined, "FAST");
+    pdf.addImage(photo.dataUrl, photo.format, x, y - 2.8, 5.5, 5.5, undefined, "FAST");
   } else {
     pdf.setFillColor(...color);
-    pdf.circle(x + 3.5, y, 3.5, "F");
+    pdf.circle(x + 2.75, y, 2.75, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(6);
-    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3.5, y + 1.8, { align: "center" });
+    pdf.setFontSize(5.5);
+    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 2.75, y + 1.6, { align: "center" });
   }
 
   pdf.setTextColor(35, 48, 43);
   pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(8.5);
-  pdf.text(player?.displayName ?? "Jogador", x + 10, y + 1.4);
+  pdf.setFontSize(7.7);
+  pdf.text(player?.displayName ?? "Jogador", x + 8, y + 1.4);
 }
 
 export async function exportMatchesAsPdf(
@@ -71,7 +77,7 @@ export async function exportMatchesAsPdf(
 
   await Promise.all(players.map(async (player) => {
     const photo = await imageUrlToDataUrl(player.photoUrl);
-    (player as Player & { pdfPhoto?: string | null }).pdfPhoto = photo;
+    (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null }).pdfPhoto = photo;
   }));
 
   const dateRange = options.startDate || options.endDate
@@ -118,26 +124,32 @@ export async function exportMatchesAsPdf(
       y = 35;
     }
 
-    const rowHeight = match.notes?.trim() ? 33 : 27;
+    const rowHeight = match.notes?.trim() ? 28 : 23;
     pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
     pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(9);
+    pdf.setFontSize(8.5);
     pdf.setTextColor(10, 77, 60);
-    pdf.text(formatLongDateOnlyBR(match.matchDate), margin + 5, y + 2);
+    pdf.text(formatLongDateOnlyBR(match.matchDate), margin + 5, y + 1);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8);
+    pdf.setFontSize(7.5);
     pdf.setTextColor(105, 115, 109);
-    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 8);
+    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 7);
 
-    const teamAX = margin + 47;
-    const teamBX = margin + 111;
+    const teamAX = margin + 43;
+    const teamBX = margin + 104;
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
-    drawPlayer(pdf, teamA[0], teamAX, y, [10, 77, 60]);
-    drawPlayer(pdf, teamA[1], teamAX, y + 9, [10, 77, 60]);
-    drawPlayer(pdf, teamB[0], teamBX, y, [154, 103, 0]);
-    drawPlayer(pdf, teamB[1], teamBX, y + 9, [154, 103, 0]);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7);
+    pdf.setTextColor(10, 77, 60);
+    pdf.text("DUPLA A", teamAX, y - 1);
+    pdf.setTextColor(154, 103, 0);
+    pdf.text("DUPLA B", teamBX, y - 1);
+    drawPlayer(pdf, teamA[0], teamAX, y + 5, [10, 77, 60]);
+    drawPlayer(pdf, teamA[1], teamAX, y + 13, [10, 77, 60]);
+    drawPlayer(pdf, teamB[0], teamBX, y + 5, [154, 103, 0]);
+    drawPlayer(pdf, teamB[1], teamBX, y + 13, [154, 103, 0]);
 
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(10);

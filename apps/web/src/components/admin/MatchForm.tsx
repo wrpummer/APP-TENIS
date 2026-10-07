@@ -42,6 +42,7 @@ interface MatchFormState {
   id?: string;
   seasonId: string;
   matchDate: string;
+  courtName: string;
   teamAPlayer1Id: string;
   teamAPlayer2Id: string;
   teamBPlayer1Id: string;
@@ -74,6 +75,7 @@ function createInitialForm(): MatchFormState {
     id: undefined,
     seasonId: "",
     matchDate: "",
+    courtName: "",
     teamAPlayer1Id: "",
     teamAPlayer2Id: "",
     teamBPlayer1Id: "",
@@ -89,6 +91,7 @@ function createRepeatForm(form: MatchFormState): MatchFormState {
   return {
     ...form,
     id: undefined,
+    courtName: form.courtName ?? "",
     sets: [{ ...form.sets[0], id: undefined }]
   };
 }
@@ -160,6 +163,7 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
       id: editingMatch.id,
       seasonId: editingMatch.seasonId,
       matchDate: editingMatch.matchDate,
+      courtName: editingMatch.courtName ?? "",
       teamAPlayer1Id: editingMatch.teamAPlayer1Id,
       teamAPlayer2Id: editingMatch.teamAPlayer2Id,
       teamBPlayer1Id: editingMatch.teamBPlayer1Id,
@@ -250,6 +254,9 @@ export function MatchForm({ players, seasons, editingMatch, onSaved, onCancelEdi
           </Grid>
           <Grid size={{ xs: 12, md: 3 }}>
             <TextField fullWidth type="date" label="Data" value={form.matchDate} onChange={(event) => setForm((current) => ({ ...current, matchDate: event.target.value }))} slotProps={{ inputLabel: { shrink: true } }} />
+          </Grid>
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField fullWidth label="Local da partida" placeholder="Ex.: Clube Trianon" value={form.courtName} onChange={(event) => setForm((current) => ({ ...current, courtName: event.target.value }))} />
           </Grid>
           {[
             ["teamAPlayer1Id", "Dupla A - Jogador 1"],

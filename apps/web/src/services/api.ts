@@ -1288,6 +1288,7 @@ export async function saveMatch(values: MatchFormValues) {
   const payload = {
     season_id: values.seasonId,
     match_date: values.matchDate,
+    court_name: values.courtName?.trim() || null,
     team_a_player_1_id: values.teamAPlayer1Id,
     team_a_player_2_id: values.teamAPlayer2Id,
     team_b_player_1_id: values.teamBPlayer1Id,

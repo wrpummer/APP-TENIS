@@ -173,6 +173,7 @@ export interface MatchFormValues {
   id?: string;
   seasonId: string;
   matchDate: string;
+  courtName?: string;
   teamAPlayer1Id: string;
   teamAPlayer2Id: string;
   teamBPlayer1Id: string;
