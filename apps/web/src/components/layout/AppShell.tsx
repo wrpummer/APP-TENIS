@@ -8,6 +8,7 @@ import SportsTennisRoundedIcon from "@mui/icons-material/SportsTennisRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import {
   AppBar,
+  Avatar,
   Box,
   Button,
   Container,
@@ -190,12 +191,9 @@ export function AppShell() {
           <Stack spacing={1.5}>
             {upcomingBirthdays.map(({ player, birthday, days }) => (
               <Stack key={player.id} direction="row" spacing={1.5} alignItems="center">
-                <Box
-                  component="img"
-                  src={player.photoUrl ?? "/app-icon-192.png"}
-                  alt=""
-                  sx={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover" }}
-                />
+                <Avatar src={player.photoUrl ?? undefined} alt={player.displayName} sx={{ width: 42, height: 42 }}>
+                  {player.displayName.slice(0, 1).toUpperCase()}
+                </Avatar>
                 <Typography>
                   <strong>{player.displayName}</strong> faz aniversário em {formatDateOnlyBR(birthday.toISOString())}, {days === 0 ? "hoje" : `daqui a ${days} ${days === 1 ? "dia" : "dias"}`}.
                 </Typography>
