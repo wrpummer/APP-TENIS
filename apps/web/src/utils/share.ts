@@ -69,7 +69,7 @@ export async function exportMatchesAsPdf(
   players: Player[],
   options: { startDate?: string; endDate?: string }
 ) {
-  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
   const margin = 12;
@@ -136,8 +136,8 @@ export async function exportMatchesAsPdf(
     pdf.setTextColor(105, 115, 109);
     pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 7);
 
-    const teamAX = margin + 58;
-    const teamBX = margin + 145;
+    const teamAX = margin + 45;
+    const teamBX = margin + 105;
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
     pdf.setFont("helvetica", "bold");
