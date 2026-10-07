@@ -172,7 +172,17 @@ export function AppShell() {
       </Container>
 
       <Dialog open={birthdayOpen} onClose={() => setBirthdayOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Aniversários próximos</DialogTitle>
+        <DialogTitle sx={{ pb: 1 }}>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Box
+              component="img"
+              src="/birthday.png"
+              alt="Bolo de aniversário"
+              sx={{ width: 58, height: 58, objectFit: "contain" }}
+            />
+            <span>Aniversários próximos</span>
+          </Stack>
+        </DialogTitle>
         <DialogContent>
           <Typography color="text.secondary" sx={{ mb: 2 }}>
             Tem gente querida fazendo aniversário em breve!
