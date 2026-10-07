@@ -73,6 +73,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [status, setStatus] = useState("");
   const [registeredAt, setRegisteredAt] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -85,6 +86,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
     if (!editingPlayer) {
       setFullName("");
       setPhone("");
+      setBirthDate("");
       setStatus("");
       setRegisteredAt("");
       setPhotoUrl(null);
@@ -93,6 +95,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
 
     setFullName(editingPlayer.fullName);
     setPhone(editingPlayer.phone ?? "");
+    setBirthDate(toDateInput(editingPlayer.birthDate));
     setStatus(editingPlayer.status);
     setRegisteredAt(toDateInput(editingPlayer.registeredAt));
     setPhotoUrl(editingPlayer.photoUrl ?? null);
@@ -152,6 +155,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
         fullName: fullName.trim(),
         displayName: fullName.trim(),
         phone: phone.trim(),
+        birthDate: birthDate || undefined,
         photoUrl,
         registeredAt: `${registeredAt}T12:00:00.000Z`,
         status: status as "active" | "inactive"
@@ -169,6 +173,7 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
       setMessage(editingPlayer ? "Jogador atualizado com sucesso." : "Jogador salvo com sucesso.");
       setFullName("");
       setPhone("");
+      setBirthDate("");
       setStatus("");
       setRegisteredAt("");
       setPhotoUrl(null);
@@ -194,6 +199,14 @@ export function PlayerForm({ editingPlayer, onSaved, onCancelEdit }: PlayerFormP
 
         <TextField label="Nome completo" value={fullName} onChange={(event) => setFullName(event.target.value)} />
         <TextField label="Telefone" value={phone} onChange={(event) => setPhone(event.target.value)} />
+        <TextField
+          label="Data de aniversário"
+          type="date"
+          value={birthDate}
+          onChange={(event) => setBirthDate(event.target.value)}
+          InputLabelProps={{ shrink: true }}
+          helperText="Opcional. Usada para lembrar o grupo próximo da data."
+        />
         <TextField
           label="Jogador desde"
           type="date"

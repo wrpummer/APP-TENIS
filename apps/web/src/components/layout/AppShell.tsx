@@ -12,6 +12,10 @@ import {
   Button,
   Container,
   Drawer,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   List,
   ListItemButton,
@@ -21,8 +25,10 @@ import {
   Toolbar,
   Typography
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { usePlayers } from "@/hooks/usePlayers";
+import { formatDateOnlyBR } from "@/utils/tennis";
 
 const links = [
   { label: "Principal", href: "/", icon: <HomeRoundedIcon fontSize="small" /> },
@@ -37,6 +43,27 @@ const links = [
 export function AppShell() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [birthdayOpen, setBirthdayOpen] = useState(false);
+  const { data: players } = usePlayers();
+  const upcomingBirthdays = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return (players ?? [])
+      .filter((player) => player.status === "active" && player.birthDate)
+      .map((player) => {
+        const [, month, day] = String(player.birthDate).slice(0, 10).split("-").map(Number);
+        const birthday = new Date(today.getFullYear(), month - 1, day);
+        if (birthday < today) birthday.setFullYear(today.getFullYear() + 1);
+        const days = Math.round((birthday.getTime() - today.getTime()) / 86400000);
+        return { player, birthday, days };
+      })
+      .filter(({ days }) => days >= 0 && days <= 7)
+      .sort((a, b) => a.days - b.days);
+  }, [players]);
+
+  useEffect(() => {
+    if (upcomingBirthdays.length > 0) setBirthdayOpen(true);
+  }, [upcomingBirthdays.length]);
 
   return (
     <Box minHeight="100vh" sx={{ background: "radial-gradient(circle at top, rgba(194,255,61,0.2), transparent 24%), #f2f5ee" }}>
@@ -143,6 +170,33 @@ export function AppShell() {
       <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
         <Outlet />
       </Container>
+
+      <Dialog open={birthdayOpen} onClose={() => setBirthdayOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Aniversários próximos</DialogTitle>
+        <DialogContent>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>
+            Tem gente querida fazendo aniversário em breve!
+          </Typography>
+          <Stack spacing={1.5}>
+            {upcomingBirthdays.map(({ player, birthday, days }) => (
+              <Stack key={player.id} direction="row" spacing={1.5} alignItems="center">
+                <Box
+                  component="img"
+                  src={player.photoUrl ?? "/app-icon-192.png"}
+                  alt=""
+                  sx={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover" }}
+                />
+                <Typography>
+                  <strong>{player.displayName}</strong> faz aniversário em {formatDateOnlyBR(birthday.toISOString())}, {days === 0 ? "hoje" : `daqui a ${days} ${days === 1 ? "dia" : "dias"}`}.
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setBirthdayOpen(false)} variant="contained">Fechar</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

@@ -17,6 +17,7 @@ export interface Player {
   displayName: string;
   normalizedName: string;
   phone?: string | null;
+  birthDate?: string | null;
   photoUrl?: string | null;
   status: EntityStatus;
   registeredAt: string;
