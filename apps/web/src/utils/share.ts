@@ -198,7 +198,7 @@ export async function exportMatchesAsPdf(
     const scoreA = match.sets[0]?.teamAGames;
     const scoreB = match.sets[0]?.teamBGames;
     const hasNumericScore = Number.isFinite(scoreA) && Number.isFinite(scoreB);
-    const scoreX = pageWidth - margin - 35;
+    const scoreX = pageWidth - margin - 24;
     if (hasNumericScore) {
       pdf.setTextColor(10, 77, 60);
       pdf.setFont("helvetica", match.winnerTeam === "A" ? "bold" : "normal");
@@ -207,22 +207,23 @@ export async function exportMatchesAsPdf(
       pdf.setTextColor(105, 115, 109);
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(12);
-      pdf.text("-", scoreX + 12, y + 8, { align: "center" });
+      pdf.text("-", scoreX + 6, y + 8, { align: "center" });
       pdf.setTextColor(154, 103, 0);
       pdf.setFont("helvetica", match.winnerTeam === "B" ? "bold" : "normal");
       pdf.setFontSize(12);
-      pdf.text(String(scoreB), scoreX + 24, y + 8, { align: "center" });
+      pdf.text(String(scoreB), scoreX + 12, y + 8, { align: "center" });
       const firstSet = match.sets[0];
       if (firstSet?.isTiebreak && Number.isFinite(firstSet.tiebreakPointsA) && Number.isFinite(firstSet.tiebreakPointsB)) {
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(12);
         pdf.setTextColor(105, 115, 109);
-        pdf.text(
-          `${firstSet.isSuperTiebreak ? "STB" : "TB"}: ${firstSet.tiebreakPointsA}-${firstSet.tiebreakPointsB}`,
-          scoreX + 12,
-          y + 15,
-          { align: "center" }
-        );
+        pdf.text(`${firstSet.isSuperTiebreak ? "STB:" : "TB:"}`, scoreX - 4, y + 15, { align: "right" });
+        pdf.setTextColor(10, 77, 60);
+        pdf.text(String(firstSet.tiebreakPointsA), scoreX + 3, y + 15, { align: "center" });
+        pdf.setTextColor(105, 115, 109);
+        pdf.text("-", scoreX + 9, y + 15, { align: "center" });
+        pdf.setTextColor(154, 103, 0);
+        pdf.text(String(firstSet.tiebreakPointsB), scoreX + 15, y + 15, { align: "center" });
       }
     } else {
       pdf.setFont("helvetica", "bold");
