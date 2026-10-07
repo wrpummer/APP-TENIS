@@ -48,20 +48,20 @@ async function imageUrlToDataUrl(url?: string | null): Promise<{ dataUrl: string
 function drawPlayer(pdf: jsPDF, player: Player | undefined, x: number, y: number, color: [number, number, number]) {
   const photo = (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null } | undefined)?.pdfPhoto;
   if (photo) {
-    pdf.addImage(photo.dataUrl, photo.format, x, y - 2.8, 5.5, 5.5, undefined, "FAST");
+    pdf.addImage(photo.dataUrl, photo.format, x, y - 3.5, 7, 7, undefined, "FAST");
   } else {
     pdf.setFillColor(...color);
-    pdf.circle(x + 2.75, y, 2.75, "F");
+    pdf.circle(x + 3.5, y, 3.5, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(5.5);
-    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 2.75, y + 1.6, { align: "center" });
+    pdf.setFontSize(6.5);
+    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3.5, y + 2, { align: "center" });
   }
 
   pdf.setTextColor(35, 48, 43);
   pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(7.7);
-  pdf.text(player?.displayName ?? "Jogador", x + 8, y + 1.4);
+  pdf.setFontSize(9);
+  pdf.text(player?.displayName ?? "Jogador", x + 10, y + 1.8);
 }
 
 export async function exportMatchesAsPdf(
@@ -69,7 +69,7 @@ export async function exportMatchesAsPdf(
   players: Player[],
   options: { startDate?: string; endDate?: string }
 ) {
-  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
   const margin = 12;
@@ -89,10 +89,10 @@ export async function exportMatchesAsPdf(
     pdf.rect(0, 0, pageWidth, 25, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(17);
+    pdf.setFontSize(20);
     pdf.text("Ranking Tennis", margin, 11);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
+    pdf.setFontSize(11);
     pdf.text("Extrato de partidas", margin, 18);
     pdf.text(dateRange, pageWidth - margin, 18, { align: "right" });
     pdf.setTextColor(35, 48, 43);
@@ -102,7 +102,7 @@ export async function exportMatchesAsPdf(
     pdf.setDrawColor(220, 226, 221);
     pdf.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8);
+    pdf.setFontSize(10);
     pdf.setTextColor(105, 115, 109);
     pdf.text(`${matches.length} partida${matches.length === 1 ? "" : "s"}`, margin, pageHeight - 6);
     pdf.text(`Página ${pdf.getNumberOfPages()}`, pageWidth - margin, pageHeight - 6, { align: "right" });
@@ -124,43 +124,43 @@ export async function exportMatchesAsPdf(
       y = 35;
     }
 
-    const rowHeight = match.notes?.trim() ? 28 : 23;
+    const rowHeight = match.notes?.trim() ? 36 : 31;
     pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
     pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(8.5);
+    pdf.setFontSize(10);
     pdf.setTextColor(10, 77, 60);
     pdf.text(formatLongDateOnlyBR(match.matchDate), margin + 5, y + 1);
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(7.5);
+    pdf.setFontSize(9);
     pdf.setTextColor(105, 115, 109);
     pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 7);
 
-    const teamAX = margin + 43;
-    const teamBX = margin + 104;
+    const teamAX = margin + 58;
+    const teamBX = margin + 145;
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7);
+    pdf.setFontSize(9);
     pdf.setTextColor(10, 77, 60);
     pdf.text("DUPLA A", teamAX, y - 1);
     pdf.setTextColor(154, 103, 0);
     pdf.text("DUPLA B", teamBX, y - 1);
-    drawPlayer(pdf, teamA[0], teamAX, y + 5, [10, 77, 60]);
-    drawPlayer(pdf, teamA[1], teamAX, y + 13, [10, 77, 60]);
-    drawPlayer(pdf, teamB[0], teamBX, y + 5, [154, 103, 0]);
-    drawPlayer(pdf, teamB[1], teamBX, y + 13, [154, 103, 0]);
+    drawPlayer(pdf, teamA[0], teamAX, y + 7, [10, 77, 60]);
+    drawPlayer(pdf, teamA[1], teamAX, y + 18, [10, 77, 60]);
+    drawPlayer(pdf, teamB[0], teamBX, y + 7, [154, 103, 0]);
+    drawPlayer(pdf, teamB[1], teamBX, y + 18, [154, 103, 0]);
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(10);
+    pdf.setFontSize(13);
     pdf.setTextColor(match.winnerTeam === "A" ? 10 : 154, match.winnerTeam === "A" ? 77 : 103, match.winnerTeam === "A" ? 60 : 0);
     pdf.text(match.resultSummary || "-", pageWidth - margin - 7, y + 3, { align: "right" });
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(7.5);
+    pdf.setFontSize(9);
     pdf.setTextColor(105, 115, 109);
     pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 7, y + 10, { align: "right" });
     if (match.notes?.trim()) {
-      pdf.setFontSize(7.5);
+      pdf.setFontSize(9);
       pdf.text(`Obs.: ${pdf.splitTextToSize(match.notes.trim(), pageWidth - margin * 2 - 10).slice(0, 2).join(" ")}`, margin + 5, y + rowHeight - 5);
     }
     y += rowHeight + 4;
