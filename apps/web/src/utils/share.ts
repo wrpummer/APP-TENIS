@@ -108,62 +108,106 @@ export async function exportMatchesAsPdf(
     pdf.text(`Página ${pdf.getNumberOfPages()}`, pageWidth - margin, pageHeight - 6, { align: "right" });
   };
 
+  const columns = [
+    { label: "DATA / LOCAL", width: 30 },
+    { label: "DUPLA A", width: 58 },
+    { label: "DUPLA B", width: 58 },
+    { label: "PLACAR", width: 40 }
+  ];
+
+  const drawTableHeader = () => {
+    let x = margin;
+    pdf.setFillColor(226, 236, 229);
+    pdf.setDrawColor(190, 207, 197);
+    pdf.rect(margin, 31, pageWidth - margin * 2, 9, "FD");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    pdf.setTextColor(10, 77, 60);
+    columns.forEach((column) => {
+      pdf.text(column.label, x + 3, 37);
+      x += column.width;
+      if (x < pageWidth - margin) pdf.line(x, 31, x, 40);
+    });
+  };
+
+  const drawTablePlayer = (player: Player | undefined, x: number, y: number, color: [number, number, number]) => {
+    const photo = (player as Player & { pdfPhoto?: { dataUrl: string; format: "PNG" | "JPEG" } | null } | undefined)?.pdfPhoto;
+    if (photo) {
+      pdf.addImage(photo.dataUrl, photo.format, x, y - 3.5, 6, 6, undefined, "FAST");
+    } else {
+      pdf.setFillColor(...color);
+      pdf.circle(x + 3, y - 0.5, 3, "F");
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(5.5);
+      pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3, y + 1.2, { align: "center" });
+    }
+
+    pdf.setTextColor(35, 48, 43);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.2);
+    pdf.text(player?.displayName ?? "Jogador", x + 8, y + 1.2, { maxWidth: 47 });
+  };
+
   drawHeader();
-  let y = 35;
+  drawTableHeader();
+  let y = 40;
   if (matches.length === 0) {
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(11);
-    pdf.text("Nenhuma partida encontrada para este período.", margin, y);
+    pdf.text("Nenhuma partida encontrada para este período.", margin, y + 12);
   }
 
   matches.forEach((match, index) => {
-    if (y > pageHeight - 48) {
+    const rowHeight = match.notes?.trim() ? 26 : 20;
+    if (y + rowHeight > pageHeight - 17) {
       drawFooter();
       pdf.addPage();
       drawHeader();
-      y = 35;
+      drawTableHeader();
+      y = 40;
     }
 
-    const rowHeight = match.notes?.trim() ? 49 : 43;
-    pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
-    pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(9);
-    pdf.setTextColor(10, 77, 60);
-    pdf.text(formatDateOnlyBR(match.matchDate), margin + 5, y + 1);
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(7);
-    pdf.setTextColor(105, 115, 109);
-    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 6);
+    pdf.setFillColor(index % 2 === 0 ? 249 : 255, 251, index % 2 === 0 ? 249 : 255);
+    pdf.setDrawColor(215, 225, 218);
+    pdf.rect(margin, y, pageWidth - margin * 2, rowHeight, "FD");
+    let columnX = margin;
+    columns.slice(0, -1).forEach((column) => {
+      columnX += column.width;
+      pdf.line(columnX, y, columnX, y + rowHeight);
+    });
 
-    const teamAX = margin + 37;
-    const teamBX = margin + 96;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(10, 77, 60);
+    pdf.text(formatDateOnlyBR(match.matchDate), margin + 3, y + 7);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(6.8);
+    pdf.setTextColor(105, 115, 109);
+    pdf.text(match.courtName?.trim() || "Local não informado", margin + 3, y + 14, { maxWidth: 25 });
+
+    const teamAX = margin + columns[0].width + 3;
+    const teamBX = margin + columns[0].width + columns[1].width + 3;
     const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
     const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(11);
-    pdf.setTextColor(10, 77, 60);
-    pdf.text("DUPLA A", teamAX, y - 1);
-    pdf.setTextColor(154, 103, 0);
-    pdf.text("DUPLA B", teamBX, y - 1);
-    drawPlayer(pdf, teamA[0], teamAX, y + 10, [10, 77, 60]);
-    drawPlayer(pdf, teamA[1], teamAX, y + 26, [10, 77, 60]);
-    drawPlayer(pdf, teamB[0], teamBX, y + 10, [154, 103, 0]);
-    drawPlayer(pdf, teamB[1], teamBX, y + 26, [154, 103, 0]);
+    drawTablePlayer(teamA[0], teamAX, y + 6, [10, 77, 60]);
+    drawTablePlayer(teamA[1], teamAX, y + 14, [10, 77, 60]);
+    drawTablePlayer(teamB[0], teamBX, y + 6, [154, 103, 0]);
+    drawTablePlayer(teamB[1], teamBX, y + 14, [154, 103, 0]);
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(26);
+    pdf.setFontSize(13);
     pdf.setTextColor(match.winnerTeam === "A" ? 10 : 154, match.winnerTeam === "A" ? 77 : 103, match.winnerTeam === "A" ? 60 : 0);
-    pdf.text(match.resultSummary || "-", pageWidth - margin - 7, y + 3, { align: "right" });
+    pdf.text(match.resultSummary || "-", pageWidth - margin - 5, y + 9, { align: "right" });
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(10);
+    pdf.setFontSize(7.5);
     pdf.setTextColor(105, 115, 109);
-    pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 7, y + 10, { align: "right" });
+    pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 5, y + 15, { align: "right" });
     if (match.notes?.trim()) {
-      pdf.setFontSize(9);
-      pdf.text(`Obs.: ${pdf.splitTextToSize(match.notes.trim(), pageWidth - margin * 2 - 10).slice(0, 2).join(" ")}`, margin + 5, y + rowHeight - 5);
+      pdf.setFontSize(7);
+      pdf.text(`Obs.: ${pdf.splitTextToSize(match.notes.trim(), pageWidth - margin * 2 - 8).slice(0, 1).join(" ")}`, margin + 3, y + rowHeight - 4);
     }
-    y += rowHeight + 4;
+    y += rowHeight;
   });
 
   drawFooter();
