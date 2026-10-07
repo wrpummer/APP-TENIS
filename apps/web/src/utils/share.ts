@@ -1,5 +1,7 @@
 import domToImage from "dom-to-image-more";
 import { jsPDF } from "jspdf/dist/jspdf.umd.min.js";
+import type { Match, Player } from "@/types/domain";
+import { formatLongDateOnlyBR } from "@/utils/tennis";
 
 export async function exportElementAsPng(element: HTMLElement, fileName: string) {
   const dataUrl = await domToImage.toPng(element, {
@@ -17,6 +19,143 @@ export async function exportElementAsPng(element: HTMLElement, fileName: string)
 interface ExportPdfOptions {
   title: string;
   subtitle?: string;
+}
+
+async function imageUrlToDataUrl(url?: string | null): Promise<string | null> {
+  if (!url) return null;
+
+  try {
+    const response = await fetch(url, { mode: "cors" });
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    return await new Promise<string | null>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
+function drawPlayer(pdf: jsPDF, player: Player | undefined, x: number, y: number, color: [number, number, number]) {
+  const photo = (player as Player & { pdfPhoto?: string | null } | undefined)?.pdfPhoto;
+  if (photo) {
+    pdf.addImage(photo, "JPEG", x, y - 3.5, 7, 7, undefined, "FAST");
+  } else {
+    pdf.setFillColor(...color);
+    pdf.circle(x + 3.5, y, 3.5, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(6);
+    pdf.text((player?.displayName?.[0] ?? "?").toUpperCase(), x + 3.5, y + 1.8, { align: "center" });
+  }
+
+  pdf.setTextColor(35, 48, 43);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8.5);
+  pdf.text(player?.displayName ?? "Jogador", x + 10, y + 1.4);
+}
+
+export async function exportMatchesAsPdf(
+  matches: Match[],
+  players: Player[],
+  options: { startDate?: string; endDate?: string }
+) {
+  const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 12;
+  const playerById = new Map(players.map((player) => [player.id, player]));
+
+  await Promise.all(players.map(async (player) => {
+    const photo = await imageUrlToDataUrl(player.photoUrl);
+    (player as Player & { pdfPhoto?: string | null }).pdfPhoto = photo;
+  }));
+
+  const dateRange = options.startDate || options.endDate
+    ? `${options.startDate ? formatLongDateOnlyBR(options.startDate) : "início"} até ${options.endDate ? formatLongDateOnlyBR(options.endDate) : "hoje"}`
+    : "Todas as datas";
+
+  const drawHeader = () => {
+    pdf.setFillColor(10, 77, 60);
+    pdf.rect(0, 0, pageWidth, 25, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(17);
+    pdf.text("Ranking Tennis", margin, 11);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.text("Extrato de partidas", margin, 18);
+    pdf.text(dateRange, pageWidth - margin, 18, { align: "right" });
+    pdf.setTextColor(35, 48, 43);
+  };
+
+  const drawFooter = () => {
+    pdf.setDrawColor(220, 226, 221);
+    pdf.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(105, 115, 109);
+    pdf.text(`${matches.length} partida${matches.length === 1 ? "" : "s"}`, margin, pageHeight - 6);
+    pdf.text(`Página ${pdf.getNumberOfPages()}`, pageWidth - margin, pageHeight - 6, { align: "right" });
+  };
+
+  drawHeader();
+  let y = 35;
+  if (matches.length === 0) {
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+    pdf.text("Nenhuma partida encontrada para este período.", margin, y);
+  }
+
+  matches.forEach((match, index) => {
+    if (y > pageHeight - 48) {
+      drawFooter();
+      pdf.addPage();
+      drawHeader();
+      y = 35;
+    }
+
+    const rowHeight = match.notes?.trim() ? 33 : 27;
+    pdf.setFillColor(index % 2 === 0 ? 248 : 255, 250, index % 2 === 0 ? 247 : 255);
+    pdf.roundedRect(margin, y - 5, pageWidth - margin * 2, rowHeight, 3, 3, "F");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(9);
+    pdf.setTextColor(10, 77, 60);
+    pdf.text(formatLongDateOnlyBR(match.matchDate), margin + 5, y + 2);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(105, 115, 109);
+    pdf.text(match.courtName?.trim() || "Local não informado", margin + 5, y + 8);
+
+    const teamAX = margin + 47;
+    const teamBX = margin + 111;
+    const teamA = [match.teamAPlayer1Id, match.teamAPlayer2Id].map((id) => playerById.get(id));
+    const teamB = [match.teamBPlayer1Id, match.teamBPlayer2Id].map((id) => playerById.get(id));
+    drawPlayer(pdf, teamA[0], teamAX, y, [10, 77, 60]);
+    drawPlayer(pdf, teamA[1], teamAX, y + 9, [10, 77, 60]);
+    drawPlayer(pdf, teamB[0], teamBX, y, [154, 103, 0]);
+    drawPlayer(pdf, teamB[1], teamBX, y + 9, [154, 103, 0]);
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.setTextColor(match.winnerTeam === "A" ? 10 : 154, match.winnerTeam === "A" ? 77 : 103, match.winnerTeam === "A" ? 60 : 0);
+    pdf.text(match.resultSummary || "-", pageWidth - margin - 7, y + 3, { align: "right" });
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(105, 115, 109);
+    pdf.text(`Vencedor: dupla ${match.winnerTeam}`, pageWidth - margin - 7, y + 10, { align: "right" });
+    if (match.notes?.trim()) {
+      pdf.setFontSize(7.5);
+      pdf.text(`Obs.: ${pdf.splitTextToSize(match.notes.trim(), pageWidth - margin * 2 - 10).slice(0, 2).join(" ")}`, margin + 5, y + rowHeight - 5);
+    }
+    y += rowHeight + 4;
+  });
+
+  drawFooter();
+  pdf.save(`extrato-partidas-ranking-tennis.pdf`);
 }
 
 export async function exportElementAsPdf(element: HTMLElement, fileName: string, options: ExportPdfOptions) {

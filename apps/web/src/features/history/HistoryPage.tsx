@@ -1,10 +1,12 @@
-import { MenuItem, Stack, TextField } from "@mui/material";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
+import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import { useMemo, useState } from "react";
 import { LoadingState } from "@/components/common/LoadingState";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { MatchHistoryList } from "@/components/history/MatchHistoryList";
 import { useMatches } from "@/hooks/useMatches";
 import { usePlayers } from "@/hooks/usePlayers";
+import { exportMatchesAsPdf } from "@/utils/share";
 
 export function HistoryPage() {
   const { data: matches, isLoading: matchesLoading } = useMatches();
@@ -12,6 +14,7 @@ export function HistoryPage() {
   const [selectedPlayerId, setSelectedPlayerId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   const safeMatches = matches ?? [];
   const safePlayers = players ?? [];
 
@@ -32,6 +35,15 @@ export function HistoryPage() {
     });
   }, [endDate, safeMatches, selectedPlayerId, startDate]);
 
+  async function handleExportPdf() {
+    setIsExporting(true);
+    try {
+      await exportMatchesAsPdf(filteredMatches, safePlayers, { startDate, endDate });
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   if (matchesLoading || playersLoading || !matches || !players) {
     return <LoadingState />;
   }
@@ -41,6 +53,16 @@ export function HistoryPage() {
       <SectionHeader
         title="Histórico de partidas"
         subtitle={`Feed cronológico das partidas registradas. Exibindo ${filteredMatches.length} de ${matches.length} partidas.`}
+        action={
+          <Button
+            variant="contained"
+            startIcon={<PictureAsPdfRoundedIcon />}
+            onClick={() => void handleExportPdf()}
+            disabled={isExporting}
+          >
+            {isExporting ? "Gerando..." : "Extrato em PDF"}
+          </Button>
+        }
       />
       <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
         <TextField
