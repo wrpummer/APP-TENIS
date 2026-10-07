@@ -212,6 +212,18 @@ export async function exportMatchesAsPdf(
       pdf.setFont("helvetica", match.winnerTeam === "B" ? "bold" : "normal");
       pdf.setFontSize(12);
       pdf.text(String(scoreB), scoreX + 24, y + 12, { align: "center" });
+      const firstSet = match.sets[0];
+      if (firstSet?.isTiebreak && Number.isFinite(firstSet.tiebreakPointsA) && Number.isFinite(firstSet.tiebreakPointsB)) {
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(7);
+        pdf.setTextColor(105, 115, 109);
+        pdf.text(
+          `${firstSet.isSuperTiebreak ? "STB" : "TB"}: ${firstSet.tiebreakPointsA}-${firstSet.tiebreakPointsB}`,
+          scoreX + 12,
+          y + 18,
+          { align: "center" }
+        );
+      }
     } else {
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(12);
